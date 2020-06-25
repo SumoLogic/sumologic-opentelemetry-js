@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./build/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "ES6",
+    "target": "ES5",
+    "moduleResolution": "node",
+    "strict": true,
+    "lib": ["ES2015", "DOM"],
+    "baseUrl": "./",
+    "paths": {
+      "@opentelemetry/*": [
+        "./opentelemetry-js/packages/opentelemetry-*",
+        "./opentelemetry-js-contrib/plugins/web/opentelemetry-*"
+      ],
+      "opentelemetry-exporter-sumologic": [
+        "./lib/opentelemetry-exporter-sumologic"
+      ]
+    }
+  }
+}
