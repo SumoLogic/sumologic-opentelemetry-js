@@ -19,6 +19,7 @@ interface InitializeOptions {
   samplingProbability?: number;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
+  ignoreUrls?: RegExp[];
 }
 
 const initialize = ({
@@ -28,6 +29,7 @@ const initialize = ({
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
   bufferTimeout = BUFFER_TIMEOUT,
+  ignoreUrls = [],
 }: InitializeOptions) => {
   const providerWithZone = new WebTracerProvider({
     plugins: [
@@ -35,10 +37,11 @@ const initialize = ({
       new UserInteractionPlugin(),
       new XMLHttpRequestPlugin({
         propagateTraceHeaderCorsUrls: /.*/,
-        ignoreUrls: [collectionSourceUrl],
+        ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
       }),
       new FetchPlugin({
         propagateTraceHeaderCorsUrls: /.*/,
+        ignoreUrls,
       }),
     ],
     sampler: new ProbabilitySampler(samplingProbability),
@@ -74,8 +77,18 @@ const tryJson = (input: string | undefined): any => {
   }
 };
 
+const tryList = (input: string | undefined): string[] | undefined => {
+  if (typeof input !== "string") {
+    return undefined;
+  }
+  return input.split(",").map((str) => str.trim());
+};
+
 const tryNumber = (input?: string): number | undefined =>
   input != null && Number.isFinite(+input) ? +input : undefined;
+
+const stringsToRegExps = (input: string[]): RegExp[] =>
+  input.map((str) => new RegExp(str));
 
 const { currentScript } = document;
 
@@ -87,6 +100,7 @@ if (currentScript) {
     samplingProbability,
     bufferMaxSpans,
     bufferTimeout,
+    ignoreUrls,
   } = currentScript.dataset;
   if (!collectionSourceUrl) {
     throw new Error(
@@ -101,5 +115,8 @@ if (currentScript) {
     samplingProbability: tryNumber(samplingProbability),
     bufferMaxSpans: tryNumber(bufferMaxSpans),
     bufferTimeout: tryNumber(bufferTimeout),
+    ignoreUrls: stringsToRegExps(
+      tryJson(ignoreUrls) || tryList(ignoreUrls) || []
+    ),
   });
 }
