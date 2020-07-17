@@ -19,10 +19,11 @@ interface InitializeOptions {
   samplingProbability?: number;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
-  ignoreUrls?: RegExp[];
+  ignoreUrls?: (string | RegExp)[];
+  propagateTraceHeaderCorsUrls?: (string | RegExp)[];
 }
 
-const initialize = ({
+export const initializeTracing = ({
   collectionSourceUrl,
   serviceName,
   defaultAttributes,
@@ -30,13 +31,20 @@ const initialize = ({
   bufferMaxSpans = BUFFER_MAX_SPANS,
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
+  propagateTraceHeaderCorsUrls = [/.*/],
 }: InitializeOptions) => {
-  const providerWithZone = new WebTracerProvider({
+  if (!collectionSourceUrl) {
+    throw new Error(
+      "collectionSourceUrl needs to be defined to initialize SumoLogic OpenTelemetry auto-instrumentation for JavaScript"
+    );
+  }
+
+  const provider = new WebTracerProvider({
     plugins: [
       new DocumentLoad(),
       new UserInteractionPlugin(),
       new XMLHttpRequestPlugin({
-        propagateTraceHeaderCorsUrls: /.*/,
+        propagateTraceHeaderCorsUrls,
         ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
       }),
       // new FetchPlugin({
@@ -48,7 +56,7 @@ const initialize = ({
     defaultAttributes,
   });
 
-  providerWithZone.register({
+  provider.register({
     contextManager: new ZoneContextManager(),
     propagator: new HttpTraceContext(),
   });
@@ -58,7 +66,7 @@ const initialize = ({
     serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
   });
 
-  providerWithZone.addSpanProcessor(
+  provider.addSpanProcessor(
     new BatchSpanProcessor(exporter, {
       bufferSize: bufferMaxSpans,
       bufferTimeout: bufferTimeout,
@@ -90,6 +98,9 @@ const tryNumber = (input?: string): number | undefined =>
 const stringsToRegExps = (input: string[]): RegExp[] =>
   input.map((str) => new RegExp(str));
 
+const tryRegExpsList = (input?: string): RegExp[] =>
+  stringsToRegExps(tryJson(input) || tryList(input) || []);
+
 const { currentScript } = document;
 
 if (currentScript) {
@@ -101,22 +112,23 @@ if (currentScript) {
     bufferMaxSpans,
     bufferTimeout,
     ignoreUrls,
+    propagateTraceHeaderCorsUrls,
   } = currentScript.dataset;
+
   if (!collectionSourceUrl) {
     throw new Error(
-      "data-collection-source-url needs to be defined to properly set up SumoLogic JS auto-instrumentation"
+      "data-collection-source-url needs to be defined to initialize SumoLogic OpenTelemetry auto-instrumentation for JavaScript"
     );
   }
 
-  initialize({
+  initializeTracing({
     collectionSourceUrl,
     serviceName,
     defaultAttributes: tryJson(defaultAttributes),
     samplingProbability: tryNumber(samplingProbability),
     bufferMaxSpans: tryNumber(bufferMaxSpans),
     bufferTimeout: tryNumber(bufferTimeout),
-    ignoreUrls: stringsToRegExps(
-      tryJson(ignoreUrls) || tryList(ignoreUrls) || []
-    ),
+    ignoreUrls: tryRegExpsList(ignoreUrls),
+    propagateTraceHeaderCorsUrls: tryRegExpsList(propagateTraceHeaderCorsUrls),
   });
 }
