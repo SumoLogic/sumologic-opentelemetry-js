@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "./build/",
+    "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "ES6",
     "target": "ES5",
     "moduleResolution": "node",
     "strict": true,
-    "lib": ["ES2015", "DOM"],
+    "declaration": true,
+    "declarationDir": "./dist",
     "baseUrl": "./",
     "paths": {
       "@opentelemetry/*": [

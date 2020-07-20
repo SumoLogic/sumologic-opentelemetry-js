@@ -1,21 +1,33 @@
 {
-  "name": "sumo-ot-js",
+  "name": "sumo-opentelemetry",
   "version": "0.0.0",
-  "private": true,
+  "description": "Sumo Logic all-in-one library for OpenTelemetry tracing auto-instrumentation in web",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "node ./scripts/bundle.js && rollup -c"
   },
-  "dependencies": {
-    "@types/shimmer": "^1.0.1",
-    "shimmer": "^1.2.1",
-    "zone.js": "^0.10.3"
-  },
+  "repository": "SumoLogic/sumologic-opentelemetry-js",
+  "author": "Sumo Logic Authors",
+  "license": "Apache-2.0",
+  "keywords": [
+    "opentelemetry",
+    "tracing",
+    "sumologic",
+    "sumo"
+  ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
+    "@types/shimmer": "^1.0.1",
     "rollup": "^2.15.0",
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
-    "typescript": "^3.9.3"
+    "shimmer": "^1.2.1",
+    "typescript": "^3.9.3",
+    "zone.js": "^0.10.3"
   }
 }
