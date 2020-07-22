@@ -37,8 +37,8 @@ const scanDir = async (inputDit) => {
 };
 
 const main = async () => {
-  await scanDir("./opentelemetry-js/packages");
-  await scanDir("./opentelemetry-js-contrib/plugins/web");
+  await scanDir("./src/opentelemetry-js/packages");
+  await scanDir("./src/opentelemetry-js-contrib/plugins/web");
 };
 
 main();
