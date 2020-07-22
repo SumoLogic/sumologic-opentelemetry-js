@@ -40,7 +40,7 @@ export function toZipkinSpan(
   span: ReadableSpan,
   serviceName: string,
   statusCodeTagName: string,
-  statusDescriptionTagName: string
+  statusDescriptionTagName: string,
 ): zipkinTypes.Span {
   const zipkinSpan: zipkinTypes.Span = {
     traceId: span.spanContext.traceId,
@@ -56,7 +56,7 @@ export function toZipkinSpan(
       span.status,
       statusCodeTagName,
       statusDescriptionTagName,
-      span.resource
+      span.resource,
     ),
     annotations: span.events.length
       ? _toZipkinAnnotations(span.events)
@@ -72,7 +72,7 @@ export function _toZipkinTags(
   status: api.Status,
   statusCodeTagName: string,
   statusDescriptionTagName: string,
-  resource: Resource
+  resource: Resource,
 ): zipkinTypes.Tags {
   const tags: { [key: string]: unknown } = {};
   for (const key of Object.keys(attributes)) {
@@ -84,7 +84,7 @@ export function _toZipkinTags(
   }
 
   Object.keys(resource.labels).forEach(
-    name => (tags[name] = resource.labels[name])
+    (name) => (tags[name] = resource.labels[name]),
   );
 
   return tags;
@@ -94,9 +94,9 @@ export function _toZipkinTags(
  * Converts OpenTelemetry Events to Zipkin Annotations format.
  */
 export function _toZipkinAnnotations(
-  events: api.TimedEvent[]
+  events: api.TimedEvent[],
 ): zipkinTypes.Annotation[] {
-  return events.map(event => ({
+  return events.map((event) => ({
     timestamp: hrTimeToMicroseconds(event.time),
     value: event.name,
   }));

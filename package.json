@@ -8,7 +8,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "node ./scripts/bundle.js && rollup -c"
+    "build": "node ./scripts/bundle.js && rollup -c",
+    "prettier": "prettier --write ."
   },
   "repository": "SumoLogic/sumologic-opentelemetry-js",
   "author": "Sumo Logic Authors",
@@ -24,6 +25,7 @@
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
     "@types/shimmer": "^1.0.1",
+    "prettier": "^2.0.5",
     "rollup": "^2.15.0",
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
