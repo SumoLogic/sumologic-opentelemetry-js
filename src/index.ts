@@ -6,7 +6,7 @@ import { XMLHttpRequestPlugin } from "@opentelemetry/plugin-xml-http-request";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { DocumentLoad } from "@opentelemetry/plugin-document-load";
 import { UserInteractionPlugin } from "@opentelemetry/plugin-user-interaction";
-import { SumoLogicExporter } from "opentelemetry-exporter-sumologic";
+import { SumoLogicExporter } from "./opentelemetry-exporter-sumologic";
 
 const UNKNOWN_SERVICE_NAME = "unknown";
 const BUFFER_MAX_SPANS = 100;
