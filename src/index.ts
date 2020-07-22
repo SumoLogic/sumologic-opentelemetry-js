@@ -35,7 +35,7 @@ export const initializeTracing = ({
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
-      "collectionSourceUrl needs to be defined to initialize SumoLogic OpenTelemetry auto-instrumentation for JavaScript"
+      "collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript"
     );
   }
 
@@ -117,7 +117,7 @@ if (currentScript) {
 
   if (!collectionSourceUrl) {
     throw new Error(
-      "data-collection-source-url needs to be defined to initialize SumoLogic OpenTelemetry auto-instrumentation for JavaScript"
+      "data-collection-source-url needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript"
     );
   }
 
