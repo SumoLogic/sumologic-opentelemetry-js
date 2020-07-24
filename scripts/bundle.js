@@ -12,7 +12,7 @@ const scanDir = async (inputDit) => {
     const packagePath = path.join(fullDir, PACKAGE_JSON);
     const package = JSON.parse(await fs.readFile(packagePath, "utf-8"));
     delete package.types;
-    package.main = package.main.replace(/^build\//, "");
+    package.main = package.main.replace(/^build\//, "").replace(".js", ".ts");
     await fs.writeFile(packagePath, JSON.stringify(package, null, 4), "utf-8");
 
     for (const [inputPath, outputPath] of Object.entries(
@@ -37,8 +37,8 @@ const scanDir = async (inputDit) => {
 };
 
 const main = async () => {
-  await scanDir("./opentelemetry-js/packages");
-  await scanDir("./opentelemetry-js-contrib/plugins/web");
+  await scanDir("./src/opentelemetry-js/packages");
+  await scanDir("./src/opentelemetry-js-contrib/plugins/web");
 };
 
 main();
