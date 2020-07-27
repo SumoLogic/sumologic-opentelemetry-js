@@ -8,8 +8,17 @@
     "dist"
   ],
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "node ./scripts/bundle.js && rollup -c",
-    "prettier": "prettier --write ."
+    "prettier-check-all": "prettier --check .",
+    "prettier-format-all": "prettier --write .",
+    "test": "npm run prettier-check-all"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   },
   "repository": "SumoLogic/sumologic-opentelemetry-js",
   "author": "Sumo Logic Authors",
@@ -25,6 +34,7 @@
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
     "@types/shimmer": "^1.0.1",
+    "husky": "^4.2.5",
     "prettier": "^2.0.5",
     "rollup": "^2.15.0",
     "rollup-plugin-terser": "^6.1.0",
