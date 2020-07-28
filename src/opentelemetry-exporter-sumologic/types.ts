@@ -146,8 +146,8 @@ export interface Tags {
  *   remoteEndpoint - Represents the broker. Leave serviceName absent if unknown.
  */
 export enum SpanKind {
-  CLIENT = "CLIENT",
-  SERVER = "SERVER",
-  CONSUMER = "CONSUMER",
-  PRODUCER = "PRODUCER",
+  CLIENT = 'CLIENT',
+  SERVER = 'SERVER',
+  CONSUMER = 'CONSUMER',
+  PRODUCER = 'PRODUCER',
 }

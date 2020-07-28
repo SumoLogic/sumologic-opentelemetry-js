@@ -1,14 +1,14 @@
-import { HttpTraceContext, ProbabilitySampler } from "@opentelemetry/core";
-import { BatchSpanProcessor } from "@opentelemetry/tracing";
-import { WebTracerProvider } from "@opentelemetry/web";
-import { XMLHttpRequestPlugin } from "@opentelemetry/plugin-xml-http-request";
+import { HttpTraceContext, ProbabilitySampler } from '@opentelemetry/core';
+import { BatchSpanProcessor } from '@opentelemetry/tracing';
+import { WebTracerProvider } from '@opentelemetry/web';
+import { XMLHttpRequestPlugin } from '@opentelemetry/plugin-xml-http-request';
 // import { FetchPlugin } from "@opentelemetry/plugin-fetch";
-import { ZoneContextManager } from "@opentelemetry/context-zone";
-import { DocumentLoad } from "@opentelemetry/plugin-document-load";
-import { UserInteractionPlugin } from "@opentelemetry/plugin-user-interaction";
-import { SumoLogicExporter } from "./opentelemetry-exporter-sumologic";
+import { ZoneContextManager } from '@opentelemetry/context-zone';
+import { DocumentLoad } from '@opentelemetry/plugin-document-load';
+import { UserInteractionPlugin } from '@opentelemetry/plugin-user-interaction';
+import { SumoLogicExporter } from './opentelemetry-exporter-sumologic';
 
-const UNKNOWN_SERVICE_NAME = "unknown";
+const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
 const BUFFER_TIMEOUT = 2_000;
 
@@ -35,7 +35,7 @@ export const initializeTracing = ({
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
-      "collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript"
+      'collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript',
     );
   }
 
@@ -70,7 +70,7 @@ export const initializeTracing = ({
     new BatchSpanProcessor(exporter, {
       bufferSize: bufferMaxSpans,
       bufferTimeout: bufferTimeout,
-    })
+    }),
   );
 };
 
@@ -86,10 +86,10 @@ const tryJson = (input: string | undefined): any => {
 };
 
 const tryList = (input: string | undefined): string[] | undefined => {
-  if (typeof input !== "string") {
+  if (typeof input !== 'string') {
     return undefined;
   }
-  return input.split(",").map((str) => str.trim());
+  return input.split(',').map((str) => str.trim());
 };
 
 const tryNumber = (input?: string): number | undefined =>
@@ -117,7 +117,7 @@ if (currentScript) {
 
   if (!collectionSourceUrl) {
     throw new Error(
-      "data-collection-source-url needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript"
+      'data-collection-source-url needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript',
     );
   }
 
