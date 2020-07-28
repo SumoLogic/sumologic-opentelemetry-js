@@ -67,3 +67,15 @@ Both `<script />` tag and manual installation can be configured with following p
 | bufferTimeout                | data-buffer-timeout                   | `number`             | `2000`ms    | Maximum time in milliseconds for spans waiting to be send                                                   |
 | ignoreUrls                   | data-ignore-urls                      | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
 | propagateTraceHeaderCorsUrls | data-propagate-trace-header-cors-urls | `(string\|RegExp)[]` | `[/.*/]`    | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
+
+# License
+
+This project is released under the [Apache 2.0 License](./LICENSE).
+
+# Contributing
+
+Please refer to our [Contributing](./CONTRIBUTING.md) documentation to get started.
+
+# Code Of Conduct
+
+Please refer to our [Code of Conduct](./CODE_OF_CONDUCT.md).
