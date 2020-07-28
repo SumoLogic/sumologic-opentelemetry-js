@@ -4,7 +4,7 @@ The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation 
 
 ## Installation
 
-The easiest way to start collecting traces from yor website is to put the code below inside the `<head></head>` tags on your website:
+The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on your website:
 
 ```html
 <script
@@ -17,6 +17,8 @@ The easiest way to start collecting traces from yor website is to put the code b
 See [functionalities](#Functionalities) for informations about the script size and [configuration](#Configuration) for all supported options.
 
 There are no other required actions needed to take. With properly provided `data-collection-source-url` and `data-service-name` your website is ready and will send collected traces to the specified Sumo Logic collector.
+
+You can load the script asynchronously by adding the `async` flag but some functionalities like user interactions or requests made before script run will be limited.
 
 ## Manual installation
 
@@ -51,11 +53,9 @@ See [@opentelemetry/plugin-xml-http-request](https://www.npmjs.com/package/@open
 
 To connect your traces with backend operations, make sure you support [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers.
 
-The script size is 92KB.
-
 ## Configuration
 
-Both `<script />` tag and manual installation can be configured with following parameters:
+Both `script` tag and manual installation can be configured with following parameters:
 
 | Parameter                    | `data-` Attribute                     | Type                 | Default     | Description                                                                                                 |
 | ---------------------------- | ------------------------------------- | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
