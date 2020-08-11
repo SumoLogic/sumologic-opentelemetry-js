@@ -29,11 +29,11 @@ Inside your project directory execute `npm install @sumologic/opentelemetry-trac
 Tracing needs to be initialized preferably before other functionalities in your code:
 
 ```javascript
-import { initializeTracing } from "@sumologic/opentelemetry-tracing";
+import { initializeTracing } from '@sumologic/opentelemetry-tracing';
 
 initializeTracing({
-  collectionSourceUrl: "sumo_logic_traces_collector_source_url",
-  serviceName: "name_of_your_web_application",
+  collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
+  serviceName: 'name_of_your_web_application',
 });
 ```
 
