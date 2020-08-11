@@ -2,7 +2,7 @@ import { HttpTraceContext, ProbabilitySampler } from '@opentelemetry/core';
 import { BatchSpanProcessor } from '@opentelemetry/tracing';
 import { WebTracerProvider } from '@opentelemetry/web';
 import { XMLHttpRequestPlugin } from '@opentelemetry/plugin-xml-http-request';
-// import { FetchPlugin } from "@opentelemetry/plugin-fetch";
+import { FetchPlugin } from '@opentelemetry/plugin-fetch';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { DocumentLoad } from '@opentelemetry/plugin-document-load';
 import { UserInteractionPlugin } from '@opentelemetry/plugin-user-interaction';
@@ -47,10 +47,10 @@ export const initializeTracing = ({
         propagateTraceHeaderCorsUrls,
         ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
       }),
-      // new FetchPlugin({
-      //   propagateTraceHeaderCorsUrls: /.*/,
-      //   ignoreUrls,
-      // }),
+      new FetchPlugin({
+        propagateTraceHeaderCorsUrls,
+        ignoreUrls,
+      }),
     ],
     sampler: new ProbabilitySampler(samplingProbability),
     defaultAttributes,
