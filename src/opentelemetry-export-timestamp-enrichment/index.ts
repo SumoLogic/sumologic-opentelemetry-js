@@ -16,7 +16,7 @@ export class ExportTimestampEnrichmentExporter implements SpanExporter {
   ) {
     const exportTimestamp = Date.now();
     spans.forEach((span) => {
-      span.attributes[TELEMETRY_SDK_EXPORT_TIMESTAMP] = exportTimestamp;
+      span.resource.labels[TELEMETRY_SDK_EXPORT_TIMESTAMP] = exportTimestamp;
     });
     this._exporter.export(spans, resultCallback);
   }
