@@ -7,6 +7,7 @@ import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { DocumentLoad } from '@opentelemetry/plugin-document-load';
 import { UserInteractionPlugin } from '@opentelemetry/plugin-user-interaction';
 import { SumoLogicExporter } from './opentelemetry-exporter-sumologic';
+import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
@@ -61,10 +62,11 @@ export const initializeTracing = ({
     propagator: new HttpTraceContext(),
   });
 
-  const exporter = new SumoLogicExporter({
+  const sumoLogicExporter = new SumoLogicExporter({
     url: collectionSourceUrl,
     serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
   });
+  const exporter = new ExportTimestampEnrichmentExporter(sumoLogicExporter);
 
   provider.addSpanProcessor(
     new BatchSpanProcessor(exporter, {
