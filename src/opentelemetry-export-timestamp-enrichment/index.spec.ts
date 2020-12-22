@@ -69,7 +69,7 @@ describe('ExportTimestampEnrichmentExporter', () => {
     ]);
   });
 
-  test('fills the given spans with telemetry.sdk.export_timestamp resource labels and pass it to the original exporter', () => {
+  test('fills the given spans with sumologic.telemetry.sdk.export_timestamp resource labels and pass it to the original exporter', () => {
     const resource1 = Resource.empty();
     const resource2 = new Resource({ label1: 'first value' });
     const spans: ReadableSpan[] = [
@@ -88,14 +88,14 @@ describe('ExportTimestampEnrichmentExporter', () => {
         {
           ...readableSpan,
           resource: new Resource({
-            'telemetry.sdk.export_timestamp': 1601510400000,
+            'sumologic.telemetry.sdk.export_timestamp': 1601510400000,
           }),
         },
         {
           ...readableSpan,
           resource: new Resource({
             label1: 'first value',
-            'telemetry.sdk.export_timestamp': 1601510400000,
+            'sumologic.telemetry.sdk.export_timestamp': 1601510400000,
           }),
         },
       ]);
