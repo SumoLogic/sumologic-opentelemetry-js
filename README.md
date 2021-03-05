@@ -33,7 +33,7 @@ import { initializeTracing } from '@sumologic/opentelemetry-tracing';
 
 initializeTracing({
   collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
-  serviceName: 'name_of_your_web_application',
+  serviceName: 'name_of_your_web_service',
 });
 ```
 
@@ -60,7 +60,9 @@ Both `script` tag and manual installation can be configured with following param
 | Parameter                    | `data-` Attribute                     | Type                 | Default     | Description                                                                                                 |
 | ---------------------------- | ------------------------------------- | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
 | collectionSourceUrl          | data-collection-source-url            | `string`             | _required_  | Sumo Logic collector source url                                                                             |
-| serviceName                  | data-service-name                     | `string`             | `"unknown"` | Name of your web application                                                                                |
+| authorizationToken           | data-authorization-token              | `string`             |             | Sumo Logic collector authorization token                                                                    |
+| serviceName                  | data-service-name                     | `string`             | `"unknown"` | Name of your web service                                                                                    |
+| applicationName              | data-application-name                 | `string`             |             | Name of your application                                                                                    |
 | defaultAttributes            | data-default-attributes               | `object`             | `{}`        | Attributes added to each span                                                                               |
 | samplingProbability          | data-sampling-probability             | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent |
 | bufferMaxSpans               | data-buffer-max-spans                 | `number`             | `100`       | Maximum number of spans waiting to be send                                                                  |

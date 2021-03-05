@@ -13,6 +13,7 @@ import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
 import { Attributes } from '@opentelemetry/api/src';
+import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
@@ -20,7 +21,9 @@ const BUFFER_TIMEOUT = 2_000;
 
 interface InitializeOptions {
   collectionSourceUrl: string;
+  authorizationToken?: string;
   serviceName?: string;
+  applicationName?: string;
   defaultAttributes?: Attributes;
   samplingProbability?: number;
   bufferMaxSpans?: number;
@@ -31,7 +34,9 @@ interface InitializeOptions {
 
 export const initializeTracing = ({
   collectionSourceUrl,
+  authorizationToken,
   serviceName,
+  applicationName,
   defaultAttributes,
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
@@ -54,10 +59,23 @@ export const initializeTracing = ({
     propagator: new HttpTraceContext(),
   });
 
+  const headers: CollectorExporterConfigBase['headers'] = {};
+  if (authorizationToken) {
+    headers.Authorization = authorizationToken;
+  }
+
+  const attributes: CollectorExporterConfigBase['attributes'] = {
+    ...defaultAttributes,
+  };
+  if (applicationName) {
+    attributes.application = applicationName;
+  }
+
   const collectorExporter = new CollectorTraceExporter({
     url: collectionSourceUrl,
     serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
-    attributes: defaultAttributes,
+    attributes,
+    headers,
   });
   const exporter = new ExportTimestampEnrichmentExporter(collectorExporter);
 
@@ -117,7 +135,9 @@ const { currentScript } = document;
 if (currentScript) {
   const {
     collectionSourceUrl,
+    authorizationToken,
     serviceName,
+    applicationName,
     defaultAttributes,
     samplingProbability,
     bufferMaxSpans,
@@ -134,7 +154,9 @@ if (currentScript) {
 
   initializeTracing({
     collectionSourceUrl,
+    authorizationToken,
     serviceName,
+    applicationName,
     defaultAttributes: tryJson(defaultAttributes),
     samplingProbability: tryNumber(samplingProbability),
     bufferMaxSpans: tryNumber(bufferMaxSpans),
