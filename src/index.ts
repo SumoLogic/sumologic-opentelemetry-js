@@ -1,13 +1,19 @@
-import { HttpTraceContext, ProbabilitySampler } from '@opentelemetry/core';
+import {
+  HttpTraceContext,
+  TraceIdRatioBasedSampler,
+} from '@opentelemetry/core';
 import { BatchSpanProcessor } from '@opentelemetry/tracing';
 import { WebTracerProvider } from '@opentelemetry/web';
-import { XMLHttpRequestPlugin } from '@opentelemetry/plugin-xml-http-request';
-import { FetchPlugin } from '@opentelemetry/plugin-fetch';
+import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
+import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { DocumentLoad } from '@opentelemetry/plugin-document-load';
 import { UserInteractionPlugin } from '@opentelemetry/plugin-user-interaction';
-import { SumoLogicExporter } from './opentelemetry-exporter-sumologic';
+import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
+import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
+import { Attributes } from '@opentelemetry/api/src';
+import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
@@ -15,8 +21,10 @@ const BUFFER_TIMEOUT = 2_000;
 
 interface InitializeOptions {
   collectionSourceUrl: string;
+  authorizationToken?: string;
   serviceName?: string;
-  defaultAttributes?: Record<string, unknown>;
+  applicationName?: string;
+  defaultAttributes?: Attributes;
   samplingProbability?: number;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
@@ -26,7 +34,9 @@ interface InitializeOptions {
 
 export const initializeTracing = ({
   collectionSourceUrl,
+  authorizationToken,
   serviceName,
+  applicationName,
   defaultAttributes,
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
@@ -41,20 +51,7 @@ export const initializeTracing = ({
   }
 
   const provider = new WebTracerProvider({
-    plugins: [
-      new DocumentLoad(),
-      new UserInteractionPlugin(),
-      new XMLHttpRequestPlugin({
-        propagateTraceHeaderCorsUrls,
-        ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
-      }),
-      new FetchPlugin({
-        propagateTraceHeaderCorsUrls,
-        ignoreUrls,
-      }),
-    ],
-    sampler: new ProbabilitySampler(samplingProbability),
-    defaultAttributes,
+    sampler: new TraceIdRatioBasedSampler(samplingProbability),
   });
 
   provider.register({
@@ -62,11 +59,25 @@ export const initializeTracing = ({
     propagator: new HttpTraceContext(),
   });
 
-  const sumoLogicExporter = new SumoLogicExporter({
+  const headers: CollectorExporterConfigBase['headers'] = {};
+  if (authorizationToken) {
+    headers.Authorization = authorizationToken;
+  }
+
+  const attributes: CollectorExporterConfigBase['attributes'] = {
+    ...defaultAttributes,
+  };
+  if (applicationName) {
+    attributes.application = applicationName;
+  }
+
+  const collectorExporter = new CollectorTraceExporter({
     url: collectionSourceUrl,
     serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
+    attributes,
+    headers,
   });
-  const exporter = new ExportTimestampEnrichmentExporter(sumoLogicExporter);
+  const exporter = new ExportTimestampEnrichmentExporter(collectorExporter);
 
   provider.addSpanProcessor(
     new BatchSpanProcessor(exporter, {
@@ -74,6 +85,22 @@ export const initializeTracing = ({
       bufferTimeout: bufferTimeout,
     }),
   );
+
+  registerInstrumentations({
+    tracerProvider: provider,
+    instrumentations: [
+      new DocumentLoad(),
+      new UserInteractionPlugin(),
+      new XMLHttpRequestInstrumentation({
+        propagateTraceHeaderCorsUrls,
+        ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
+      }),
+      new FetchInstrumentation({
+        propagateTraceHeaderCorsUrls,
+        ignoreUrls,
+      }),
+    ],
+  });
 };
 
 const tryJson = (input: string | undefined): any => {
@@ -108,7 +135,9 @@ const { currentScript } = document;
 if (currentScript) {
   const {
     collectionSourceUrl,
+    authorizationToken,
     serviceName,
+    applicationName,
     defaultAttributes,
     samplingProbability,
     bufferMaxSpans,
@@ -125,7 +154,9 @@ if (currentScript) {
 
   initializeTracing({
     collectionSourceUrl,
+    authorizationToken,
     serviceName,
+    applicationName,
     defaultAttributes: tryJson(defaultAttributes),
     samplingProbability: tryNumber(samplingProbability),
     bufferMaxSpans: tryNumber(bufferMaxSpans),

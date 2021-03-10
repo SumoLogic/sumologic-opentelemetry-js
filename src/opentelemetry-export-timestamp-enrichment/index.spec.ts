@@ -1,4 +1,4 @@
-import { CanonicalCode, SpanKind, TraceFlags } from '@opentelemetry/api';
+import { SpanKind, StatusCode, TraceFlags } from '@opentelemetry/api';
 import { Resource } from '@opentelemetry/resources';
 import { ReadableSpan, SpanExporter } from '@opentelemetry/tracing';
 import { ExportTimestampEnrichmentExporter } from '.';
@@ -27,7 +27,7 @@ describe('ExportTimestampEnrichmentExporter', () => {
     endTime: [1566156731, 709],
     ended: true,
     status: {
-      code: CanonicalCode.OK,
+      code: StatusCode.OK,
     },
     attributes: {},
     parentSpanId: '3e0c63257de34c92',
@@ -69,7 +69,7 @@ describe('ExportTimestampEnrichmentExporter', () => {
     ]);
   });
 
-  test('fills the given spans with sumologic.telemetry.sdk.export_timestamp resource labels and pass it to the original exporter', () => {
+  test('fills the given spans with sumologic.telemetry.sdk.export_timestamp resource attribute and pass it to the original exporter', () => {
     const resource1 = Resource.empty();
     const resource2 = new Resource({ label1: 'first value' });
     const spans: ReadableSpan[] = [

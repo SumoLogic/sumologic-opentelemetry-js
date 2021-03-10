@@ -18,7 +18,7 @@ export default {
       browser: true,
       preferBuiltins: true,
       customResolveOptions: {
-        moduleDirectory: ['node_modules', './opentelemetry-js/packages'],
+        moduleDirectories: ['node_modules', './opentelemetry-js/packages'],
       },
     }),
     typescript({
