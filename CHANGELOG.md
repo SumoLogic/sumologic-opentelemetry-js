@@ -9,3 +9,10 @@
 ## 0.2.0
 
 - added `sumologic.telemetry.sdk.export_timestamp` tag with a timestamp of spans being exported (#5)
+
+## 1.0.0
+
+- [BREAKING CHANGE] changed exporter to [@opentelemetry/exporter-collector](https://www.npmjs.com/package/@opentelemetry/exporter-collector)
+- bump [opentelemetry-js](https://github.com/open-telemetry/opentelemetry-js) version to 0.16.0
+- bump [opentelemetry-js-contrib](https://github.com/open-telemetry/opentelemetry-js-contrib) version to 0.12.1
+- added new config options: `authorizationToken` and `applicationName`
