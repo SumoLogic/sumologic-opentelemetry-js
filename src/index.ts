@@ -7,12 +7,12 @@ import { WebTracerProvider } from '@opentelemetry/web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
-import { DocumentLoad } from '@opentelemetry/plugin-document-load';
-import { UserInteractionPlugin } from '@opentelemetry/plugin-user-interaction';
+import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
+import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
-import { Attributes } from '@opentelemetry/api/src';
+import { Attributes } from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
@@ -89,8 +89,8 @@ export const initializeTracing = ({
   registerInstrumentations({
     tracerProvider: provider,
     instrumentations: [
-      new DocumentLoad(),
-      new UserInteractionPlugin(),
+      new DocumentLoadInstrumentation(),
+      new UserInteractionInstrumentation(),
       new XMLHttpRequestInstrumentation({
         propagateTraceHeaderCorsUrls,
         ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
