@@ -1,4 +1,4 @@
-import { SpanKind, StatusCode, TraceFlags } from '@opentelemetry/api';
+import { SpanKind, SpanStatusCode, TraceFlags } from '@opentelemetry/api';
 import { Resource } from '@opentelemetry/resources';
 import { ReadableSpan, SpanExporter } from '@opentelemetry/tracing';
 import { ExportTimestampEnrichmentExporter } from '.';
@@ -27,7 +27,7 @@ describe('ExportTimestampEnrichmentExporter', () => {
     endTime: [1566156731, 709],
     ended: true,
     status: {
-      code: StatusCode.OK,
+      code: SpanStatusCode.OK,
     },
     attributes: {},
     parentSpanId: '3e0c63257de34c92',

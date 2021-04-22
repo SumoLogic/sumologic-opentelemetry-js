@@ -9,11 +9,11 @@ import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
-import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
 import { Attributes } from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
+import { SumoLogicTraceExporter } from './opentelemetry-exporter-sumologic';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
@@ -71,7 +71,7 @@ export const initializeTracing = ({
     attributes.application = applicationName;
   }
 
-  const collectorExporter = new CollectorTraceExporter({
+  const collectorExporter = new SumoLogicTraceExporter({
     url: collectionSourceUrl,
     serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
     attributes,
