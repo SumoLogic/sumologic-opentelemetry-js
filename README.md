@@ -8,11 +8,13 @@ The easiest way to start collecting traces from your website is to put the code 
 
 ```html
 <script
-  src="https://cdn-nite-www.sumologic.net/ui/js/thirdparty/sumologic-opentelemetry.js"
+  src="script_src"
   data-collection-source-url="sumo_logic_traces_collector_source_url"
   data-service-name="name_of_your_web_application"
 >
 ```
+
+Contact [SumoLogic](https://www.sumologic.com/) and ask for the `script_src` valid for your account.
 
 See [functionalities](#Functionalities) for informations about the script size and [configuration](#Configuration) for all supported options.
 
@@ -44,12 +46,12 @@ This library contains built-in OpenTelemetry packages:
 - [@opentelemetry/core](https://www.npmjs.com/package/@opentelemetry/core)
 - [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing)
 - [@opentelemetry/web](https://www.npmjs.com/package/@opentelemetry/web)
-- [@opentelemetry/plugin-xml-http-request](https://www.npmjs.com/package/@opentelemetry/plugin-xml-http-request)
+- [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/package/@opentelemetry/instrumentation-xml-http-request)
 - [@opentelemetry/context-zone](https://www.npmjs.com/package/@opentelemetry/context-zone)
-- [@opentelemetry/plugin-document-load](https://www.npmjs.com/package/@opentelemetry/plugin-document-load)
-- [@opentelemetry/plugin-user-interaction](https://www.npmjs.com/package/@opentelemetry/plugin-user-interaction)
+- [@opentelemetry/instrumentation-document-load](https://www.npmjs.com/package/@opentelemetry/instrumentation-document-load)
+- [@opentelemetry/instrumentation-user-interaction](https://www.npmjs.com/package/@opentelemetry/instrumentation-user-interaction)
 
-See [@opentelemetry/plugin-xml-http-request](https://www.npmjs.com/package/@opentelemetry/plugin-xml-http-request), [@opentelemetry/plugin-document-load](https://www.npmjs.com/package/@opentelemetry/plugin-document-load) and [@opentelemetry/plugin-user-interaction](https://www.npmjs.com/package/@opentelemetry/plugin-user-interaction) for more details about auto-instrumented functionalities.
+See [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/package/@opentelemetry/instrumentation-xml-http-request), [@opentelemetry/instrumentation-document-load](https://www.npmjs.com/package/@opentelemetry/instrumentation-document-load) and [@opentelemetry/instrumentation-user-interaction](https://www.npmjs.com/package/@opentelemetry/instrumentation-user-interaction) for more details about auto-instrumented functionalities.
 
 To connect your traces with backend operations, make sure you support [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers.
 
