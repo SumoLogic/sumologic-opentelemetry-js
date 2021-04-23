@@ -12,7 +12,7 @@ import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-u
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
-import { Attributes } from '@opentelemetry/api';
+import { SpanAttributes } from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
@@ -24,7 +24,7 @@ interface InitializeOptions {
   authorizationToken?: string;
   serviceName?: string;
   applicationName?: string;
-  defaultAttributes?: Attributes;
+  defaultAttributes?: SpanAttributes;
   samplingProbability?: number;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
@@ -81,8 +81,8 @@ export const initializeTracing = ({
 
   provider.addSpanProcessor(
     new BatchSpanProcessor(exporter, {
-      bufferSize: bufferMaxSpans,
-      bufferTimeout: bufferTimeout,
+      maxQueueSize: bufferMaxSpans,
+      scheduledDelayMillis: bufferTimeout,
     }),
   );
 
