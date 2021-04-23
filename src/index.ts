@@ -66,6 +66,10 @@ export const initializeTracing = ({
 
   const attributes: CollectorExporterConfigBase['attributes'] = {
     ...defaultAttributes,
+
+    // This is a temporary solution not covered by the specification.
+    // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
+    ['sampling.probability']: samplingProbability,
   };
   if (applicationName) {
     attributes.application = applicationName;
