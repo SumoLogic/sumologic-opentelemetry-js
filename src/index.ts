@@ -2,7 +2,7 @@ import {
   HttpTraceContext,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/core';
-import { BatchSpanProcessor } from '@opentelemetry/tracing';
+import { BatchSpanProcessor, Tracer } from '@opentelemetry/tracing';
 import { WebTracerProvider } from '@opentelemetry/web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -12,8 +12,17 @@ import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-u
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
-import { SpanAttributes } from '@opentelemetry/api';
+import * as api from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
+
+declare global {
+  interface Window {
+    opentelemetry: {
+      api: typeof api;
+      tracer: Tracer;
+    };
+  }
+}
 
 const UNKNOWN_SERVICE_NAME = 'unknown';
 const BUFFER_MAX_SPANS = 100;
@@ -24,7 +33,7 @@ interface InitializeOptions {
   authorizationToken?: string;
   serviceName?: string;
   applicationName?: string;
-  defaultAttributes?: SpanAttributes;
+  defaultAttributes?: api.SpanAttributes;
   samplingProbability?: number;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
@@ -105,6 +114,10 @@ export const initializeTracing = ({
       }),
     ],
   });
+
+  const tracer = provider.getTracer('default');
+
+  return { api, tracer };
 };
 
 const tryJson = (input: string | undefined): any => {
@@ -156,7 +169,7 @@ if (currentScript) {
     );
   }
 
-  initializeTracing({
+  window.opentelemetry = initializeTracing({
     collectionSourceUrl,
     authorizationToken,
     serviceName,

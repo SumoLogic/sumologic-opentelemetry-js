@@ -26,3 +26,4 @@
 ## Unreleased
 
 - added `sampling.probability` default attribute
+- added support for manual instrumentation
