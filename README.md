@@ -2,6 +2,8 @@
 
 The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation for JavaScript library enables tracing in the browser.
 
+Note: This feature is in Beta. To participate contact your Sumo account executive or email us at tracing-eap@sumologic.com.
+
 ## Installation
 
 The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on your website:
