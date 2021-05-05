@@ -17,8 +17,12 @@
 - bump [opentelemetry-js-contrib](https://github.com/open-telemetry/opentelemetry-js-contrib) version to 0.12.1
 - added new config options: `authorizationToken` and `applicationName`
 
-# 1.1.0
+## 1.1.0
 
 - bump [opentelemetry-js](https://github.com/SumoLogic/opentelemetry-js) version to 0.18.2
 - bump [opentelemetry-js-contrib](https://github.com/SumoLogic/opentelemetry-js-contrib) version to 0.15.0
 - bump [opentelemetry-js-api](https://github.com/SumoLogic/opentelemetry-js-api) version to 1.0.0-rc0
+
+## Unreleased
+
+- added `sampling.probability` default attribute
