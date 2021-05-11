@@ -74,6 +74,24 @@ Both `script` tag and manual installation can be configured with following param
 | ignoreUrls                   | data-ignore-urls                      | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
 | propagateTraceHeaderCorsUrls | data-propagate-trace-header-cors-urls | `(string\|RegExp)[]` | `[/.*/]`    | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
 
+## Manual instrumentation
+
+When initialized by the `<script />` tag, window attribute `opentelemetry` is exposed. It gives possibility to create spans manually. Global `opentelemetry` objects contains:
+
+- `api` - exposed [@opentelemetry/api](https://www.npmjs.com/package/@opentelemetry/api) module
+- `tracer` - an instance of `Tracer` from [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing).
+
+Example:
+
+```javascript
+const span = opentelemetry.tracer.startSpan('fetchUserData', {
+  attributes: { organization: 'client-a' },
+});
+opentelemetry.api.context.with(api.setSpan(api.context.active(), span), () => {
+  // long running operation
+});
+```
+
 # License
 
 This project is released under the [Apache 2.0 License](./LICENSE).
