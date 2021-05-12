@@ -23,7 +23,8 @@
 - bump [opentelemetry-js-contrib](https://github.com/SumoLogic/opentelemetry-js-contrib) version to 0.15.0
 - bump [opentelemetry-js-api](https://github.com/SumoLogic/opentelemetry-js-api) version to 1.0.0-rc0
 
-## Unreleased
+## 1.2.0
 
 - added `sampling.probability` default attribute
 - added support for manual instrumentation
+- added first paint, first contentful paint and largest contentful paint events to `documentLoad`
