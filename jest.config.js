@@ -4,12 +4,12 @@ const { compilerOptions } = require('./tsconfig');
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    'src/opentelemetry-js',
-    'src/opentelemetry-js-contrib/',
+  testRegex: [
+    '/src/opentelemetry-export-timestamp-enrichment/.*\\.spec\\.ts',
+    '/src/opentelemetry-exporter-sumologic/.*\\.spec\\.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
+  setupFiles: ['jsdom-worker', './src/setup-tests.ts'],
 };
