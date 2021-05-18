@@ -28,3 +28,8 @@
 - added `sampling.probability` default attribute
 - added support for manual instrumentation
 - added first paint, first contentful paint and largest contentful paint events to `documentLoad`
+
+## 1.3.0
+
+- added `http.url` and `http.user_agent` attributes to the documentFetch spans
+- fixed propagating trace header cors to all domains by default
