@@ -141,11 +141,8 @@ const tryList = (input: string | undefined): string[] | undefined => {
 const tryNumber = (input?: string): number | undefined =>
   input != null && Number.isFinite(+input) ? +input : undefined;
 
-const stringsToRegExps = (input: string[]): RegExp[] =>
-  input.map((str) => new RegExp(str));
-
-const tryRegExpsList = (input?: string): RegExp[] =>
-  stringsToRegExps(tryJson(input) || tryList(input) || []);
+const tryRegExpsList = (input?: string): RegExp[] | undefined =>
+  (tryJson(input) || tryList(input))?.map((str: string) => new RegExp(str));
 
 const { currentScript } = document;
 
