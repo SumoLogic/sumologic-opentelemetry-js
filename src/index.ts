@@ -11,7 +11,10 @@ import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-docu
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
-import { registerInstrumentations } from '@opentelemetry/instrumentation/src';
+import {
+  InstrumentationOption,
+  registerInstrumentations as registerOpenTelemetryInstrumentations,
+} from '@opentelemetry/instrumentation/src';
 import * as api from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 
@@ -20,6 +23,8 @@ declare global {
     opentelemetry: {
       api: typeof api;
       tracer: Tracer;
+      registerInstrumentations: () => void;
+      disableInstrumentations: () => void;
     };
   }
 }
@@ -99,25 +104,38 @@ export const initializeTracing = ({
     }),
   );
 
-  registerInstrumentations({
-    tracerProvider: provider,
-    instrumentations: [
-      new DocumentLoadInstrumentation(),
-      new UserInteractionInstrumentation(),
-      new XMLHttpRequestInstrumentation({
-        propagateTraceHeaderCorsUrls,
-        ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
-      }),
-      new FetchInstrumentation({
-        propagateTraceHeaderCorsUrls,
-        ignoreUrls,
-      }),
-    ],
-  });
+  let disableOpenTelemetryInstrumentations: (() => void) | undefined;
+
+  const disableInstrumentations = () => {
+    disableOpenTelemetryInstrumentations?.();
+    disableOpenTelemetryInstrumentations = undefined;
+  };
+
+  const registerInstrumentations = () => {
+    disableInstrumentations();
+    disableOpenTelemetryInstrumentations = registerOpenTelemetryInstrumentations(
+      {
+        tracerProvider: provider,
+        instrumentations: [
+          new DocumentLoadInstrumentation(),
+          new UserInteractionInstrumentation(),
+          new XMLHttpRequestInstrumentation({
+            propagateTraceHeaderCorsUrls,
+            ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
+          }),
+          new FetchInstrumentation({
+            propagateTraceHeaderCorsUrls,
+            ignoreUrls,
+          }),
+        ],
+      },
+    );
+  };
 
   const tracer = provider.getTracer('default');
+  registerInstrumentations();
 
-  return { api, tracer };
+  return { api, tracer, registerInstrumentations, disableInstrumentations };
 };
 
 const tryJson = (input: string | undefined): any => {
