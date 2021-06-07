@@ -92,6 +92,16 @@ opentelemetry.api.context.with(api.setSpan(api.context.active(), span), () => {
 });
 ```
 
+## Disable instrumentation
+
+Instrumentation can be disabled and enabled again in runtime using `registerInstrumentations()` and `disableInstrumentations()` methods.
+
+```javascript
+opentelemetry.disableInstrumentations();
+// some code with instrumentations disabled
+opentelemetry.registerInstrumentations();
+```
+
 # License
 
 This project is released under the [Apache 2.0 License](./LICENSE).
