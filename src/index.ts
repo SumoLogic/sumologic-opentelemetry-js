@@ -11,10 +11,7 @@ import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-docu
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
-import {
-  InstrumentationOption,
-  registerInstrumentations as registerOpenTelemetryInstrumentations,
-} from '@opentelemetry/instrumentation/src';
+import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation/src';
 import * as api from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 

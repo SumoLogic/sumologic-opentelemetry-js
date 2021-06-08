@@ -34,6 +34,6 @@
 - added `http.url` and `http.user_agent` attributes to the documentFetch spans
 - fixed propagating trace header cors to all domains by default
 
-## Unreleased
+## 1.4.0
 
 - added `registerInstrumentations()` and `disableInstrumentations()` methods to turn on and off instrumentations in runtime
