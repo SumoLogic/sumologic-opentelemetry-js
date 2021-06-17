@@ -37,3 +37,7 @@
 ## 1.4.0
 
 - added `registerInstrumentations()` and `disableInstrumentations()` methods to turn on and off instrumentations in runtime
+
+## 1.4.1
+
+- fixed manual installation
