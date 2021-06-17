@@ -161,7 +161,10 @@ const tryRegExpsList = (input?: string): RegExp[] | undefined =>
 
 const { currentScript } = document;
 
-if (currentScript) {
+if (
+  currentScript &&
+  (currentScript.getAttribute('src')?.indexOf('sumologic') ?? -1 >= 0)
+) {
   const {
     collectionSourceUrl,
     authorizationToken,
