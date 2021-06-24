@@ -42,6 +42,6 @@
 
 - fixed manual installation
 
-## 1.4.2
+## 1.4.3
 
 - fixed manual installation
