@@ -163,7 +163,7 @@ const { currentScript } = document;
 
 if (
   currentScript &&
-  (currentScript.getAttribute('src')?.indexOf('sumologic') ?? -1 >= 0)
+  (currentScript.getAttribute('src')?.indexOf('sumologic') ?? -1) >= 0
 ) {
   const {
     collectionSourceUrl,
