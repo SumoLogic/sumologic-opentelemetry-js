@@ -45,3 +45,7 @@
 ## 1.4.3
 
 - fixed manual installation
+
+## 1.4.4
+
+- fixed doubled instrumentation-document-load traces when the script is loading asynchronously
