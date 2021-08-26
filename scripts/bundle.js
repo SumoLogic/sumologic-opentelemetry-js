@@ -48,4 +48,7 @@ const main = async () => {
   await preparePackage('./src/opentelemetry-js-api');
 };
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
