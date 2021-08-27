@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 14.x
       - run: npm ci
-      - run: npm publish --access public --dry-run
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm i aws-sdk@^2.977.0
