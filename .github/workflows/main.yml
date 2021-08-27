@@ -1,4 +1,4 @@
-name: SumoLogic CI
+name: Build and test
 
 on:
   push:
@@ -22,3 +22,6 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/index.js
