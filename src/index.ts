@@ -1,5 +1,5 @@
 import {
-  HttpTraceContext,
+  HttpTraceContextPropagator,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/core';
 import { BatchSpanProcessor, Tracer } from '@opentelemetry/tracing';
@@ -14,6 +14,8 @@ import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timest
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation/src';
 import * as api from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 
 declare global {
   interface Window {
@@ -62,12 +64,16 @@ export const initializeTracing = ({
   }
 
   const provider = new WebTracerProvider({
+    resource: new Resource({
+      [SemanticResourceAttributes.SERVICE_NAME]:
+        serviceName ?? UNKNOWN_SERVICE_NAME,
+    }),
     sampler: new TraceIdRatioBasedSampler(samplingProbability),
   });
 
   provider.register({
     contextManager: new ZoneContextManager(),
-    propagator: new HttpTraceContext(),
+    propagator: new HttpTraceContextPropagator(),
   });
 
   const headers: CollectorExporterConfigBase['headers'] = {};
@@ -88,7 +94,6 @@ export const initializeTracing = ({
 
   const collectorExporter = new CollectorTraceExporter({
     url: collectionSourceUrl,
-    serviceName: serviceName ?? UNKNOWN_SERVICE_NAME,
     attributes,
     headers,
   });

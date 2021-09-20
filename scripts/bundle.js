@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const PACKAGE_JSON = './package.json';
 
@@ -43,6 +44,7 @@ const main = async () => {
     recursive: true,
     force: true,
   });
+  spawnSync('npm', ['run', 'version'], { cwd: './src/opentelemetry-js-api' });
   await scanDir('./src/opentelemetry-js/packages');
   await scanDir('./src/opentelemetry-js-contrib/plugins/web');
   await preparePackage('./src/opentelemetry-js-api');
