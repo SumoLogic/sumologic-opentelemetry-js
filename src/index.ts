@@ -17,9 +17,14 @@ import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/s
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 
+type ReadyListener = () => void;
+
 declare global {
   interface Window {
-    opentelemetry: {
+    sumoLogicOpenTelemetryRum: {
+      initialize: (options: InitializeOptions) => void;
+      readyListeners: ReadyListener[];
+      onReady: (callback: ReadyListener) => void;
       api: typeof api;
       tracer: Tracer;
       registerInstrumentations: () => void;
@@ -45,7 +50,13 @@ interface InitializeOptions {
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
 }
 
-export const initializeTracing = ({
+const useWindow = typeof window === 'object' && window != null;
+
+if (useWindow) {
+  window.sumoLogicOpenTelemetryRum = window.sumoLogicOpenTelemetryRum || {};
+}
+
+export const initialize = ({
   collectionSourceUrl,
   authorizationToken,
   serviceName,
@@ -55,11 +66,11 @@ export const initializeTracing = ({
   bufferMaxSpans = BUFFER_MAX_SPANS,
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
-  propagateTraceHeaderCorsUrls = [/.*/],
+  propagateTraceHeaderCorsUrls = [],
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
-      'collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript',
+      'collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry RUM',
     );
   }
 
@@ -134,11 +145,35 @@ export const initializeTracing = ({
     );
   };
 
-  const tracer = provider.getTracer('default');
+  const tracer = provider.getTracer('@sumologic/opentelemetry-rum');
   registerInstrumentations();
 
-  return { api, tracer, registerInstrumentations, disableInstrumentations };
+  const result = {
+    readyListeners: [],
+    onReady: (callback: ReadyListener) => {
+      callback();
+    },
+    api,
+    tracer,
+    registerInstrumentations,
+    disableInstrumentations,
+  };
+
+  if (useWindow) {
+    Object.assign(window.sumoLogicOpenTelemetryRum, result);
+  }
+
+  return result;
 };
+
+if (useWindow) {
+  window.sumoLogicOpenTelemetryRum.initialize = initialize;
+
+  const readyListeners = window.sumoLogicOpenTelemetryRum?.readyListeners;
+  if (Array.isArray(readyListeners)) {
+    readyListeners.forEach((callback) => callback());
+  }
+}
 
 const tryJson = (input: string | undefined): any => {
   if (!input) {
@@ -164,11 +199,11 @@ const tryNumber = (input?: string): number | undefined =>
 const tryRegExpsList = (input?: string): RegExp[] | undefined =>
   (tryJson(input) || tryList(input))?.map((str: string) => new RegExp(str));
 
-const { currentScript } = document;
-
 if (
-  currentScript &&
-  (currentScript.getAttribute('src')?.indexOf('sumologic') ?? -1) >= 0
+  typeof document === 'object' &&
+  document != null &&
+  document.currentScript &&
+  document.currentScript.dataset.collectionSourceUrl
 ) {
   const {
     collectionSourceUrl,
@@ -181,15 +216,9 @@ if (
     bufferTimeout,
     ignoreUrls,
     propagateTraceHeaderCorsUrls,
-  } = currentScript.dataset;
+  } = document.currentScript.dataset;
 
-  if (!collectionSourceUrl) {
-    throw new Error(
-      'data-collection-source-url needs to be defined to initialize Sumo Logic OpenTelemetry auto-instrumentation for JavaScript',
-    );
-  }
-
-  window.opentelemetry = initializeTracing({
+  (window as any).opentelemetry = initialize({
     collectionSourceUrl,
     authorizationToken,
     serviceName,
@@ -199,6 +228,8 @@ if (
     bufferMaxSpans: tryNumber(bufferMaxSpans),
     bufferTimeout: tryNumber(bufferTimeout),
     ignoreUrls: tryRegExpsList(ignoreUrls),
-    propagateTraceHeaderCorsUrls: tryRegExpsList(propagateTraceHeaderCorsUrls),
+    propagateTraceHeaderCorsUrls: tryRegExpsList(
+      propagateTraceHeaderCorsUrls,
+    ) || [/.*/],
   });
 }

@@ -8,9 +8,12 @@ export default {
   input: 'src/index.ts',
   output: [
     {
+      file: pkg.browser,
+      format: 'iife',
+    },
+    {
       file: pkg.main,
-      format: 'umd',
-      name: 'sumoLogicOpenTelemetryTracing',
+      format: 'cjs',
     },
   ],
   plugins: [

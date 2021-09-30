@@ -24,7 +24,7 @@ const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 const cloudfront = new AWS.CloudFront({ apiVersion: '2020-05-31' });
 
 const main = async () => {
-  const file = await fs.readFile('./dist/index.js');
+  const file = await fs.readFile('./dist/browser.js');
 
   for (const filename of filenames) {
     console.log(`Upload ${filename}`);

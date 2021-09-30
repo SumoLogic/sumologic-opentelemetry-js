@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>Load async test</title>
+
+<script>
+  (function (w, s, d, r, e, n) {
+    (w[s] = w[s] || {
+      readyListeners: [],
+      onReady: function (e) {
+        w[s].readyListeners.push(e);
+      },
+    }),
+      ((e = d.createElement('script')).async = 1),
+      (e.src = r),
+      (n = d.getElementsByTagName('script')[0]).parentNode.insertBefore(e, n);
+  })(window, 'sumoLogicOpenTelemetryRum', document, 'rum.js');
+  window.sumoLogicOpenTelemetryRum.onReady(function () {
+    window.sumoLogicOpenTelemetryRum.initialize({
+      collectionSourceUrl: 'http://localhost:5001/traces',
+      serviceName: 'load-sync-test-service-name',
+      applicationName: 'load-sync-application-name',
+      defaultAttributes: {
+        'loadSync.default.attr': 1,
+      },
+    });
+  });
+</script>
+
+<img src="logo.png" />
