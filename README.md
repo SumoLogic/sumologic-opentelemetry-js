@@ -29,13 +29,23 @@ You can load the script asynchronously using the script below but some functiona
 
 ```html
 <script>
-  (function (w,s,d,r,e,n) {w[s]=w[s]||{readyListeners:[],onReady:function(e){w[s].readyListeners.push(e)}},(e=d.createElement("script")).async=1,e.src=r,(n=d.getElementsByTagName("script")[0]).parentNode.insertBefore(e,n)})(window, 'sumoLogicOpenTelemetryRum', document, "script_src");
-  window.sumoLogicOpenTelemetryRum.onReady(function() {
+  (function (w, s, d, r, e, n) {
+    (w[s] = w[s] || {
+      readyListeners: [],
+      onReady: function (e) {
+        w[s].readyListeners.push(e);
+      },
+    }),
+      ((e = d.createElement('script')).async = 1),
+      (e.src = r),
+      (n = d.getElementsByTagName('script')[0]).parentNode.insertBefore(e, n);
+  })(window, 'sumoLogicOpenTelemetryRum', document, 'script_src');
+  window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
       serviceName: 'name_of_your_web_application',
     });
-  })
+  });
 </script>
 ```
 
@@ -108,9 +118,12 @@ Example:
 const span = sumoLogicOpenTelemetryRum.tracer.startSpan('fetchUserData', {
   attributes: { organization: 'client-a' },
 });
-sumoLogicOpenTelemetryRum.api.context.with(api.setSpan(api.context.active(), span), () => {
-  // long running operation
-});
+sumoLogicOpenTelemetryRum.api.context.with(
+  api.setSpan(api.context.active(), span),
+  () => {
+    // long running operation
+  },
+);
 ```
 
 ## Disable instrumentation

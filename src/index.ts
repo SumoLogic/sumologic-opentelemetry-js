@@ -126,8 +126,8 @@ export const initialize = ({
 
   const registerInstrumentations = () => {
     disableInstrumentations();
-    disableOpenTelemetryInstrumentations = registerOpenTelemetryInstrumentations(
-      {
+    disableOpenTelemetryInstrumentations =
+      registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
           new DocumentLoadInstrumentation(),
@@ -141,8 +141,7 @@ export const initialize = ({
             ignoreUrls,
           }),
         ],
-      },
-    );
+      });
   };
 
   const tracer = provider.getTracer('@sumologic/opentelemetry-rum');
