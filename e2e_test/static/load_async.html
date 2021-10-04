@@ -17,13 +17,15 @@
   window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'http://localhost:5001/traces',
-      serviceName: 'load-sync-test-service-name',
-      applicationName: 'load-sync-application-name',
+      serviceName: 'load-async-test-service-name',
+      applicationName: 'load-async-test-application-name',
       defaultAttributes: {
-        'loadSync.default.attr': 1,
+        'loadAsync.default.attr': 1,
       },
     });
   });
 </script>
 
+<h1>Hello</h1>
 <img src="logo.png" />
+<img src="logo-delay.png" />
