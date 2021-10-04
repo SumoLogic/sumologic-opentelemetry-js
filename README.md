@@ -118,7 +118,7 @@ window.sumoLogicOpenTelemetryRum &&
     serviceName: 'name_of_your_web_service',
     // propagate trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
     propagateTraceHeaderCorsUrls: [
-      /^https:\/\/api.sumologic.com\/.*/,
+      /^https:\/\/api\.sumologic.com\/.*/,
       /^http:\/\/localhost:3000\/api\/.*/,
     ],
   });
