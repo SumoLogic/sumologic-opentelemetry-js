@@ -2,24 +2,23 @@
 
 The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation for JavaScript library enables tracing in the browser.
 
-Note: This feature is in Beta. To participate contact your Sumo account executive or email us at tracing-eap@sumologic.com.
-
 ## Installation
 
 The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on your website:
 
 ```html
-<script src="script_src" type="text/javascript"></script>
+<script
+  src="https://rum.sumologic.com/sumologic-rum.js"
+  type="text/javascript"
+></script>
 <script>
   window.sumoLogicOpenTelemetryRum &&
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
-      serviceName: 'name_of_your_web_application',
+      serviceName: 'name_of_your_web_service',
     });
 </script>
 ```
-
-Contact [SumoLogic](https://www.sumologic.com/) and ask for the `script_src` valid for your account.
 
 See [functionalities](#Functionalities) for informations about the script size and [configuration](#Configuration) for all supported options.
 
@@ -39,11 +38,16 @@ You can load the script asynchronously using the script below but some functiona
       ((e = d.createElement('script')).async = 1),
       (e.src = r),
       (n = d.getElementsByTagName('script')[0]).parentNode.insertBefore(e, n);
-  })(window, 'sumoLogicOpenTelemetryRum', document, 'script_src');
+  })(
+    window,
+    'sumoLogicOpenTelemetryRum',
+    document,
+    'https://rum.sumologic.com/sumologic-rum.js',
+  );
   window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
-      serviceName: 'name_of_your_web_application',
+      serviceName: 'name_of_your_web_service',
     });
   });
 </script>
@@ -80,14 +84,6 @@ This library contains built-in OpenTelemetry packages:
 
 See [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/package/@opentelemetry/instrumentation-xml-http-request), [@opentelemetry/instrumentation-document-load](https://www.npmjs.com/package/@opentelemetry/instrumentation-document-load) and [@opentelemetry/instrumentation-user-interaction](https://www.npmjs.com/package/@opentelemetry/instrumentation-user-interaction) for more details about auto-instrumented functionalities.
 
-To connect your traces with backend operations, make sure you support [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers.
-
-By default, trace context propagation, allowing creation of end to and front end to backend traces for cross-origin requests is not enabled because of browser CORS security restrictions. To propagate tracing context to create front-end to back-end traces, set domain(s) to propagate W3C tracing context to in the `propagateTraceHeaderCorsUrls` configuration option.
-You must configure your server to return accept and return following CORS headers in its response:
-`Access-Control-Allow-Headers: traceparent, tracestate`.
-Sumo Logic cannot perform any validation correct configuration of services of other origins, so, please be careful when configuring this.
-You should always try enabling CORS in a test environment before setting it up in production.
-
 ## Configuration
 
 Both `script` tag and manual installation can be configured with following parameters:
@@ -104,6 +100,29 @@ Both `script` tag and manual installation can be configured with following param
 | bufferTimeout                | `number`             | `2000`ms    | Maximum time in milliseconds for spans waiting to be send                                                   |
 | ignoreUrls                   | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
 | propagateTraceHeaderCorsUrls | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
+
+## Trace context propagation
+
+By default, trace context propagation, allowing creation of end to and front end to backend traces for cross-origin requests is not enabled because of browser CORS security restrictions.
+To propagate tracing context to create front-end to back-end traces, set domain(s) to propagate W3C tracing context to in the `propagateTraceHeaderCorsUrls` configuration option.
+You must configure your server to return accept and return following CORS headers in its response:
+`Access-Control-Allow-Headers: traceparent, tracestate`.
+Read [W3C Trace Context](https://www.w3.org/TR/trace-context/) for more details.
+Sumo Logic cannot perform any validation correct configuration of services of other origins, so, please be careful when configuring this.
+You should always try enabling CORS in a test environment before setting it up in production.
+
+```javascript
+window.sumoLogicOpenTelemetryRum &&
+  window.sumoLogicOpenTelemetryRum.initialize({
+    collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
+    serviceName: 'name_of_your_web_service',
+    // propagate trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
+    propagateTraceHeaderCorsUrls: [
+      /^https:\/\/api.sumologic.com\/.*/,
+      /^http:\/\/localhost:3000\/api\/.*/,
+    ],
+  });
+```
 
 ## Manual instrumentation
 
