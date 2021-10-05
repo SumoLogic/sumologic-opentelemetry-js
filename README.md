@@ -16,6 +16,12 @@ The easiest way to start collecting traces from your website is to put the code 
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
       serviceName: 'name_of_your_web_service',
+
+      // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
+      propagateTraceHeaderCorsUrls: [
+        /^https:\/\/api\.sumologic.com\/.*/,
+        /^http:\/\/localhost:3000\/api\/.*/,
+      ],
     });
 </script>
 ```
@@ -48,6 +54,12 @@ You can load the script asynchronously using the script below but some functiona
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
       serviceName: 'name_of_your_web_service',
+
+      // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
+      propagateTraceHeaderCorsUrls: [
+        /^https:\/\/api\.sumologic.com\/.*/,
+        /^http:\/\/localhost:3000\/api\/.*/,
+      ],
     });
   });
 </script>
@@ -67,6 +79,12 @@ import { initialize } from '@sumologic/opentelemetry-rum';
 initialize({
   collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
   serviceName: 'name_of_your_web_service',
+
+  // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
+  propagateTraceHeaderCorsUrls: [
+    /^https:\/\/api\.sumologic.com\/.*/,
+    /^http:\/\/localhost:3000\/api\/.*/,
+  ],
 });
 ```
 
@@ -110,19 +128,6 @@ You must configure your server to return accept and return following CORS header
 Read [W3C Trace Context](https://www.w3.org/TR/trace-context/) for more details.
 Sumo Logic cannot perform any validation correct configuration of services of other origins, so, please be careful when configuring this.
 You should always try enabling CORS in a test environment before setting it up in production.
-
-```javascript
-window.sumoLogicOpenTelemetryRum &&
-  window.sumoLogicOpenTelemetryRum.initialize({
-    collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
-    serviceName: 'name_of_your_web_service',
-    // propagate trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
-    propagateTraceHeaderCorsUrls: [
-      /^https:\/\/api\.sumologic.com\/.*/,
-      /^http:\/\/localhost:3000\/api\/.*/,
-    ],
-  });
-```
 
 ## Manual instrumentation
 
