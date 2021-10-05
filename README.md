@@ -16,11 +16,8 @@ The easiest way to start collecting traces from your website is to put the code 
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
       serviceName: 'name_of_your_web_service',
-
-      // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
       propagateTraceHeaderCorsUrls: [
-        /^https:\/\/api\.sumologic.com\/.*/,
-        /^http:\/\/localhost:3000\/api\/.*/,
+        'list_of_domains_to_receive_trace_context',
       ],
     });
 </script>
@@ -54,11 +51,8 @@ You can load the script asynchronously using the script below but some functiona
     window.sumoLogicOpenTelemetryRum.initialize({
       collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
       serviceName: 'name_of_your_web_service',
-
-      // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
       propagateTraceHeaderCorsUrls: [
-        /^https:\/\/api\.sumologic.com\/.*/,
-        /^http:\/\/localhost:3000\/api\/.*/,
+        'list_of_domains_to_receive_trace_context',
       ],
     });
   });
@@ -79,12 +73,7 @@ import { initialize } from '@sumologic/opentelemetry-rum';
 initialize({
   collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
   serviceName: 'name_of_your_web_service',
-
-  // propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
-  propagateTraceHeaderCorsUrls: [
-    /^https:\/\/api\.sumologic.com\/.*/,
-    /^http:\/\/localhost:3000\/api\/.*/,
-  ],
+  propagateTraceHeaderCorsUrls: ['list_of_domains_to_receive_trace_context'],
 });
 ```
 
@@ -122,12 +111,22 @@ Both `script` tag and manual installation can be configured with following param
 ## Trace context propagation
 
 By default, trace context propagation, allowing creation of end to and front end to backend traces for cross-origin requests is not enabled because of browser CORS security restrictions.
-To propagate tracing context to create front-end to back-end traces, set domain(s) to propagate W3C tracing context to in the `propagateTraceHeaderCorsUrls` configuration option.
+To propagate tracing context to create front-end to back-end traces, set exact URLs or URL patterns in the `propagateTraceHeaderCorsUrls` configuration option.
 You must configure your server to return accept and return following CORS headers in its response:
 `Access-Control-Allow-Headers: traceparent, tracestate`.
 Read [W3C Trace Context](https://www.w3.org/TR/trace-context/) for more details.
 Sumo Logic cannot perform any validation correct configuration of services of other origins, so, please be careful when configuring this.
 You should always try enabling CORS in a test environment before setting it up in production.
+
+For example:
+
+```javascript
+// propagates trace context in requests made to https://api.sumologic.com or http://localhost:3000/api URLs
+propagateTraceHeaderCorsUrls: [
+  /^https:\/\/api\.sumologic.com\/.*/,
+  /^http:\/\/localhost:3000\/api\/.*/,
+],
+```
 
 ## Manual instrumentation
 
