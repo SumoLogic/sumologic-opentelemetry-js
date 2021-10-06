@@ -49,3 +49,10 @@
 ## 1.4.4
 
 - fixed doubled instrumentation-document-load traces when the script is loading asynchronously
+
+## 2.0.0
+
+- renamed package to `@sumologic/opentelemetry-rum`
+- renamed global variable to `sumoLogicOpenTelemetryRum`
+- changed the way script can be configured
+- updated OT-JS to 0.24.0
