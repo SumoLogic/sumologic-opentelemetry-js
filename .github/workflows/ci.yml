@@ -24,4 +24,6 @@ jobs:
       - run: npm test
       - uses: actions/upload-artifact@v2
         with:
-          path: dist/index.js
+          path: |
+            dist/browser.js
+            dist/index.js
