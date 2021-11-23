@@ -1,21 +1,30 @@
 import {
-  HttpTraceContextPropagator,
+  W3CTraceContextPropagator,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/core';
-import { BatchSpanProcessor, Tracer } from '@opentelemetry/tracing';
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/sdk-trace-base';
+import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
-import { ZoneContextManager } from '@opentelemetry/context-zone';
+import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
-import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
-import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
-import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation/src';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
+import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
-import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
+import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { SumoLogicSpanProcessor } from './sumologic-span-processor';
+import { LongTaskInstrumentation } from '@opentelemetry/instrumentation-long-task';
+import {
+  BUFFER_MAX_SPANS,
+  BUFFER_TIMEOUT,
+  INSTRUMENTED_EVENT_NAMES,
+  UNKNOWN_SERVICE_NAME,
+} from './constants';
+import { getUserInteractionSpanName } from './utils';
 
 type ReadyListener = () => void;
 
@@ -32,10 +41,6 @@ declare global {
     };
   }
 }
-
-const UNKNOWN_SERVICE_NAME = 'unknown';
-const BUFFER_MAX_SPANS = 100;
-const BUFFER_TIMEOUT = 2_000;
 
 interface InitializeOptions {
   collectionSourceUrl: string;
@@ -74,25 +79,22 @@ export const initialize = ({
     );
   }
 
+  const resource = new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]:
+      serviceName ?? UNKNOWN_SERVICE_NAME,
+  });
+
   const provider = new WebTracerProvider({
-    resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]:
-        serviceName ?? UNKNOWN_SERVICE_NAME,
-    }),
+    resource,
     sampler: new TraceIdRatioBasedSampler(samplingProbability),
   });
 
   provider.register({
-    contextManager: new ZoneContextManager(),
-    propagator: new HttpTraceContextPropagator(),
+    contextManager: new SumoLogicContextManager(),
+    propagator: new W3CTraceContextPropagator(),
   });
 
-  const headers: CollectorExporterConfigBase['headers'] = {};
-  if (authorizationToken) {
-    headers.Authorization = authorizationToken;
-  }
-
-  const attributes: CollectorExporterConfigBase['attributes'] = {
+  const attributes: OTLPExporterConfigBase['attributes'] = {
     ...defaultAttributes,
 
     // This is a temporary solution not covered by the specification.
@@ -103,15 +105,17 @@ export const initialize = ({
     attributes.application = applicationName;
   }
 
-  const collectorExporter = new CollectorTraceExporter({
+  const collectorExporter = new OTLPTraceExporter({
     url: collectionSourceUrl,
     attributes,
-    headers,
+    headers: authorizationToken
+      ? { Authorization: authorizationToken }
+      : undefined,
   });
   const exporter = new ExportTimestampEnrichmentExporter(collectorExporter);
 
   provider.addSpanProcessor(
-    new BatchSpanProcessor(exporter, {
+    new SumoLogicSpanProcessor(exporter, {
       maxQueueSize: bufferMaxSpans,
       scheduledDelayMillis: bufferTimeout,
     }),
@@ -120,8 +124,10 @@ export const initialize = ({
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
-    disableOpenTelemetryInstrumentations?.();
-    disableOpenTelemetryInstrumentations = undefined;
+    if (disableOpenTelemetryInstrumentations) {
+      disableOpenTelemetryInstrumentations();
+      disableOpenTelemetryInstrumentations = undefined;
+    }
   };
 
   const registerInstrumentations = () => {
@@ -130,13 +136,28 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          new DocumentLoadInstrumentation(),
-          new UserInteractionInstrumentation(),
+          new LongTaskInstrumentation({
+            enabled: false,
+          }),
+          new DocumentLoadInstrumentation({ enabled: false }),
+          new UserInteractionInstrumentation({
+            enabled: false,
+            eventNames: INSTRUMENTED_EVENT_NAMES,
+            shouldPreventSpanCreation: (eventType, element, span) => {
+              const newName = getUserInteractionSpanName(eventType, element);
+              if (newName) {
+                span.updateName(newName);
+              }
+              return false;
+            },
+          }),
           new XMLHttpRequestInstrumentation({
+            enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
           }),
           new FetchInstrumentation({
+            enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
