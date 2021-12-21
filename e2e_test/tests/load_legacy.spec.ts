@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { Server } from 'http';
 import axios from 'axios';
 import path from 'path';
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import { startServer } from '../utils/server';
 import { deepEqualOtelJson } from '../utils/deepEqualOtelJson';
 

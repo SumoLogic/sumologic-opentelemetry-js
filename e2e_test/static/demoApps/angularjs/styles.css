@@ -1,0 +1,20 @@
+.active {
+  color: red;
+  font-weight: bold;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: fit-content(25%) auto;
+  grid-gap: 8px 20px;
+  margin: 0;
+  word-break: break-word;
+}
+
+dd {
+  margin: 0;
+}
+
+ng-container {
+  display: contents;
+}
