@@ -7,9 +7,9 @@ export const startServer = ({ port }: { port: number }) => {
 
   app.use(express.json());
 
-  app.get('/logo-delay.png', (req, res) => {
+  app.get('/loadScript/logo-delay.png', (req, res) => {
     setTimeout(() => {
-      res.sendFile(path.join(__dirname, '../static/logo.png'));
+      res.sendFile(path.join(__dirname, '../static/loadScript/logo.png'));
     }, 1000);
   });
 
@@ -22,22 +22,43 @@ export const startServer = ({ port }: { port: number }) => {
     }),
   );
 
-  app.get('/rum.js', (req, res) => {
+  app.get('/loadScript/rum.js', (req, res) => {
     res.sendFile(path.join(__dirname, '../../dist/browser.js'));
   });
 
-  let resolveTraces: (value: any) => void;
-  let tracesPromise = new Promise<any>((resolve) => {
-    resolveTraces = resolve;
+  app.get('/demoApps/*/rum.js', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../dist/browser.js'));
+  });
+
+  let postCounter = 0;
+  let getCounter = 0;
+  let resolveTracesFirstBatch: (value: any) => void;
+  let resolveTracesSecondBatch: (value: any) => void;
+  let tracesFirstBatch = new Promise<any>((resolve) => {
+    resolveTracesFirstBatch = resolve;
+  });
+  let tracesSecondBatch = new Promise<any>((resolve) => {
+    resolveTracesSecondBatch = resolve;
   });
 
   app.post('/traces', (req, res) => {
+    ++postCounter;
+
+    let resolveFunctionToCall =
+      postCounter === 1 ? resolveTracesFirstBatch : resolveTracesSecondBatch;
+
+    resolveFunctionToCall(req.body);
+
     res.send('');
-    resolveTraces(req.body);
   });
 
   app.get('/traces', async (req, res) => {
-    res.send(await tracesPromise);
+    ++getCounter;
+
+    let promiseToResolve =
+      getCounter === 1 ? tracesFirstBatch : tracesSecondBatch;
+
+    res.send(await promiseToResolve);
   });
 
   return new Promise<Server>((resolve) => {

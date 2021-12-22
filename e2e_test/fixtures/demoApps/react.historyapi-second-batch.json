@@ -1,0 +1,366 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "routing.mechanism",
+            "value": {
+              "stringValue": "history.api"
+            }
+          },
+          {
+            "key": "sampling.probability",
+            "value": {
+              "intValue": 1
+            }
+          },
+          {
+            "key": "application",
+            "value": {
+              "stringValue": "react-application-name"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "react-service-name"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "webjs"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "0.24.0"
+            }
+          },
+          {
+            "key": "sumologic.telemetry.sdk.export_timestamp",
+            "value": {
+              "doubleValue": 1640167101493
+            }
+          }
+        ],
+        "droppedAttributesCount": 0
+      },
+      "instrumentationLibrarySpans": [
+        {
+          "spans": [
+            {
+              "traceId": "ecef0c48a0549b78019fdf82320df649",
+              "spanId": "b56a079e017d231c",
+              "name": "click",
+              "kind": 1,
+              "startTimeUnixNano": 1640167100491800000,
+              "endTimeUnixNano": 1640167100492000000,
+              "attributes": [
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "user-interaction"
+                  }
+                },
+                {
+                  "key": "event_type",
+                  "value": {
+                    "stringValue": "click"
+                  }
+                },
+                {
+                  "key": "target_element",
+                  "value": {
+                    "stringValue": "A"
+                  }
+                },
+                {
+                  "key": "target_xpath",
+                  "value": {
+                    "stringValue": "//html/body/div/div/div/ul/li[3]/a"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:5011/demoApps/react/"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            },
+            {
+              "traceId": "ce0fe47f770fd382783cea516449b4ab",
+              "spanId": "dda67bb92f6cd659",
+              "name": "click",
+              "kind": 1,
+              "startTimeUnixNano": 1640167100492300000,
+              "endTimeUnixNano": 1640167100492399900,
+              "attributes": [
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "user-interaction"
+                  }
+                },
+                {
+                  "key": "event_type",
+                  "value": {
+                    "stringValue": "click"
+                  }
+                },
+                {
+                  "key": "target_element",
+                  "value": {
+                    "stringValue": "A"
+                  }
+                },
+                {
+                  "key": "target_xpath",
+                  "value": {
+                    "stringValue": "//html/body/div/div/div/ul/li[3]/a"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:5011/demoApps/react/"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            },
+            {
+              "traceId": "77ead7ce0800d8df5f815fe547e571f7",
+              "spanId": "e9562c82c8eb5542",
+              "name": "Navigation: /demoApps/react/planet/3",
+              "kind": 1,
+              "startTimeUnixNano": 1640167100492600000,
+              "endTimeUnixNano": 1640167100497000000,
+              "attributes": [
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "user-interaction"
+                  }
+                },
+                {
+                  "key": "event_type",
+                  "value": {
+                    "stringValue": "click"
+                  }
+                },
+                {
+                  "key": "target_element",
+                  "value": {
+                    "stringValue": "A"
+                  }
+                },
+                {
+                  "key": "target_xpath",
+                  "value": {
+                    "stringValue": "//html/body/div/div/div/ul/li[3]/a"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:5011/demoApps/react/"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            }
+          ],
+          "instrumentationLibrary": {
+            "name": "@opentelemetry/instrumentation-user-interaction",
+            "version": "0.24.0"
+          }
+        },
+        {
+          "spans": [
+            {
+              "traceId": "47522c8cd5e28270e46bfd62524fd498",
+              "spanId": "27861c47a4ed7e07",
+              "name": "HTTP GET",
+              "kind": 3,
+              "startTimeUnixNano": 1640167100498000000,
+              "endTimeUnixNano": 1640167100658600000,
+              "attributes": [
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "fetch"
+                  }
+                },
+                {
+                  "key": "http.method",
+                  "value": {
+                    "stringValue": "GET"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "https://swapi.dev/api/planets/3"
+                  }
+                },
+                {
+                  "key": "http.status_code",
+                  "value": {
+                    "intValue": 200
+                  }
+                },
+                {
+                  "key": "http.status_text",
+                  "value": {
+                    "stringValue": ""
+                  }
+                },
+                {
+                  "key": "http.host",
+                  "value": {
+                    "stringValue": "swapi.dev"
+                  }
+                },
+                {
+                  "key": "http.scheme",
+                  "value": {
+                    "stringValue": "https"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                },
+                {
+                  "key": "http.response_content_length",
+                  "value": {
+                    "intValue": 0
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [
+                {
+                  "timeUnixNano": 1640167100498400000,
+                  "name": "fetchStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "domainLookupStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "domainLookupEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "connectStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "secureConnectionStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "connectEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "requestStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167099013500000,
+                  "name": "responseStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1640167100655800000,
+                  "name": "responseEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                }
+              ],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            }
+          ],
+          "instrumentationLibrary": {
+            "name": "@opentelemetry/instrumentation-fetch",
+            "version": "0.24.0"
+          }
+        }
+      ]
+    }
+  ]
+}
