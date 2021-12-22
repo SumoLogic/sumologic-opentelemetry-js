@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Angular.js demo</title>
+    <meta charset="UTF-8" />
+
+    <script src="rum.js" type="text/javascript"></script>
+    <script>
+      window.sumoLogicOpenTelemetryRum &&
+        window.sumoLogicOpenTelemetryRum.initialize({
+          collectionSourceUrl: 'http://localhost:5000/traces',
+          serviceName: 'angularjs-service-name',
+          applicationName: 'angularjs-application-name',
+          samplingProbability: 1,
+          defaultAttributes: {
+            'routing.mechanism': 'history.api',
+          },
+        });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"
+      integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.29/angular-ui-router.min.js"
+      integrity="sha512-pqaTGP67/KI6BZh2w8MfiBDyn4CtkDMiSZrqtiV7KAcCWwnncwvUM3UDCecIAJH6BDL8/py0N1ka3rMI5+7+rg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link href="./styles.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <div ng-app="planets">
+      <ui-view></ui-view>
+    </div>
+    <script src="./index.js"></script>
+    <script>
+      bootstrapApp({
+        useHistoryApi: true,
+      });
+    </script>
+  </body>
+</html>

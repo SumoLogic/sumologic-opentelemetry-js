@@ -2,6 +2,7 @@ import pkg from './package.json';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import resolve from '@rollup/plugin-node-resolve';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     {
       file: pkg.browser,
       format: 'iife',
+      sourcemap: true,
     },
     {
       file: pkg.main,
@@ -38,5 +40,6 @@ export default {
         comments: false,
       },
     }),
+    sourcemaps(),
   ],
 };
