@@ -7,12 +7,6 @@ export const startServer = ({ port }: { port: number }) => {
 
   app.use(express.json());
 
-  app.get('/loadScript/logo-delay.png', (req, res) => {
-    setTimeout(() => {
-      res.sendFile(path.join(__dirname, '../static/loadScript/logo.png'));
-    }, 1000);
-  });
-
   app.use(
     express.static(path.join(__dirname, '../static'), {
       maxAge: 0,
@@ -22,12 +16,8 @@ export const startServer = ({ port }: { port: number }) => {
     }),
   );
 
-  app.get('/loadScript/rum.js', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/browser.js'));
-  });
-
-  app.get('/demoApps/*/rum.js', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/browser.js'));
+  app.get('/*/rum.js', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../dist/browser.js'));
   });
 
   let postCounter = 0;

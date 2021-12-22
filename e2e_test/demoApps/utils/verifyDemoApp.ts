@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { deepEqualOtelJson } from './deepEqualOtelJson';
+import { deepEqualOtelJson } from './../../utils/deepEqualOtelJson';
 import { expect, Page } from '@playwright/test';
 import axios from 'axios';
 
@@ -10,14 +10,14 @@ const verifyData = async (
 ): Promise<void> => {
   if ('WRITE_FIXTURES' in process.env) {
     await fs.writeFile(
-      path.join(__dirname, `../fixtures/demoApps/${fixtureName}.json`),
+      path.join(__dirname, `../fixtures/${fixtureName}.json`),
       JSON.stringify(data, null, 2),
     );
   }
 
   const fixture = JSON.parse(
     await fs.readFile(
-      path.join(__dirname, `../fixtures/demoApps/${fixtureName}.json`),
+      path.join(__dirname, `../fixtures/${fixtureName}.json`),
       'utf-8',
     ),
   );
@@ -49,14 +49,14 @@ export const verifyDemoApp = async (
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      path: './e2e_test/fixtures/demoApps/planets.json',
+      path: './e2e_test/demoApps/fixtures/planets.json',
       headers: {
         'access-control-allow-origin': '*',
       },
     });
   });
 
-  await page.goto(`${HTTP_SERVER_URL}/demoApps/${urlPath}`);
+  await page.goto(`${HTTP_SERVER_URL}/${urlPath}`);
 
   const planetsTitle = page.locator('h1').first();
   await expect(planetsTitle).toHaveText('Planets');

@@ -1,12 +1,12 @@
 import { test } from '@playwright/test';
 import { Server } from 'http';
-import { startServer } from '../../utils/server';
-import { DemoAppTestConfig, verifyDemoApp } from '../../utils/verifyDemoApp';
+import { startServer } from '../server/server';
+import { DemoAppTestConfig, verifyDemoApp } from '../utils/verifyDemoApp';
 
 const testConfig: DemoAppTestConfig = {
-  fixtureName: 'react.historyapi',
-  urlPath: 'react/',
-  serverPort: 5011,
+  fixtureName: 'react.hash',
+  urlPath: 'react/index_hash.html',
+  serverPort: 5010,
 };
 
 let server: Server;
@@ -19,8 +19,6 @@ test.afterAll(async () => {
   await server.close();
 });
 
-test('test navigation in React, routing is based on History API', async ({
-  page,
-}) => {
+test('test navigation in React, routing is based on Hash', async ({ page }) => {
   await verifyDemoApp(page, testConfig);
 });

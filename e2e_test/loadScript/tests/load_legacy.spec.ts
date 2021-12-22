@@ -3,7 +3,7 @@ import { Server } from 'http';
 import axios from 'axios';
 import path from 'path';
 import fs from 'fs/promises';
-import { startServer } from '../../utils/server';
+import { startServer } from '../server/server';
 import { deepEqualOtelJson } from '../../utils/deepEqualOtelJson';
 
 let server: Server;
@@ -23,19 +23,19 @@ test('script should load using legacy way', async ({ page }) => {
   page.on('pageerror', (message) => {
     console.error(message);
   });
-  await page.goto('http://localhost:5002/loadScript/load_legacy.html');
+  await page.goto('http://localhost:5002/load_legacy.html');
   const result = await axios.get('http://localhost:5002/traces', {
     timeout: 5_000,
   });
   if ('WRITE_FIXTURES' in process.env) {
     await fs.writeFile(
-      path.join(__dirname, '../../fixtures/loadScript/load_legacy.json'),
+      path.join(__dirname, '../fixtures/load_legacy.json'),
       JSON.stringify(result.data, null, 2),
     );
   }
   const fixture = JSON.parse(
     await fs.readFile(
-      path.join(__dirname, '../../fixtures/loadScript/load_legacy.json'),
+      path.join(__dirname, '../fixtures/load_legacy.json'),
       'utf-8',
     ),
   );

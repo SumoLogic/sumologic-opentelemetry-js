@@ -1,7 +1,7 @@
 const { BrowserRouter, HashRouter, Switch, Routes, Route, Link } =
   ReactRouterDOM;
 
-const BASE_NAME = '/demoApps/react/';
+const BASE_NAME = '/react/';
 
 const fetchJson = async (url) => {
   const resp = await fetch(url);
