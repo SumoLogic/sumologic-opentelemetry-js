@@ -65,8 +65,8 @@ const PlanetsComponent = {
 const bootstrapApp = ({ useHistoryApi = true }) => {
   const router = window.VueRouter.createRouter({
     history: useHistoryApi
-      ? window.VueRouter.createWebHistory()
-      : window.VueRouter.createWebHashHistory(),
+      ? window.VueRouter.createWebHistory('/vuejs/')
+      : window.VueRouter.createWebHashHistory('/vuejs/'),
     routes: [
       { path: '/', name: 'home', component: PlanetsComponent },
       { path: '/planets/:id', name: 'planet', component: PlanetComponent },
