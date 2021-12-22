@@ -8,7 +8,7 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5000/traces',
+          collectionSourceUrl: 'http://localhost:5014/traces',
           serviceName: 'angularjs-service-name',
           applicationName: 'angularjs-application-name',
           samplingProbability: 1,
@@ -17,18 +17,8 @@
           },
         });
     </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"
-      integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.29/angular-ui-router.min.js"
-      integrity="sha512-pqaTGP67/KI6BZh2w8MfiBDyn4CtkDMiSZrqtiV7KAcCWwnncwvUM3UDCecIAJH6BDL8/py0N1ka3rMI5+7+rg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+    <script src="./dist/angular_1.8.2.js"></script>
+    <script src="./dist/angular-ui-router_1.0.29.js"></script>
     <link href="./styles.css" rel="stylesheet" type="text/css" />
   </head>
 
