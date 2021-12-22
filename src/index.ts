@@ -18,6 +18,8 @@ import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { SumoLogicSpanProcessor } from './sumologic-span-processor';
 import { LongTaskInstrumentation } from '@opentelemetry/instrumentation-long-task';
+import { SumoLogicLogsExporter } from './sumologic-logs-exporter';
+import { SumoLogicLogsInstrumentation } from './sumologic-logs-instrumentation';
 import {
   BUFFER_MAX_SPANS,
   BUFFER_TIMEOUT,
@@ -152,17 +154,31 @@ export const initialize = ({
     }),
   );
 
+  const logsExporter = new SumoLogicLogsExporter({
+    resource,
+    collectorUrl: `${collectionSourceUrl}/v1/logs`,
+    maxQueueSize: bufferMaxSpans,
+    scheduledDelayMillis: bufferTimeout,
+  });
+  const logsInstrumentation = new SumoLogicLogsInstrumentation({
+    exporter: logsExporter,
+  });
+
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
     if (disableOpenTelemetryInstrumentations) {
       disableOpenTelemetryInstrumentations();
+      logsInstrumentation.disable();
+      logsExporter.disable();
       disableOpenTelemetryInstrumentations = undefined;
     }
   };
 
   const registerInstrumentations = () => {
     disableInstrumentations();
+    logsExporter.enable();
+    logsInstrumentation.enable();
     disableOpenTelemetryInstrumentations =
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
@@ -210,6 +226,7 @@ export const initialize = ({
     disableInstrumentations,
     setDefaultAttribute,
     getCurrentSessionId,
+    recordError: logsExporter.recordCustomError,
   };
 
   if (useWindow) {
