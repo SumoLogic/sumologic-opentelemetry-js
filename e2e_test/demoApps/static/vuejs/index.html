@@ -7,7 +7,7 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5000/traces',
+          collectionSourceUrl: 'http://localhost:5012/traces',
           serviceName: 'vuejs-service-name',
           applicationName: 'vuejs-application-name',
           samplingProbability: 1,
@@ -16,8 +16,8 @@
           },
         });
     </script>
-    <script src="https://unpkg.com/vue@3"></script>
-    <script src="https://unpkg.com/vue-router@4"></script>
+    <script src="./dist/vue_3.2.26.js"></script>
+    <script src="./dist/vue-router_4.0.12.js"></script>
     <link href="./styles.css" rel="stylesheet" type="text/css" />
   </head>
 

@@ -1,6 +1,8 @@
 const { BrowserRouter, HashRouter, Switch, Routes, Route, Link } =
   ReactRouterDOM;
 
+const BASE_NAME = '/react/';
+
 const fetchJson = async (url) => {
   const resp = await fetch(url);
   return resp.json();
@@ -53,10 +55,11 @@ const PlanetsPage = () => {
 
 const App = ({ useHistoryApi }) => {
   const Router = useHistoryApi ? BrowserRouter : HashRouter;
+  const basename = useHistoryApi ? BASE_NAME : '';
 
   return (
     <div className="App">
-      <Router>
+      <Router basename={basename}>
         <Routes>
           <Route exact path="/" element={<PlanetsPage />}></Route>
           <Route

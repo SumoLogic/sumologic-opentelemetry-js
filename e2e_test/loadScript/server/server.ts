@@ -23,7 +23,7 @@ export const startServer = ({ port }: { port: number }) => {
   );
 
   app.get('/rum.js', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/browser.js'));
+    res.sendFile(path.join(__dirname, '../../../dist/browser.js'));
   });
 
   let resolveTraces: (value: any) => void;
@@ -32,8 +32,8 @@ export const startServer = ({ port }: { port: number }) => {
   });
 
   app.post('/traces', (req, res) => {
-    res.send('');
     resolveTraces(req.body);
+    res.send('');
   });
 
   app.get('/traces', async (req, res) => {

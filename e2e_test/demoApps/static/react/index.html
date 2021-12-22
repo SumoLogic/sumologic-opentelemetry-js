@@ -7,13 +7,14 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5000/traces',
+          collectionSourceUrl: 'http://localhost:5011/traces',
           serviceName: 'react-service-name',
           applicationName: 'react-application-name',
           samplingProbability: 1,
           defaultAttributes: {
-            'routing.mechanism': 'hash.based',
+            'routing.mechanism': 'history.api',
           },
+          bufferTimeout: 1_000,
         });
     </script>
     <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
@@ -30,7 +31,7 @@
     <script type="text/babel" src="./index.jsx"></script>
     <script type="text/babel">
       bootstrapApp({
-        useHistoryApi: false,
+        useHistoryApi: true,
       });
     </script>
   </body>

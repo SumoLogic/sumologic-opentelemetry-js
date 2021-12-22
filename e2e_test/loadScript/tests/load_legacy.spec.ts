@@ -3,8 +3,8 @@ import { Server } from 'http';
 import axios from 'axios';
 import path from 'path';
 import fs from 'fs/promises';
-import { startServer } from '../utils/server';
-import { deepEqualOtelJson } from '../utils/deepEqualOtelJson';
+import { startServer } from '../server/server';
+import { deepEqualOtelJson } from '../../utils/deepEqualOtelJson';
 
 let server: Server;
 
