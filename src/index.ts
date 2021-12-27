@@ -43,7 +43,7 @@ interface InitializeOptions {
   serviceName?: string;
   applicationName?: string;
   defaultAttributes?: api.SpanAttributes;
-  samplingProbability?: number;
+  samplingProbability?: number | string;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
@@ -79,7 +79,7 @@ export const initialize = ({
       [SemanticResourceAttributes.SERVICE_NAME]:
         serviceName ?? UNKNOWN_SERVICE_NAME,
     }),
-    sampler: new TraceIdRatioBasedSampler(samplingProbability),
+    sampler: new TraceIdRatioBasedSampler(tryNumber(samplingProbability)),
   });
 
   provider.register({
@@ -192,8 +192,12 @@ const tryList = (input: string | undefined): string[] | undefined => {
   return input.split(',').map((str) => str.trim());
 };
 
-const tryNumber = (input?: string): number | undefined =>
-  input != null && Number.isFinite(+input) ? +input : undefined;
+const tryNumber = (input?: string | number): number | undefined => {
+  if (typeof input === 'number') {
+    return input;
+  }
+  return input != null && Number.isFinite(+input) ? +input : undefined;
+};
 
 const tryRegExpsList = (input?: string): RegExp[] | undefined =>
   (tryJson(input) || tryList(input))?.map((str: string) => new RegExp(str));
