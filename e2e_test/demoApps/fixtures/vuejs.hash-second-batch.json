@@ -42,13 +42,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "0.24.0"
+              "stringValue": "1.0.1"
             }
           },
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640175333629
+              "doubleValue": 1640624287858
             }
           }
         ],
@@ -58,12 +58,12 @@
         {
           "spans": [
             {
-              "traceId": "427be053dc91f57411710fb39b3b161e",
-              "spanId": "d71ce7295e4c1517",
+              "traceId": "57d4e7341e2be814487f002ac0878f40",
+              "spanId": "e27d5e48763ef362",
               "name": "Navigation: /vuejs/index_hash.html#/planets/3",
               "kind": 1,
-              "startTimeUnixNano": 1640175331617200000,
-              "endTimeUnixNano": 1640175331623700000,
+              "startTimeUnixNano": 1640624285845300200,
+              "endTimeUnixNano": 1640624285845900000,
               "attributes": [
                 {
                   "key": "component",
@@ -98,7 +98,7 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
                   }
                 }
               ],
@@ -114,19 +114,19 @@
           ],
           "instrumentationLibrary": {
             "name": "@opentelemetry/instrumentation-user-interaction",
-            "version": "0.24.0"
+            "version": "0.27.0"
           }
         },
         {
           "spans": [
             {
-              "traceId": "427be053dc91f57411710fb39b3b161e",
-              "spanId": "895df009ea282048",
-              "parentSpanId": "d71ce7295e4c1517",
+              "traceId": "57d4e7341e2be814487f002ac0878f40",
+              "spanId": "88a780f573825034",
+              "parentSpanId": "e27d5e48763ef362",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": 1640175331622700000,
-              "endTimeUnixNano": 1640175331770800000,
+              "startTimeUnixNano": 1640624285851600100,
+              "endTimeUnixNano": 1640624286027200000,
               "attributes": [
                 {
                   "key": "component",
@@ -173,7 +173,7 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
                   }
                 },
                 {
@@ -186,55 +186,55 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640175331623200000,
+                  "timeUnixNano": 1640624285852100000,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175329415600000,
+                  "timeUnixNano": 1640624283629300200,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640175331767800000,
+                  "timeUnixNano": 1640624286024400100,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
@@ -250,7 +250,7 @@
           ],
           "instrumentationLibrary": {
             "name": "@opentelemetry/instrumentation-fetch",
-            "version": "0.24.0"
+            "version": "0.27.0"
           }
         }
       ]

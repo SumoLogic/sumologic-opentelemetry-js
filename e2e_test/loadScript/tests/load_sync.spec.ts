@@ -9,7 +9,7 @@ import { deepEqualOtelJson } from '../../utils/deepEqualOtelJson';
 let server: Server;
 
 test.beforeAll(async () => {
-  server = await startServer({ port: 5000 });
+  server = await startServer({ port: 5003 });
 });
 
 test.afterAll(async () => {
@@ -23,8 +23,8 @@ test('script should load synchronously', async ({ page }) => {
   page.on('pageerror', (message) => {
     console.error(message);
   });
-  await page.goto('http://localhost:5000/load_sync.html');
-  const result = await axios.get('http://localhost:5000/traces', {
+  await page.goto('http://localhost:5003/load_sync.html');
+  const result = await axios.get('http://localhost:5003/traces', {
     timeout: 5_000,
   });
   if ('WRITE_FIXTURES' in process.env) {
