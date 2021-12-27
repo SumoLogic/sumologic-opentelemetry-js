@@ -74,12 +74,14 @@ export const initialize = ({
     );
   }
 
+  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
+
   const provider = new WebTracerProvider({
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]:
         serviceName ?? UNKNOWN_SERVICE_NAME,
     }),
-    sampler: new TraceIdRatioBasedSampler(tryNumber(samplingProbability)),
+    sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
   provider.register({
@@ -97,7 +99,7 @@ export const initialize = ({
 
     // This is a temporary solution not covered by the specification.
     // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
-    ['sampling.probability']: samplingProbability,
+    ['sampling.probability']: samplingProbabilityMaybeNumber,
   };
   if (applicationName) {
     attributes.application = applicationName;
