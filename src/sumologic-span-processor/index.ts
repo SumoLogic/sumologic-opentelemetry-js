@@ -1,4 +1,4 @@
-import { Context, trace, Span } from '@opentelemetry/api';
+import { Context } from '@opentelemetry/api';
 import {
   BatchSpanProcessor,
   Span as SdkTraceSpan,

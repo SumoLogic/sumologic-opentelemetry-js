@@ -1,6 +1,7 @@
 const ANY_STRING_KEYS = new Set(['traceId', 'spanId', 'parentSpanId']);
 const ANY_STRING_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.user_agent/value/stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.host/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.url/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/location.href/value/stringValue',
 ]);
