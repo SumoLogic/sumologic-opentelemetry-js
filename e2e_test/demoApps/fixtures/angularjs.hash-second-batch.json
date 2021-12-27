@@ -42,13 +42,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "0.24.0"
+              "stringValue": "1.0.1"
             }
           },
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640183626308
+              "doubleValue": 1640625826709
             }
           }
         ],
@@ -58,12 +58,12 @@
         {
           "spans": [
             {
-              "traceId": "a941305846229807a8ada18e1a78460b",
-              "spanId": "b953d2fd421b5cd0",
-              "name": "click",
+              "traceId": "8d8df165404057551502313ef9566e0b",
+              "spanId": "0a38eda422c60cdc",
+              "name": "click on \"Yavin XIV\"",
               "kind": 1,
-              "startTimeUnixNano": 1640183624306700000,
-              "endTimeUnixNano": 1640183624307100200,
+              "startTimeUnixNano": 1640625824704899800,
+              "endTimeUnixNano": 1640625824706000000,
               "attributes": [
                 {
                   "key": "component",
@@ -98,61 +98,7 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
-                  }
-                }
-              ],
-              "droppedAttributesCount": 0,
-              "events": [],
-              "droppedEventsCount": 0,
-              "status": {
-                "code": 0
-              },
-              "links": [],
-              "droppedLinksCount": 0
-            },
-            {
-              "traceId": "b1d76c3afe24360821ea7e1c12b6f37e",
-              "spanId": "64da65e528c269d4",
-              "name": "click",
-              "kind": 1,
-              "startTimeUnixNano": 1640183624305800000,
-              "endTimeUnixNano": 1640183624471800000,
-              "attributes": [
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "user-interaction"
-                  }
-                },
-                {
-                  "key": "event_type",
-                  "value": {
-                    "stringValue": "click"
-                  }
-                },
-                {
-                  "key": "target_element",
-                  "value": {
-                    "stringValue": "A"
-                  }
-                },
-                {
-                  "key": "target_xpath",
-                  "value": {
-                    "stringValue": "//html/body/div/ui-view/div/ul/li[3]/a"
-                  }
-                },
-                {
-                  "key": "http.url",
-                  "value": {
-                    "stringValue": "http://localhost:5015/angularjs/index_hash.html"
-                  }
-                },
-                {
-                  "key": "http.user_agent",
-                  "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
                   }
                 }
               ],
@@ -168,19 +114,19 @@
           ],
           "instrumentationLibrary": {
             "name": "@opentelemetry/instrumentation-user-interaction",
-            "version": "0.24.0"
+            "version": "0.27.0"
           }
         },
         {
           "spans": [
             {
-              "traceId": "b1d76c3afe24360821ea7e1c12b6f37e",
-              "spanId": "a5087fe9e2024222",
-              "parentSpanId": "64da65e528c269d4",
+              "traceId": "8d8df165404057551502313ef9566e0b",
+              "spanId": "ff4b5ff469685b4e",
+              "parentSpanId": "0a38eda422c60cdc",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": 1640183624313500200,
-              "endTimeUnixNano": 1640183624469100000,
+              "startTimeUnixNano": 1640625824711900000,
+              "endTimeUnixNano": 1640625824836800000,
               "attributes": [
                 {
                   "key": "http.method",
@@ -227,80 +173,80 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
                   }
                 }
               ],
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640183624313600000,
+                  "timeUnixNano": 1640625824711900000,
                   "name": "open",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183624313700000,
+                  "timeUnixNano": 1640625824712000000,
                   "name": "send",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183624314200000,
+                  "timeUnixNano": 1640625824712400000,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183622094300200,
+                  "timeUnixNano": 1640625822496800000,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183624463200000,
+                  "timeUnixNano": 1640625824832800000,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640183624469100000,
+                  "timeUnixNano": 1640625824836800000,
                   "name": "loaded",
                   "attributes": [],
                   "droppedAttributesCount": 0
@@ -316,7 +262,7 @@
           ],
           "instrumentationLibrary": {
             "name": "@opentelemetry/instrumentation-xml-http-request",
-            "version": "0.24.0"
+            "version": "0.27.0"
           }
         }
       ]

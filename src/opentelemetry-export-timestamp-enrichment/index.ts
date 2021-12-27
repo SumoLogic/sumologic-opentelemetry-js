@@ -1,5 +1,5 @@
 import { ExportResult } from '@opentelemetry/core';
-import { ReadableSpan, SpanExporter } from '@opentelemetry/tracing';
+import { ReadableSpan, SpanExporter } from '@opentelemetry/sdk-trace-base';
 
 const TELEMETRY_SDK_EXPORT_TIMESTAMP =
   'sumologic.telemetry.sdk.export_timestamp';

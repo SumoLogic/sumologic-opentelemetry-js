@@ -37,6 +37,17 @@ export const verifyDemoApp = async (
 ): Promise<void> => {
   const HTTP_SERVER_URL = `http://localhost:${serverPort}`;
 
+  page.addInitScript(() => {
+    const supportedEntryTypes = PerformanceObserver.supportedEntryTypes.filter(
+      (type) => type !== 'longtask',
+    );
+    Object.defineProperty(PerformanceObserver, 'supportedEntryTypes', {
+      configurable: true,
+      enumerable: true,
+      get: () => supportedEntryTypes,
+    });
+  });
+
   page
     .on('console', (message) => {
       console.log(message.text());
