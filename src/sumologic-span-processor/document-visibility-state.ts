@@ -65,9 +65,13 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
       timestampInNanoseconds >= startTimeInNanoseconds &&
       timestampInNanoseconds <= endTimeInNanoseconds
     ) {
-      span.addEvent(VISIBILITY_STATE_TO_EVENT_NAMES[state], timestampInHrTime);
+      span.events.push({
+        name: VISIBILITY_STATE_TO_EVENT_NAMES[state],
+        attributes: undefined,
+        time: timestampInHrTime,
+      });
       if (state === 'hidden' && span.attributes[ATTRIBUTE_NAME] === 'visible') {
-        span.setAttribute(ATTRIBUTE_NAME, state);
+        span.attributes[ATTRIBUTE_NAME] = state;
       }
     }
   }
