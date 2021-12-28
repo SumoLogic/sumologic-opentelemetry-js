@@ -12,7 +12,6 @@ import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-u
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
 import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation/src';
-import * as api from '@opentelemetry/api';
 import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/src/types';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
@@ -43,7 +42,7 @@ interface InitializeOptions {
   serviceName?: string;
   applicationName?: string;
   defaultAttributes?: api.SpanAttributes;
-  samplingProbability?: number;
+  samplingProbability?: number | string;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
@@ -55,6 +54,13 @@ const useWindow = typeof window === 'object' && window != null;
 if (useWindow) {
   window.sumoLogicOpenTelemetryRum = window.sumoLogicOpenTelemetryRum || {};
 }
+
+const tryNumber = (input?: string | number): number | undefined => {
+  if (typeof input === 'number') {
+    return input;
+  }
+  return input != null && Number.isFinite(+input) ? +input : undefined;
+};
 
 export const initialize = ({
   collectionSourceUrl,
@@ -74,12 +80,14 @@ export const initialize = ({
     );
   }
 
+  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
+
   const provider = new WebTracerProvider({
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]:
         serviceName ?? UNKNOWN_SERVICE_NAME,
     }),
-    sampler: new TraceIdRatioBasedSampler(samplingProbability),
+    sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
   provider.register({
@@ -97,7 +105,7 @@ export const initialize = ({
 
     // This is a temporary solution not covered by the specification.
     // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
-    ['sampling.probability']: samplingProbability,
+    ['sampling.probability']: samplingProbabilityMaybeNumber,
   };
   if (applicationName) {
     attributes.application = applicationName;
@@ -191,9 +199,6 @@ const tryList = (input: string | undefined): string[] | undefined => {
   }
   return input.split(',').map((str) => str.trim());
 };
-
-const tryNumber = (input?: string): number | undefined =>
-  input != null && Number.isFinite(+input) ? +input : undefined;
 
 const tryRegExpsList = (input?: string): RegExp[] | undefined =>
   (tryJson(input) || tryList(input))?.map((str: string) => new RegExp(str));
