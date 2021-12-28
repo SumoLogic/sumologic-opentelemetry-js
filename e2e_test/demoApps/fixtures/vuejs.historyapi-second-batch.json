@@ -48,7 +48,7 @@
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640625828446
+              "doubleValue": 1640698973237
             }
           }
         ],
@@ -58,13 +58,25 @@
         {
           "spans": [
             {
-              "traceId": "92db7fff16621c81285d3914e27f5f8b",
-              "spanId": "c6ebc6f4730282f9",
+              "traceId": "c01a3b84114185cfa08581353112fd2c",
+              "spanId": "a1a7c6d3be1b0e64",
               "name": "Navigation: /vuejs/planets/3",
               "kind": 1,
-              "startTimeUnixNano": 1640625826436500000,
-              "endTimeUnixNano": 1640625826437100000,
+              "startTimeUnixNano": 1640698971226200000,
+              "endTimeUnixNano": 1640698971226900200,
               "attributes": [
+                {
+                  "key": "document.visibilityState",
+                  "value": {
+                    "stringValue": "visible"
+                  }
+                },
+                {
+                  "key": "location.href",
+                  "value": {
+                    "stringValue": "http://localhost:60739/vuejs/"
+                  }
+                },
                 {
                   "key": "component",
                   "value": {
@@ -92,7 +104,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:5012/vuejs/"
+                    "stringValue": "http://localhost:60739/vuejs/"
                   }
                 },
                 {
@@ -120,14 +132,26 @@
         {
           "spans": [
             {
-              "traceId": "92db7fff16621c81285d3914e27f5f8b",
-              "spanId": "94abfc1d9df9d084",
-              "parentSpanId": "c6ebc6f4730282f9",
+              "traceId": "c01a3b84114185cfa08581353112fd2c",
+              "spanId": "7be69c5701c6f818",
+              "parentSpanId": "a1a7c6d3be1b0e64",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": 1640625826442000000,
-              "endTimeUnixNano": 1640625826568000000,
+              "startTimeUnixNano": 1640698971233100000,
+              "endTimeUnixNano": 1640698971357800200,
               "attributes": [
+                {
+                  "key": "document.visibilityState",
+                  "value": {
+                    "stringValue": "visible"
+                  }
+                },
+                {
+                  "key": "location.href",
+                  "value": {
+                    "stringValue": "http://localhost:60739/vuejs/planets/3"
+                  }
+                },
                 {
                   "key": "component",
                   "value": {
@@ -186,55 +210,55 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640625826442499800,
+                  "timeUnixNano": 1640698971233500200,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625824245900000,
+                  "timeUnixNano": 1640698969042600200,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640625826565699800,
+                  "timeUnixNano": 1640698971355000000,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0

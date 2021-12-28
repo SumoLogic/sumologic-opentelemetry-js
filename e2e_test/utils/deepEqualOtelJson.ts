@@ -1,6 +1,9 @@
 const ANY_STRING_KEYS = new Set(['traceId', 'spanId', 'parentSpanId']);
 const ANY_STRING_PATHS = new Set([
-  'resourceSpans.instrumentationLibrarySpans.spans.attributes.http.user_agent.value.stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.user_agent/value/stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.host/value/stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.url/value/stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/location.href/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -8,9 +11,11 @@ const ANY_NUMBER_KEYS = new Set([
   'endTimeUnixNano',
 ]);
 const ANY_NUMBER_PATHS = new Set([
-  'resourceSpans.resource.attributes.sumologic.telemetry.sdk.export_timestamp.value.doubleValue',
-  'resourceSpans.instrumentationLibrarySpans.spans.attributes.http.response_content_length.value.intValue',
+  'resourceSpans/resource/attributes/sumologic.telemetry.sdk.export_timestamp/value/doubleValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.response_content_length/value/intValue',
 ]);
+
+const anyStringMapping: Record<string, string> = {};
 
 export const deepEqualOtelJson = (
   resp1: any,
@@ -18,14 +23,12 @@ export const deepEqualOtelJson = (
   path: string[] = [],
 ) => {
   const lastPathElement = path[path.length - 1];
-  const pathAsString = path.join('.');
+  const pathAsString = path.join('/');
 
-  const fail = () => {
-    throw new Error(
-      `${JSON.stringify(resp1)} is not equal ${JSON.stringify(
-        resp2,
-      )} in ${pathAsString}`,
-    );
+  const fail = (
+    msg = `${JSON.stringify(resp1)} is not equal ${JSON.stringify(resp2)}`,
+  ) => {
+    throw new Error(`${msg} in ${pathAsString}`);
   };
 
   if (lastPathElement) {
@@ -40,6 +43,16 @@ export const deepEqualOtelJson = (
         !resp2
       ) {
         fail();
+      }
+      if (!(resp1 in anyStringMapping)) {
+        anyStringMapping[resp1] = resp2;
+      }
+      if (anyStringMapping[resp1] !== resp2) {
+        fail(
+          `${JSON.stringify(
+            anyStringMapping[resp1],
+          )} is not equal ${JSON.stringify(resp2)}`,
+        );
       }
       return;
     }
@@ -65,8 +78,15 @@ export const deepEqualOtelJson = (
       deepEqualOtelJson(element, resp2[index], path),
     );
   } else if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
+    const resp1Keys = Object.keys(resp1);
+    const resp2Keys = Object.keys(resp2);
+
+    if (resp1Keys.length !== resp2Keys.length) {
+      fail();
+    }
+
     const objectPath = resp1.key;
-    Object.keys(resp1).forEach((key) => {
+    resp1Keys.forEach((key) => {
       const value1 = resp1[key];
       const value2 = resp2[key];
 

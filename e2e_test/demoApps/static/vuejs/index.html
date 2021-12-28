@@ -7,7 +7,7 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5012/traces',
+          collectionSourceUrl: 'http://localhost:{{port}}/traces',
           serviceName: 'vuejs-service-name',
           applicationName: 'vuejs-application-name',
           samplingProbability: 1,
