@@ -56,3 +56,7 @@
 - renamed global variable to `sumoLogicOpenTelemetryRum`
 - changed the way script can be configured
 - updated OT-JS to 0.24.0
+
+## 2.0.1
+
+- `samplingProbability` property in the `initialize` function's options argument can be a string.
