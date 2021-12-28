@@ -48,7 +48,7 @@
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640699570963
+              "doubleValue": 1640700048867
             }
           }
         ],
@@ -58,75 +58,25 @@
         {
           "spans": [
             {
-              "traceId": "565dcb7129e730ff7ec3989186d29fd6",
-              "spanId": "5c00b340775bfd8a",
-              "name": "Navigation: /react/index_hash.html#/planet/3",
-              "kind": 1,
-              "startTimeUnixNano": 1640699569955800000,
-              "endTimeUnixNano": 1640699569960100000,
-              "attributes": [
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "user-interaction"
-                  }
-                },
-                {
-                  "key": "event_type",
-                  "value": {
-                    "stringValue": "click"
-                  }
-                },
-                {
-                  "key": "target_element",
-                  "value": {
-                    "stringValue": "A"
-                  }
-                },
-                {
-                  "key": "target_xpath",
-                  "value": {
-                    "stringValue": "//html/body/div/div/div/ul/li[3]/a"
-                  }
-                },
-                {
-                  "key": "http.url",
-                  "value": {
-                    "stringValue": "http://localhost:63518/react/index_hash.html"
-                  }
-                },
-                {
-                  "key": "http.user_agent",
-                  "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
-                  }
-                }
-              ],
-              "droppedAttributesCount": 0,
-              "events": [],
-              "droppedEventsCount": 0,
-              "status": {
-                "code": 0
-              },
-              "links": [],
-              "droppedLinksCount": 0
-            }
-          ],
-          "instrumentationLibrary": {
-            "name": "@opentelemetry/instrumentation-user-interaction",
-            "version": "0.27.0"
-          }
-        },
-        {
-          "spans": [
-            {
-              "traceId": "ed7022c4819c4e6c339a10a146accd71",
-              "spanId": "2aae4a9d75a85561",
+              "traceId": "e192610ebbe26294eef91f482f7145ba",
+              "spanId": "bb5a54e7079ad052",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": 1640699569961100000,
-              "endTimeUnixNano": 1640699570080000000,
+              "startTimeUnixNano": 1640700047438000000,
+              "endTimeUnixNano": 1640700047562400000,
               "attributes": [
+                {
+                  "key": "document.visibilityState",
+                  "value": {
+                    "stringValue": "visible"
+                  }
+                },
+                {
+                  "key": "location.href",
+                  "value": {
+                    "stringValue": "http://localhost:49569/react/index_hash.html#/planet/3"
+                  }
+                },
                 {
                   "key": "component",
                   "value": {
@@ -185,55 +135,55 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640699569961500200,
+                  "timeUnixNano": 1640700047438500000,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699568421600000,
+                  "timeUnixNano": 1640700045914000100,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640699570078500000,
+                  "timeUnixNano": 1640700047560900000,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
