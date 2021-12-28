@@ -8,6 +8,8 @@ interface WrappedMessagePort extends MessagePort {
 }
 
 export const patchMessageChannel = (contextManager: ContextManager) => {
+  if (!self.MessageChannel || !self.MessagePort) return;
+
   const messagePorts = new WeakMap<WrappedMessagePort, WrappedMessagePort>();
 
   wrapWithToString(
@@ -59,8 +61,7 @@ export const patchMessageChannel = (contextManager: ContextManager) => {
 };
 
 export const unpatchMessageChannel = () => {
-  unwrap(window, 'setTimeout');
-  unwrap(window, 'setInterval');
-  unwrap(window, 'setImmediate');
-  unwrap(window, 'requestAnimationFrame');
+  if (!self.MessageChannel || !self.MessagePort) return;
+  unwrap(window, 'MessageChannel');
+  unwrap(MessagePort.prototype, 'postMessage');
 };

@@ -68,7 +68,11 @@ export const patchTimers = (contextManager: ContextManager) => {
 export const unpatchTimers = () => {
   unwrap(window, 'setTimeout');
   unwrap(window, 'setInterval');
-  unwrap(window, 'setImmediate');
+  if (window.setImmediate != null) {
+    unwrap(window, 'setImmediate');
+  }
   unwrap(window, 'requestAnimationFrame');
-  unwrap(window, 'queueMicrotask');
+  if (window.queueMicrotask != null) {
+    unwrap(window, 'queueMicrotask');
+  }
 };

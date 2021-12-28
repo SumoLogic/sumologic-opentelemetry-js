@@ -4,7 +4,7 @@ import { ContextManager } from '@opentelemetry/api';
 
 const OnProperties = new Map<Object[], string[]>([
   [
-    [XMLHttpRequest.prototype],
+    [self.XMLHttpRequest?.prototype],
     [
       'loadstart',
       'progress',
@@ -17,17 +17,17 @@ const OnProperties = new Map<Object[], string[]>([
       'readystatechange',
     ],
   ],
-  [[MessagePort?.prototype], ['message', 'messageerror']],
-  [[WebSocket?.prototype], ['close', 'error', 'open', 'message']],
-  [[Worker?.prototype], ['error', 'message']],
+  [[self.MessagePort?.prototype], ['message', 'messageerror']],
+  [[self.WebSocket?.prototype], ['close', 'error', 'open', 'message']],
+  [[self.Worker?.prototype], ['error', 'message']],
   [
     [
-      IDBIndex.prototype,
-      IDBRequest.prototype,
-      IDBOpenDBRequest.prototype,
-      IDBDatabase.prototype,
-      IDBTransaction.prototype,
-      IDBCursor.prototype,
+      self.IDBIndex?.prototype,
+      self.IDBRequest?.prototype,
+      self.IDBOpenDBRequest?.prototype,
+      self.IDBDatabase?.prototype,
+      self.IDBTransaction?.prototype,
+      self.IDBCursor?.prototype,
     ],
     [
       'upgradeneeded',
@@ -52,34 +52,37 @@ export const patchEvents = (contextManager: ContextManager) => {
     property: string,
   ): void => {
     const descriptor = Object.getOwnPropertyDescriptor(object, property);
-    if (descriptor) {
-      wrapWithToString(
-        descriptor,
-        'get',
-        (original) =>
-          function (this: unknown) {
-            const listener = original!.call(this);
-            return wrappedOnListeners.get(listener) || listener;
-          },
-      );
-      wrapWithToString(
-        descriptor,
-        'set',
-        (original) =>
-          function (this: unknown, listener: OnListener | null) {
-            let wrappedListener = listener;
-            if (listener) {
-              wrappedListener = contextManager.bind(
-                contextManager.active(),
-                listener,
-              );
-              wrappedOnListeners.set(wrappedListener, listener);
-            }
-            original!.call(this, wrappedListener);
-          },
-      );
-      Object.defineProperty(object, property, descriptor);
+    if (!descriptor) {
+      const proto = Object.getPrototypeOf(object);
+      if (!proto) return;
+      return patchOnProperty(proto, property);
     }
+    wrapWithToString(
+      descriptor,
+      'get',
+      (original) =>
+        function (this: unknown) {
+          const listener = original!.call(this);
+          return wrappedOnListeners.get(listener) || listener;
+        },
+    );
+    wrapWithToString(
+      descriptor,
+      'set',
+      (original) =>
+        function (this: unknown, listener: OnListener | null) {
+          let wrappedListener = listener;
+          if (listener) {
+            wrappedListener = contextManager.bind(
+              contextManager.active(),
+              listener,
+            );
+            wrappedOnListeners.set(wrappedListener, listener);
+          }
+          original!.call(this, wrappedListener);
+        },
+    );
+    Object.defineProperty(object, property, descriptor);
   };
 
   const patchOnProperties = <O extends Object>(
@@ -147,7 +150,9 @@ export const patchEvents = (contextManager: ContextManager) => {
 
   OnProperties.forEach((properties, objects) => {
     objects.forEach((object) => {
-      patchOnProperties(object, properties);
+      if (object) {
+        patchOnProperties(object, properties);
+      }
     });
   });
 };
@@ -179,7 +184,9 @@ export const unpatchEvents = () => {
 
   OnProperties.forEach((properties, objects) => {
     objects.forEach((object) => {
-      unpatchOnProperties(object, properties);
+      if (object) {
+        unpatchOnProperties(object, properties);
+      }
     });
   });
 };

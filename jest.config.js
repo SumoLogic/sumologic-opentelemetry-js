@@ -5,7 +5,7 @@ module.exports = {
   rootDir: './',
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  testMatch: ['<rootDir>/src/**/index.spec.ts'],
+  testMatch: ['<rootDir>/src/**/*.spec.ts'],
   testPathIgnorePatterns: [
     '/node_modules/',
     'src/opentelemetry-js',
