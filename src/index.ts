@@ -23,7 +23,7 @@ import {
   INSTRUMENTED_EVENT_NAMES,
   UNKNOWN_SERVICE_NAME,
 } from './constants';
-import { getUserInteractionSpanName } from './utils';
+import { getUserInteractionSpanName, tryNumber } from './utils';
 
 type ReadyListener = () => void;
 
@@ -212,13 +212,6 @@ const tryList = (input: string | undefined): string[] | undefined => {
     return undefined;
   }
   return input.split(',').map((str) => str.trim());
-};
-
-const tryNumber = (input?: string | number): number | undefined => {
-  if (typeof input === 'number') {
-    return input;
-  }
-  return input != null && Number.isFinite(+input) ? +input : undefined;
 };
 
 const tryRegExpsList = (input?: string): RegExp[] | undefined =>
