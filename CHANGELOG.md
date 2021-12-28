@@ -60,4 +60,3 @@
 ## 2.0.1
 
 - `samplingProbability` property in the `initialize` function's options argument can be a string.
-The function converts it to a number.
