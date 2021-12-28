@@ -8,7 +8,7 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5015/traces',
+          collectionSourceUrl: 'http://localhost:{{port}}/traces',
           serviceName: 'angularjs-service-name',
           applicationName: 'angularjs-application-name',
           samplingProbability: 1,

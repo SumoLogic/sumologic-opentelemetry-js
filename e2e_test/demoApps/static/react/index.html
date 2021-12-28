@@ -7,7 +7,7 @@
     <script>
       window.sumoLogicOpenTelemetryRum &&
         window.sumoLogicOpenTelemetryRum.initialize({
-          collectionSourceUrl: 'http://localhost:5011/traces',
+          collectionSourceUrl: 'http://localhost:{{port}}/traces',
           serviceName: 'react-service-name',
           applicationName: 'react-application-name',
           samplingProbability: 1,
