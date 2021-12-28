@@ -2,7 +2,7 @@ import {
   W3CTraceContextPropagator,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/core';
-import { BatchSpanProcessor, Tracer } from '@opentelemetry/sdk-trace-base';
+import { Tracer } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -16,6 +16,7 @@ import * as api from '@opentelemetry/api';
 import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { SumoLogicSpanProcessor } from './sumologic-span-processor';
 import { LongTaskInstrumentation } from '@opentelemetry/instrumentation-long-task';
 import {
   BUFFER_MAX_SPANS,
@@ -116,7 +117,7 @@ export const initialize = ({
   const exporter = new ExportTimestampEnrichmentExporter(collectorExporter);
 
   provider.addSpanProcessor(
-    new BatchSpanProcessor(exporter, {
+    new SumoLogicSpanProcessor(exporter, {
       maxQueueSize: bufferMaxSpans,
       scheduledDelayMillis: bufferTimeout,
     }),
