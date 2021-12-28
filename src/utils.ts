@@ -20,3 +20,10 @@ export const getUserInteractionSpanName = (
     return `${eventType} on "${id}"`;
   }
 };
+
+export const tryNumber = (input?: string | number): number | undefined => {
+  if (typeof input === 'number') {
+    return input;
+  }
+  return input != null && Number.isFinite(+input) ? +input : undefined;
+};

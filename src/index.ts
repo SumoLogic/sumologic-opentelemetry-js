@@ -24,7 +24,7 @@ import {
   INSTRUMENTED_EVENT_NAMES,
   UNKNOWN_SERVICE_NAME,
 } from './constants';
-import { getUserInteractionSpanName } from './utils';
+import { getUserInteractionSpanName, tryNumber } from './utils';
 
 type ReadyListener = () => void;
 
@@ -48,7 +48,7 @@ interface InitializeOptions {
   serviceName?: string;
   applicationName?: string;
   defaultAttributes?: api.SpanAttributes;
-  samplingProbability?: number;
+  samplingProbability?: number | string;
   bufferMaxSpans?: number;
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
@@ -79,6 +79,8 @@ export const initialize = ({
     );
   }
 
+  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
+
   const resource = new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]:
       serviceName ?? UNKNOWN_SERVICE_NAME,
@@ -86,7 +88,7 @@ export const initialize = ({
 
   const provider = new WebTracerProvider({
     resource,
-    sampler: new TraceIdRatioBasedSampler(samplingProbability),
+    sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
   provider.register({
@@ -99,7 +101,7 @@ export const initialize = ({
 
     // This is a temporary solution not covered by the specification.
     // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
-    ['sampling.probability']: samplingProbability,
+    ['sampling.probability']: samplingProbabilityMaybeNumber,
   };
   if (applicationName) {
     attributes.application = applicationName;
@@ -212,9 +214,6 @@ const tryList = (input: string | undefined): string[] | undefined => {
   }
   return input.split(',').map((str) => str.trim());
 };
-
-const tryNumber = (input?: string): number | undefined =>
-  input != null && Number.isFinite(+input) ? +input : undefined;
 
 const tryRegExpsList = (input?: string): RegExp[] | undefined =>
   (tryJson(input) || tryList(input))?.map((str: string) => new RegExp(str));
