@@ -5,12 +5,27 @@ const { spawnSync } = require('child_process');
 const PACKAGE_JSON = './package.json';
 
 const preparePackage = async (fullDir) => {
+  // read package.json
   const packagePath = path.join(fullDir, PACKAGE_JSON);
   const package = JSON.parse(await fs.readFile(packagePath, 'utf-8'));
+
+  // delete types field
   delete package.types;
+
+  // 'main' needs to point to the existing file, not built one
   package.main = package.main.replace(/^build\//, '').replace('.js', '.ts');
+
+  // save modified package.json
   await fs.writeFile(packagePath, JSON.stringify(package, null, 4), 'utf-8');
 
+  // run necessary scripts
+  for (const scriptName of ['version', 'version:update']) {
+    if (package.scripts[scriptName]) {
+      spawnSync('npm', ['run', scriptName], { cwd: fullDir });
+    }
+  }
+
+  // modify files from 'browser' mapping so they use their browser versions
   for (const [inputPath, outputPath] of Object.entries(package.browser || {})) {
     const fullInputPath = path.join(fullDir, inputPath);
     try {
@@ -44,8 +59,8 @@ const main = async () => {
     recursive: true,
     force: true,
   });
-  spawnSync('npm', ['run', 'version'], { cwd: './src/opentelemetry-js-api' });
   await scanDir('./src/opentelemetry-js/packages');
+  await scanDir('./src/opentelemetry-js/experimental/packages');
   await scanDir('./src/opentelemetry-js-contrib/plugins/web');
   await preparePackage('./src/opentelemetry-js-api');
 };

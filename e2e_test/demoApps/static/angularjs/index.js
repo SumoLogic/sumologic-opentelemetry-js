@@ -15,7 +15,7 @@ const bootstrapApp = ({ useHistoryApi = true }) => {
       function ($stateProvider) {
         const helloState = {
           name: 'planets',
-          url: useHistoryApi ? '/' : '',
+          url: useHistoryApi ? '/angularjs/' : '',
           template: `
       <div>
         <h1>Planets</h1>
@@ -47,7 +47,7 @@ const bootstrapApp = ({ useHistoryApi = true }) => {
 
         const aboutState = {
           name: 'planet',
-          url: '/planet/:id',
+          url: '/angularjs/planet/:id',
           template: `
       <div>
         <a ng-click="goBack()" href="">back</a>
