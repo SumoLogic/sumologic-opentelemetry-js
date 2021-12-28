@@ -16,6 +16,19 @@ export const startServer = ({ basedir }: StartServerConfig) => {
   const app = express();
   let port: number;
 
+  app.use(function (req, res, next) {
+    let data = '';
+    req.setEncoding('utf8');
+    req.on('data', function (chunk) {
+      data += chunk;
+    });
+
+    req.on('end', function () {
+      req.body = data;
+      next();
+    });
+  });
+
   app.get('/logo.png', (req, res) => {
     res.sendFile(path.join(basedir, '../static/logo.png'));
   });
