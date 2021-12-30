@@ -19,11 +19,7 @@ jobs:
           node-version: 14.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: |
-          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          npm publish --access public
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm run build
       - run: npm i aws-sdk@^2.977.0
       - run: node scripts/publish-to-cdn.js
         env:
@@ -32,3 +28,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           RUM_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.RUM_CLOUDFRONT_DISTRIBUTION_ID }}
           RUM_S3_BUCKET: ${{ secrets.RUM_S3_BUCKET }}
+      # - run: |
+      #     npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+      #     npm publish --access public
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
