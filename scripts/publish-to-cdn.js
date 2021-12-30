@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const fs = require('fs/promises');
-const fetch = require('node-fetch');
+const axios = require('axios');
+
 const { version } = require('../package.json');
 
 const CHANGELOG_URL =
@@ -31,24 +32,20 @@ const cloudfront = new AWS.CloudFront({ apiVersion: '2020-05-31' });
 const postMessageToSlack = () => {
   const hashVersion = version.replace(/\./g, '');
 
-  return fetch(process.env.SLACK_WEBHOOK_TRACING_RELEASES, {
-    method: 'POST',
-    body: JSON.stringify({
-      blocks: [
-        `:tada: *The RUM script v.${version} has been released!* :tada:`,
-        `The following files have been uploaded to S3:\n${filenames
-          .map((file) => `- <${RUM_CDN_URL}/${file}|${file}>`)
-          .join('\n')}`,
-        `Check what has changed in the <${CHANGELOG_URL}#${hashVersion}|CHANGELOG>.`,
-      ].map((message) => ({
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: message,
-        },
-      })),
-    }),
-    credentials: 'omit',
+  return axios.post(process.env.SLACK_WEBHOOK_TRACING_RELEASES, {
+    blocks: [
+      `:tada: *The RUM script v.${version} has been released!* :tada:`,
+      `The following files have been uploaded to S3:\n${filenames
+        .map((file) => `- <${RUM_CDN_URL}/${file}|${file}>`)
+        .join('\n')}`,
+      `Check what has changed in the <${CHANGELOG_URL}#${hashVersion}|CHANGELOG>.`,
+    ].map((message) => ({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: message,
+      },
+    })),
   });
 };
 
