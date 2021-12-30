@@ -20,7 +20,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       # IT'S TEMPORARY !!!
-      #- run: |
+      - run: npm run build
       #    npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
       #    npm publish --access public
       #  env:
