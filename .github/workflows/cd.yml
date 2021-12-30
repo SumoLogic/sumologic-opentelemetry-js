@@ -19,12 +19,11 @@ jobs:
           node-version: 14.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      # IT'S TEMPORARY !!!
-      - run: npm run build
-      #    npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-      #    npm publish --access public
-      #  env:
-      #    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: |
+          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          npm publish --access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm i aws-sdk@^2.977.0
       - run: node scripts/publish-to-cdn.js
         env:
