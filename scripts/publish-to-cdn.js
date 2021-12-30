@@ -35,7 +35,7 @@ const postMessageToSlack = () => {
   return axios.post(process.env.SLACK_WEBHOOK_TRACING_RELEASES, {
     blocks: [
       `:tada: *The RUM script v.${version} has been released!* :tada:`,
-      `The following files have been uploaded to S3:\n${filenames
+      `The following files have been uploaded to AWS S3:\n${filenames
         .map((file) => `- <${RUM_CDN_URL}/${file}|${file}>`)
         .join('\n')}`,
       `Check what has changed in the <${CHANGELOG_URL}#${hashVersion}|CHANGELOG>.`,
