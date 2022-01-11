@@ -1,4 +1,4 @@
-import { Context, trace, Span, HrTime } from '@opentelemetry/api';
+import { Context, HrTime } from '@opentelemetry/api';
 import { hrTimeToNanoseconds } from '@opentelemetry/core';
 import {
   Span as SdkTraceSpan,
@@ -7,7 +7,6 @@ import {
 
 const INSTRUMENTATION_LONG_TASK = '@opentelemetry/instrumentation-long-task';
 const LONGTASK_PRECISION_NS = 1e7; // 10 milliseconds
-const MAX_DELAY_FOR_SPAN_ATTACHEMENT_NS = 1e9; // 1 second
 const MAX_SPANS_SIZE = 100;
 
 const spans: SdkTraceSpan[] = [];
@@ -33,17 +32,15 @@ const findBestSpanInTime = (
     }
   }
 
-  // if not we will attach it to the span that ends no longer than some timeout
+  // if not found, try span where the longtask started
   for (let i = spans.length - 1; i >= 0; i -= 1) {
     const span = spans[i];
     if (
       span.instrumentationLibrary.name !== INSTRUMENTATION_LONG_TASK &&
-      !span.parentSpanId &&
       hrTimeToNanoseconds(span.startTime) - LONGTASK_PRECISION_NS <=
         startTime &&
       (!span.ended ||
-        hrTimeToNanoseconds(span.endTime) + MAX_DELAY_FOR_SPAN_ATTACHEMENT_NS >=
-          startTime)
+        hrTimeToNanoseconds(span.endTime) + LONGTASK_PRECISION_NS >= startTime)
     ) {
       return span;
     }
