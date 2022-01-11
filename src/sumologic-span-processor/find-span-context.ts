@@ -54,15 +54,17 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   }
 };
 
-export const onEnd = (span: ReadableSpan): void => {
+export const onEnd = (span: ReadableSpan): boolean => {
   if (
     span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK &&
     !span.parentSpanId
   ) {
     const bestParentSpan = findBestSpanInTime(span.startTime, span.endTime);
-    if (bestParentSpan) {
-      (span as any).parentSpanId = bestParentSpan.spanContext().spanId;
-      span.spanContext().traceId = bestParentSpan.spanContext().traceId;
+    if (!bestParentSpan) {
+      return false;
     }
+    (span as any).parentSpanId = bestParentSpan.spanContext().spanId;
+    span.spanContext().traceId = bestParentSpan.spanContext().traceId;
   }
+  return true;
 };
