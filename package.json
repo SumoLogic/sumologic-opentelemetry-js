@@ -4,7 +4,7 @@
   "description": "Adds OpenTelemetry tracing auto-instrumentation in the browser. Collects spans on network events and sends them to Sumo Logic.",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist"
   ],
@@ -57,6 +57,6 @@
   },
   "peerDependencies": {
     "@opentelemetry/api": "1.0.3",
-    "@opentelemetry/tracing": "0.24.0"
+    "@opentelemetry/sdk-trace-base": "1.0.1"
   }
 }
