@@ -38,6 +38,10 @@ declare global {
       tracer: Tracer;
       registerInstrumentations: () => void;
       disableInstrumentations: () => void;
+      setDefaultAttribute: (
+        key: string,
+        value: api.SpanAttributeValue | undefined,
+      ) => void;
     };
   }
 }
@@ -106,6 +110,13 @@ export const initialize = ({
   if (applicationName) {
     attributes.application = applicationName;
   }
+
+  const setDefaultAttribute = (
+    key: string,
+    value: api.SpanAttributeValue | undefined,
+  ) => {
+    attributes[key] = value;
+  };
 
   const collectorExporter = new OTLPTraceExporter({
     url: collectionSourceUrl,
@@ -179,6 +190,7 @@ export const initialize = ({
     tracer,
     registerInstrumentations,
     disableInstrumentations,
+    setDefaultAttribute,
   };
 
   if (useWindow) {

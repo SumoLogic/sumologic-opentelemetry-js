@@ -159,6 +159,16 @@ sumoLogicOpenTelemetryRum.disableInstrumentations();
 sumoLogicOpenTelemetryRum.registerInstrumentations();
 ```
 
+## Public API
+
+All method are available under the `window.sumoLogicOpenTelemetryRum` object.
+
+### setDefaultAttribute(key, value)
+
+Extends the list of default attributes specified during initialization.
+
+Example: `window.sumoLogicOpenTelemetryRum.setDefaultAttribute('organization_id', orgId)`
+
 # License
 
 This project is released under the [Apache 2.0 License](./LICENSE).
