@@ -1,7 +1,6 @@
 import { unwrap } from 'shimmer';
-import { wrapWithToString } from './utils';
+import { setObjectContext, wrapWithToString } from './utils';
 import { Context, ContextManager } from '@opentelemetry/api';
-import { OBJECT_CONTEXT_PROPERTY } from './constants';
 
 interface WrappedMessagePort extends MessagePort {
   __ot_context: Context | null;
@@ -28,20 +27,6 @@ export const patchMessageChannel = (contextManager: ContextManager) => {
             this.port2 as WrappedMessagePort,
             this.port1 as WrappedMessagePort,
           );
-
-          Object.defineProperty(this.port1, OBJECT_CONTEXT_PROPERTY, {
-            value: null,
-            writable: true,
-            enumerable: false,
-            configurable: false,
-          });
-
-          Object.defineProperty(this.port2, OBJECT_CONTEXT_PROPERTY, {
-            value: null,
-            writable: true,
-            enumerable: false,
-            configurable: false,
-          });
         }
       },
   );
@@ -53,7 +38,7 @@ export const patchMessageChannel = (contextManager: ContextManager) => {
       function (this: WrappedMessagePort, ...args: any[]) {
         const targetPort = messagePorts.get(this);
         if (contextManager.active() && targetPort) {
-          targetPort[OBJECT_CONTEXT_PROPERTY] = contextManager.active();
+          setObjectContext(targetPort, contextManager.active());
         }
         return original.apply(this, args as any);
       },

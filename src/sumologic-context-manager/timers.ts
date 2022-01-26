@@ -3,6 +3,7 @@ import { wrapWithToString } from './utils';
 import { ContextManager } from '@opentelemetry/api';
 import { MAX_TIMEOUT } from './constants';
 
+// we don't want to attach jobs that run after a long timeout;
 const shouldBindCallbackForTimeout = (ms: number | undefined) =>
   typeof ms !== 'number' || ms <= MAX_TIMEOUT;
 

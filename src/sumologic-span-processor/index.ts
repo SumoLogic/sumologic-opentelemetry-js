@@ -23,11 +23,14 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   onEnd(span: ReadableSpan): void {
     documentVisibilityState.onEnd(span);
     dropSingleSpanTraces
-      .onEnd(span)
-      .then(() => {
-        if (!findSpanContext.onEnd(span)) return;
-        super.onEnd(span);
-      })
-      .catch(() => {});
+      .shouldSpanBeProcessed(span)
+      .then((shouldSpanBeProcessed) => {
+        if (
+          shouldSpanBeProcessed &&
+          findSpanContext.shouldSpanBeProcessed(span)
+        ) {
+          super.onEnd(span);
+        }
+      });
   }
 }

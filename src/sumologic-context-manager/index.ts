@@ -1,5 +1,4 @@
 import { Context, ContextManager, ROOT_CONTEXT } from '@opentelemetry/api';
-import { OBJECT_CONTEXT_PROPERTY } from './constants';
 import { patchEvents, unpatchEvents } from './events';
 import { patchMessageChannel, unpatchMessageChannel } from './message-channel';
 import {
@@ -8,9 +7,10 @@ import {
 } from './mutation-observer';
 import { patchPromise, unpatchPromise } from './promise';
 import { patchTimers, unpatchTimers } from './timers';
+import { getObjectContext } from './utils';
 
 const getActiveContextFromUnknown = (object: any): Context | undefined =>
-  (object && object[OBJECT_CONTEXT_PROPERTY]) || undefined;
+  object ? getObjectContext(object) : undefined;
 
 export class SumoLogicContextManager implements ContextManager {
   /**
@@ -34,7 +34,7 @@ export class SumoLogicContextManager implements ContextManager {
   ): T {
     const manager = this;
     const contextWrapper = function (this: unknown, ...args: unknown[]) {
-      return manager.with(getActiveContextFromUnknown(this) || context, () =>
+      return manager.with(getActiveContextFromUnknown(this) ?? context, () =>
         target.apply(this, args),
       );
     };
@@ -61,11 +61,7 @@ export class SumoLogicContextManager implements ContextManager {
    * @param target a function or event emitter. When target or one of its callbacks is called,
    *  the provided context will be used as the active context for the duration of the call.
    */
-  bind<T>(context: Context, target: T): T {
-    // if no specific context to propagate is given, we use the current one
-    if (context === undefined) {
-      context = this.active();
-    }
+  bind<T>(context: Context = this.active(), target: T): T {
     if (typeof target === 'function') {
       return this._bindFunction(context, target);
     }
@@ -121,9 +117,9 @@ export class SumoLogicContextManager implements ContextManager {
     ...args: A
   ): ReturnType<F> {
     const previousContext = this._currentContext;
-    this._currentContext = context || ROOT_CONTEXT;
+    this._currentContext = context ?? ROOT_CONTEXT;
     try {
-      return fn.call(thisArg, ...args);
+      return fn.apply(thisArg, args);
     } finally {
       this._currentContext = previousContext;
     }

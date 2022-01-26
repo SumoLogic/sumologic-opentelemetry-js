@@ -4,40 +4,39 @@ import { ContextManager } from '@opentelemetry/api';
 
 const OnProperties = new Map<Object[], string[]>([
   [
-    [self.XMLHttpRequest?.prototype],
+    [globalThis.XMLHttpRequest?.prototype],
     [
-      'loadstart',
-      'progress',
       'abort',
       'error',
       'load',
-      'progress',
-      'timeout',
       'loadend',
+      'loadstart',
+      'progress',
       'readystatechange',
+      'timeout',
     ],
   ],
-  [[self.MessagePort?.prototype], ['message', 'messageerror']],
-  [[self.WebSocket?.prototype], ['close', 'error', 'open', 'message']],
-  [[self.Worker?.prototype], ['error', 'message']],
+  [[globalThis.MessagePort?.prototype], ['message', 'messageerror']],
+  [[globalThis.WebSocket?.prototype], ['close', 'error', 'open', 'message']],
+  [[globalThis.Worker?.prototype], ['error', 'message']],
   [
     [
-      self.IDBIndex?.prototype,
-      self.IDBRequest?.prototype,
-      self.IDBOpenDBRequest?.prototype,
-      self.IDBDatabase?.prototype,
-      self.IDBTransaction?.prototype,
-      self.IDBCursor?.prototype,
+      globalThis.IDBIndex?.prototype,
+      globalThis.IDBRequest?.prototype,
+      globalThis.IDBOpenDBRequest?.prototype,
+      globalThis.IDBDatabase?.prototype,
+      globalThis.IDBTransaction?.prototype,
+      globalThis.IDBCursor?.prototype,
     ],
     [
-      'upgradeneeded',
-      'complete',
       'abort',
-      'success',
-      'error',
       'blocked',
-      'versionchange',
       'close',
+      'complete',
+      'error',
+      'success',
+      'upgradeneeded',
+      'versionchange',
     ],
   ],
 ]);
@@ -62,8 +61,8 @@ export const patchEvents = (contextManager: ContextManager) => {
       'get',
       (original) =>
         function (this: unknown) {
-          const listener = original!.call(this);
-          return wrappedOnListeners.get(listener) || listener;
+          const listener = original?.call(this);
+          return wrappedOnListeners.get(listener) ?? listener;
         },
     );
     wrapWithToString(
@@ -71,7 +70,7 @@ export const patchEvents = (contextManager: ContextManager) => {
       'set',
       (original) =>
         function (this: unknown, listener: OnListener | null) {
-          let wrappedListener = listener;
+          let wrappedListener: OnListener | null = null;
           if (listener) {
             wrappedListener = contextManager.bind(
               contextManager.active(),

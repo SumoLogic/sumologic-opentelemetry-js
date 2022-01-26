@@ -54,7 +54,7 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   }
 };
 
-export const onEnd = (span: ReadableSpan): boolean => {
+export const shouldSpanBeProcessed = (span: ReadableSpan): boolean => {
   if (
     span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK &&
     !span.parentSpanId
@@ -63,6 +63,7 @@ export const onEnd = (span: ReadableSpan): boolean => {
     if (!bestParentSpan) {
       return false;
     }
+    // span.parentSpanId is readonly so we need to cast to 'any'
     (span as any).parentSpanId = bestParentSpan.spanContext().spanId;
     span.spanContext().traceId = bestParentSpan.spanContext().traceId;
   }

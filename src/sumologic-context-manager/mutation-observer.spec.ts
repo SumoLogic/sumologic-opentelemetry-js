@@ -13,6 +13,10 @@ describe('MutationObserver', () => {
 
   afterEach(() => {
     contextManager.disable();
+
+    while (document.body.firstChild) {
+      document.body.removeChild(document.body.firstChild);
+    }
   });
 
   test('is wrapped', () => {
@@ -24,17 +28,15 @@ describe('MutationObserver', () => {
   });
 
   test('callback carries context', async () => {
-    const context = contextManager
-      .active()
-      .setValue(Symbol.for('test key'), '');
+    const context = contextManager.active().setValue(Symbol(), '');
     const callbackContext = await new Promise<api.Context>((resolve) => {
       contextManager.with(context, () => {
         const observer = new MutationObserver(() => {
           observer.disconnect();
           resolve(contextManager.active());
         });
-        observer.observe(document.body, { attributes: true });
-        document.body.setAttribute('a', '');
+        observer.observe(document.body, { childList: true });
+        document.body.appendChild(document.createElement('div'));
       });
     });
 

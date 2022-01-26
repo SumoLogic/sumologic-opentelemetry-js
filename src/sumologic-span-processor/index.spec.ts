@@ -10,14 +10,8 @@ import { SumoLogicSpanProcessor } from './index';
 delete window.location;
 window.location = new URL('https://www.unit-test-example.com');
 
-beforeAll(() => {
-  jest.useFakeTimers();
-  jest.spyOn(global, 'setTimeout');
-});
-
-afterAll(() => {
-  jest.useRealTimers();
-});
+jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
 
 const setDocumentVisibilityState = (value: string) => {
   Object.defineProperty(document, 'visibilityState', {
