@@ -21,19 +21,21 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   }
 };
 
-export const onEnd = (span: ReadableSpan): Promise<void> =>
+export const shouldSpanBeProcessed = (span: ReadableSpan): Promise<boolean> =>
   new Promise((resolve) => {
     // drop spans comming from user-interaction without children
     if (span.instrumentationLibrary.name === INSTRUMENTATION_USER_INTERACTION) {
       if (!SPANS_CHILDREN_AMOUNT.get(span)) {
         setTimeout(() => {
           if (SPANS_CHILDREN_AMOUNT.get(span)) {
-            resolve();
+            resolve(true);
+          } else {
+            resolve(false);
           }
         }, WAIT_FOR_CHILDREN_TIMEOUT);
         return;
       }
     }
 
-    resolve();
+    resolve(true);
   });

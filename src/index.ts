@@ -6,11 +6,11 @@ import { Tracer } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
-import { ZoneContextManager } from '@opentelemetry/context-zone';
+import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { ExportTimestampEnrichmentExporter } from './opentelemetry-export-timestamp-enrichment';
+import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
 import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
@@ -96,7 +96,7 @@ export const initialize = ({
   });
 
   provider.register({
-    contextManager: new ZoneContextManager(),
+    contextManager: new SumoLogicContextManager(),
     propagator: new W3CTraceContextPropagator(),
   });
 

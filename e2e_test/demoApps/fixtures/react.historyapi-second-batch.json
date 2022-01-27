@@ -48,7 +48,7 @@
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640700049284
+              "doubleValue": 1640870883649
             }
           }
         ],
@@ -58,12 +58,13 @@
         {
           "spans": [
             {
-              "traceId": "5abb940a47eca3a77db019dc4d11043e",
-              "spanId": "9613e757108c4ed8",
+              "traceId": "211789ecd9c4c32cb7cfa61f2636db51",
+              "spanId": "e1ed3fb0f49b438f",
+              "parentSpanId": "63678e2aec0ff22c",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": 1640700047769700000,
-              "endTimeUnixNano": 1640700047976100000,
+              "startTimeUnixNano": 1640870882136799700,
+              "endTimeUnixNano": 1640870882343199700,
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -74,7 +75,7 @@
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:49580/react/planet/3"
+                    "stringValue": "http://localhost:57662/react/planet/3"
                   }
                 },
                 {
@@ -135,55 +136,55 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640700047770200000,
+                  "timeUnixNano": 1640870882137599700,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700046262800000,
+                  "timeUnixNano": 1640870880460399900,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640700047974400000,
+                  "timeUnixNano": 1640870882341599700,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
@@ -199,6 +200,80 @@
           ],
           "instrumentationLibrary": {
             "name": "@opentelemetry/instrumentation-fetch",
+            "version": "0.27.0"
+          }
+        },
+        {
+          "spans": [
+            {
+              "traceId": "211789ecd9c4c32cb7cfa61f2636db51",
+              "spanId": "63678e2aec0ff22c",
+              "name": "Navigation: /react/planet/3",
+              "kind": 1,
+              "startTimeUnixNano": 1640870882054600000,
+              "endTimeUnixNano": 1640870882061699800,
+              "attributes": [
+                {
+                  "key": "document.visibilityState",
+                  "value": {
+                    "stringValue": "visible"
+                  }
+                },
+                {
+                  "key": "location.href",
+                  "value": {
+                    "stringValue": "http://localhost:57662/react/"
+                  }
+                },
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "user-interaction"
+                  }
+                },
+                {
+                  "key": "event_type",
+                  "value": {
+                    "stringValue": "click"
+                  }
+                },
+                {
+                  "key": "target_element",
+                  "value": {
+                    "stringValue": "A"
+                  }
+                },
+                {
+                  "key": "target_xpath",
+                  "value": {
+                    "stringValue": "//html/body/div/div/div/ul/li[3]/a"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57662/react/"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            }
+          ],
+          "instrumentationLibrary": {
+            "name": "@opentelemetry/instrumentation-user-interaction",
             "version": "0.27.0"
           }
         }
