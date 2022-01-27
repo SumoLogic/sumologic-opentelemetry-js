@@ -182,4 +182,15 @@ describe('SumoLogicSpanProcessor', () => {
     expect(span.parentSpanId).toBe(parent.spanContext().spanId);
     expect(span.spanContext().traceId).toBe(parent.spanContext().traceId);
   });
+
+  test('longtask spans without context are dropped', () => {
+    (span as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-long-task',
+      version: undefined,
+    };
+    spanProcessor.onStart(span);
+    spanProcessor.onEnd(span);
+    jest.runAllTimers();
+    expect(superOnEnd).not.toBeCalled();
+  });
 });
