@@ -193,4 +193,88 @@ describe('SumoLogicSpanProcessor', () => {
     jest.runAllTimers();
     expect(superOnEnd).not.toBeCalled();
   });
+
+  test('enrich non-root xhr spans', () => {
+    const xhrSpan = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'HTTP GET',
+      {
+        spanId: nextUID(),
+        traceId: span.spanContext().traceId,
+        traceFlags: TraceFlags.SAMPLED,
+      },
+      SpanKind.INTERNAL,
+      span.spanContext().spanId,
+    );
+    (xhrSpan as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-xml-http-request',
+      version: undefined,
+    };
+
+    spanProcessor.onStart(span);
+    span.attributes['location.href'] =
+      'https://www.unit-test-example.com/signup';
+
+    spanProcessor.onStart(xhrSpan);
+
+    expect(xhrSpan.attributes['xhr.root_span.operation']).toBe('test');
+    expect(xhrSpan.attributes['xhr.root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/signup',
+    );
+  });
+
+  test('enrich non-root fetch spans', () => {
+    const xhrSpan = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'HTTP GET',
+      {
+        spanId: nextUID(),
+        traceId: span.spanContext().traceId,
+        traceFlags: TraceFlags.SAMPLED,
+      },
+      SpanKind.INTERNAL,
+      span.spanContext().spanId,
+    );
+    (xhrSpan as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-fetch',
+      version: undefined,
+    };
+
+    spanProcessor.onStart(span);
+    span.attributes['location.href'] =
+      'https://www.unit-test-example.com/signup';
+
+    spanProcessor.onStart(xhrSpan);
+
+    expect(xhrSpan.attributes['xhr.root_span.operation']).toBe('test');
+    expect(xhrSpan.attributes['xhr.root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/signup',
+    );
+  });
+
+  test('does not enrich root xhr spans', () => {
+    (span as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-xml-http-request',
+      version: undefined,
+    };
+
+    spanProcessor.onStart(span);
+
+    expect('xhr.root_span.operation' in span.attributes).toBe(false);
+    expect('xhr.root_span.http.url' in span.attributes).toBe(false);
+  });
+
+  test('does not enrich root fetch spans', () => {
+    (span as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-fetch',
+      version: undefined,
+    };
+
+    spanProcessor.onStart(span);
+
+    expect('xhr.root_span.operation' in span.attributes).toBe(false);
+    expect('xhr.root_span.http.url' in span.attributes).toBe(false);
+  });
 });
