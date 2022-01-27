@@ -48,7 +48,7 @@
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1640870883069
+              "doubleValue": 1643300395430
             }
           }
         ],
@@ -58,13 +58,12 @@
         {
           "spans": [
             {
-              "traceId": "9b62616c832f99f8a98f52fd777fc10f",
-              "spanId": "390e5c7892e8fa3b",
-              "parentSpanId": "5b514cd0daa491e1",
-              "name": "HTTP GET",
-              "kind": 3,
-              "startTimeUnixNano": 1640870881631700000,
-              "endTimeUnixNano": 1640870881762300000,
+              "traceId": "56f6e7c73f50a461e4460287cb2b5f98",
+              "spanId": "eb9928823424cf22",
+              "name": "documentLoad",
+              "kind": 1,
+              "startTimeUnixNano": 1643300392936700000,
+              "endTimeUnixNano": 1643300393333400000,
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -75,7 +74,149 @@
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:57656/react/index_hash.html#/planet/3"
+                    "stringValue": "http://localhost:64926/react/index_hash.html"
+                  }
+                },
+                {
+                  "key": "component",
+                  "value": {
+                    "stringValue": "document-load"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:64926/react/index_hash.html"
+                  }
+                },
+                {
+                  "key": "http.user_agent",
+                  "value": {
+                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+                  }
+                },
+                {
+                  "key": "page_title",
+                  "value": {
+                    "stringValue": "React.js demo"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "events": [
+                {
+                  "timeUnixNano": 1643300392936700000,
+                  "name": "fetchStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300392936400000,
+                  "name": "unloadEventStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300392936400000,
+                  "name": "unloadEventEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393327900000,
+                  "name": "domInteractive",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393328000000,
+                  "name": "domContentLoadedEventStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393331800000,
+                  "name": "domContentLoadedEventEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393333200000,
+                  "name": "domComplete",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393333200000,
+                  "name": "loadEventStart",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393333400000,
+                  "name": "loadEventEnd",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300392951299800,
+                  "name": "timeToFirstByte",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393557800000,
+                  "name": "firstContentfulPaint",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300393557800000,
+                  "name": "largestContentfulPaint",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                },
+                {
+                  "timeUnixNano": 1643300392939400000,
+                  "name": "firstInputDelay",
+                  "attributes": [],
+                  "droppedAttributesCount": 0
+                }
+              ],
+              "droppedEventsCount": 0,
+              "status": {
+                "code": 0
+              },
+              "links": [],
+              "droppedLinksCount": 0
+            }
+          ],
+          "instrumentationLibrary": {
+            "name": "@opentelemetry/instrumentation-document-load",
+            "version": "0.27.0"
+          }
+        },
+        {
+          "spans": [
+            {
+              "traceId": "4855614283211820bfcd32071b73c8e4",
+              "spanId": "f4b0f364230179ac",
+              "parentSpanId": "33d977e7166c33fe",
+              "name": "HTTP GET",
+              "kind": 3,
+              "startTimeUnixNano": 1643300394391800000,
+              "endTimeUnixNano": 1643300394604099800,
+              "attributes": [
+                {
+                  "key": "document.visibilityState",
+                  "value": {
+                    "stringValue": "visible"
+                  }
+                },
+                {
+                  "key": "location.href",
+                  "value": {
+                    "stringValue": "http://localhost:64926/react/index_hash.html#/planet/3"
                   }
                 },
                 {
@@ -136,55 +277,55 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1640870881632200000,
+                  "timeUnixNano": 1643300394392200000,
                   "name": "fetchStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "domainLookupStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "domainLookupEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "connectStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "secureConnectionStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "connectEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "requestStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870880086499800,
+                  "timeUnixNano": 1643300392936400000,
                   "name": "responseStart",
                   "attributes": [],
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1640870881760899800,
+                  "timeUnixNano": 1643300394602100000,
                   "name": "responseEnd",
                   "attributes": [],
                   "droppedAttributesCount": 0
@@ -206,12 +347,12 @@
         {
           "spans": [
             {
-              "traceId": "9b62616c832f99f8a98f52fd777fc10f",
-              "spanId": "5b514cd0daa491e1",
+              "traceId": "4855614283211820bfcd32071b73c8e4",
+              "spanId": "33d977e7166c33fe",
               "name": "Navigation: /react/index_hash.html#/planet/3",
               "kind": 1,
-              "startTimeUnixNano": 1640870881598100000,
-              "endTimeUnixNano": 1640870881602700000,
+              "startTimeUnixNano": 1643300394386600000,
+              "endTimeUnixNano": 1643300394390900000,
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -222,7 +363,7 @@
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:57656/react/index_hash.html"
+                    "stringValue": "http://localhost:64926/react/index_hash.html"
                   }
                 },
                 {
@@ -252,7 +393,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:57656/react/index_hash.html"
+                    "stringValue": "http://localhost:64926/react/index_hash.html"
                   }
                 },
                 {
