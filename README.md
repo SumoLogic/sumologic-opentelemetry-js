@@ -95,19 +95,20 @@ See [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/pack
 
 Both `script` tag and manual installation can be configured with following parameters:
 
-| Parameter                    | Type                 | Default     | Description                                                                                                 |
-| ---------------------------- | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
-| collectionSourceUrl          | `string`             | _required_  | Sumo Logic collector source url                                                                             |
-| authorizationToken           | `string`             |             | Sumo Logic collector authorization token                                                                    |
-| serviceName                  | `string`             | `"unknown"` | Name of your web service                                                                                    |
-| applicationName              | `string`             |             | Name of your application                                                                                    |
-| defaultAttributes            | `object`             | `{}`        | Attributes added to each span                                                                               |
-| samplingProbability          | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent |
-| bufferMaxSpans               | `number`             | `100`       | Maximum number of spans waiting to be send                                                                  |
-| bufferTimeout                | `number`             | `2000`ms    | Maximum time in milliseconds for spans waiting to be send                                                   |
-| ignoreUrls                   | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
-| propagateTraceHeaderCorsUrls | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
-| collectSessionId             | `boolean`            | `true`      | Enables collecting `rum.session_id` attributes                                                              |
+| Parameter                       | Type                 | Default     | Description                                                                                                 |
+| ------------------------------- | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
+| collectionSourceUrl             | `string`             | _required_  | Sumo Logic collector source url                                                                             |
+| authorizationToken              | `string`             |             | Sumo Logic collector authorization token                                                                    |
+| serviceName                     | `string`             | `"unknown"` | Name of your web service                                                                                    |
+| applicationName                 | `string`             |             | Name of your application                                                                                    |
+| defaultAttributes               | `object`             | `{}`        | Attributes added to each span                                                                               |
+| samplingProbability             | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent |
+| bufferMaxSpans                  | `number`             | `100`       | Maximum number of spans waiting to be send                                                                  |
+| bufferTimeout                   | `number`             | `2000`ms    | Maximum time in milliseconds for spans waiting to be send                                                   |
+| ignoreUrls                      | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
+| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
+| collectSessionId                | `boolean`            | `true`      | Enables collecting `rum.session_id` attributes                                                              |
+| dropSingleUserInteractionTraces | `boolean`            | `true`      | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.) |
 
 ## Trace context propagation
 

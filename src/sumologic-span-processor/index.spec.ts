@@ -142,7 +142,7 @@ describe('SumoLogicSpanProcessor', () => {
     });
   });
 
-  test('drops root spans from instrumentation-user-interaction when there is no children', () => {
+  test('drops root spans from instrumentation-user-interaction when there is no children', async () => {
     (span as any).instrumentationLibrary = {
       name: '@opentelemetry/instrumentation-user-interaction',
       version: undefined,
@@ -150,7 +150,21 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onStart(span);
     spanProcessor.onEnd(span);
     jest.runAllTimers();
+    await Promise.resolve();
     expect(superOnEnd).not.toBeCalled();
+  });
+
+  test('does not drops root spans from instrumentation-user-interaction when dropSingleUserInteractionTraces option is disabled', async () => {
+    createSpanProcessor({ dropSingleUserInteractionTraces: false });
+    (span as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-user-interaction',
+      version: undefined,
+    };
+    spanProcessor.onStart(span);
+    spanProcessor.onEnd(span);
+    jest.runAllTimers();
+    await Promise.resolve();
+    expect(superOnEnd).toBeCalled();
   });
 
   test('finds context for longtask spans', async () => {

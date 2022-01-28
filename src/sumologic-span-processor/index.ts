@@ -15,18 +15,27 @@ import * as sessionId from './session-id';
 export interface SumoLogicSpanProcessorConfig
   extends BatchSpanProcessorBrowserConfig {
   collectSessionId?: boolean;
+  dropSingleUserInteractionTraces?: boolean;
 }
+
+const resolvedPromise = Promise.resolve(true);
 
 export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   private shouldCollectSessionId: boolean;
+  private shouldDropSingleUserInteractionTraces: boolean;
 
   constructor(exporter: SpanExporter, config?: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
     this.shouldCollectSessionId = config?.collectSessionId ?? true;
+    this.shouldDropSingleUserInteractionTraces =
+      config?.dropSingleUserInteractionTraces ?? true;
   }
 
   onStart(span: SdkTraceSpan, context?: Context): void {
-    dropSingleSpanTraces.onStart(span, context);
+    if (this.shouldDropSingleUserInteractionTraces) {
+      dropSingleSpanTraces.onStart(span, context);
+    }
+
     documentVisibilityState.onStart(span, context);
     findLongTaskContext.onStart(span, context);
     xhrEnrichment.onStart(span, context);
@@ -42,15 +51,19 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   onEnd(span: ReadableSpan): void {
     documentVisibilityState.onEnd(span);
-    dropSingleSpanTraces
-      .shouldSpanBeProcessed(span)
-      .then((shouldSpanBeProcessed) => {
-        if (
-          shouldSpanBeProcessed &&
-          findLongTaskContext.shouldSpanBeProcessed(span)
-        ) {
-          super.onEnd(span);
-        }
-      });
+
+    const shouldSpanBeProcessedPromise = this
+      .shouldDropSingleUserInteractionTraces
+      ? dropSingleSpanTraces.shouldSpanBeProcessed(span)
+      : resolvedPromise;
+
+    shouldSpanBeProcessedPromise.then((shouldSpanBeProcessed) => {
+      if (
+        shouldSpanBeProcessed &&
+        findLongTaskContext.shouldSpanBeProcessed(span)
+      ) {
+        super.onEnd(span);
+      }
+    });
   }
 }

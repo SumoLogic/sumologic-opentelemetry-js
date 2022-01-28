@@ -58,6 +58,7 @@ interface InitializeOptions {
   ignoreUrls?: (string | RegExp)[];
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
   collectSessionId?: boolean;
+  dropSingleUserInteractionTraces?: boolean;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -78,6 +79,7 @@ export const initialize = ({
   ignoreUrls = [],
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
+  dropSingleUserInteractionTraces,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -134,6 +136,7 @@ export const initialize = ({
       maxQueueSize: bufferMaxSpans,
       scheduledDelayMillis: bufferTimeout,
       collectSessionId,
+      dropSingleUserInteractionTraces,
     }),
   );
 
