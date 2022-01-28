@@ -58,12 +58,8 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
       : resolvedPromise;
 
     shouldSpanBeProcessedPromise.then((shouldSpanBeProcessed) => {
-      if (
-        shouldSpanBeProcessed &&
-        findLongTaskContext.shouldSpanBeProcessed(span)
-      ) {
-        super.onEnd(span);
-      }
+      if (!shouldSpanBeProcessed) return;
+      findLongTaskContext.onEnd(span, super.onEnd);
     });
   }
 }

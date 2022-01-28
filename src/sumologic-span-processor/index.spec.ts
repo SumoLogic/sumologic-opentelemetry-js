@@ -204,11 +204,58 @@ describe('SumoLogicSpanProcessor', () => {
     expect(span.spanContext().traceId).toBe(parent.spanContext().traceId);
   });
 
+  test('finds context for longtask spans on spans ended after the longtask', async () => {
+    (span as any).instrumentationLibrary = {
+      name: '@opentelemetry/instrumentation-long-task',
+      version: undefined,
+    };
+    const parent = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'parent test span',
+      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
+      SpanKind.INTERNAL,
+    );
+
+    let resolvePromise: any;
+    const promise = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
+
+    superOnEnd.mockImplementation((spanToEnd) => {
+      if (spanToEnd === parent) {
+        resolvePromise();
+      }
+    });
+
+    spanProcessor.onStart(parent);
+    spanProcessor.onStart(span);
+    span.end();
+    spanProcessor.onEnd(span);
+    parent.end();
+    spanProcessor.onEnd(parent);
+
+    await promise;
+
+    expect(span.parentSpanId).toBe(parent.spanContext().spanId);
+    expect(span.spanContext().traceId).toBe(parent.spanContext().traceId);
+  });
+
   test('longtask spans without context are dropped', () => {
     (span as any).instrumentationLibrary = {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
     };
+    const parent = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'parent test span',
+      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
+      SpanKind.INTERNAL,
+    );
+
+    // in this case the parent span is not ended so longtask should not be attached
+    spanProcessor.onStart(parent);
     spanProcessor.onStart(span);
     spanProcessor.onEnd(span);
     jest.runAllTimers();
