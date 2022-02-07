@@ -15,14 +15,13 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
     if (span.parentSpanId) {
       const rootSpan = rootSpansByTraceId[span.spanContext().traceId];
       if (rootSpan) {
+        rootSpan.setAttribute('xhr.is_root_span', true);
         span.setAttribute('xhr.root_span.operation', rootSpan.name);
         span.setAttribute(
           'xhr.root_span.http.url',
           rootSpan.attributes['location.href'],
         );
       }
-    } else {
-      span.setAttribute('xhr.is_root_span', 'true');
     }
   } else if (!parentSpanId) {
     // save root spans for later use
