@@ -201,6 +201,60 @@ describe('SumoLogicSpanProcessor', () => {
     expect(superOnEnd).not.toBeCalled();
   });
 
+  test('enrich non-root xhr spans', () => {
+    const xhrSpan = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'HTTP GET',
+      {
+        spanId: nextUID(),
+        traceId: span.spanContext().traceId,
+        traceFlags: TraceFlags.SAMPLED,
+      },
+      SpanKind.CLIENT,
+      span.spanContext().spanId,
+    );
+
+    spanProcessor.onStart(span);
+    span.attributes['location.href'] =
+      'https://www.unit-test-example.com/signup';
+
+    spanProcessor.onStart(xhrSpan);
+
+    expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
+    expect(xhrSpan.attributes['xhr.root_span.operation']).toBe('test');
+    expect(xhrSpan.attributes['xhr.root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/signup',
+    );
+  });
+
+  test('enrich root xhr spans', () => {
+    const xhrSpan = new Span(
+      tracer,
+      ROOT_CONTEXT,
+      'HTTP GET',
+      {
+        spanId: nextUID(),
+        traceId: span.spanContext().traceId,
+        traceFlags: TraceFlags.SAMPLED,
+      },
+      SpanKind.CLIENT,
+      span.spanContext().spanId,
+    );
+
+    spanProcessor.onStart(span);
+    span.attributes['location.href'] =
+      'https://www.unit-test-example.com/signup';
+
+    spanProcessor.onStart(xhrSpan);
+
+    expect(span.attributes['xhr.is_root_span']).toBe(true);
+    expect('xhr.root_span.operation' in span.attributes).toBe(false);
+    expect('xhr.root_span.http.url' in span.attributes).toBe(false);
+
+    expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
+  });
+
   describe('rum.session_id', () => {
     beforeEach(() => {
       resetSessionIdCookie();

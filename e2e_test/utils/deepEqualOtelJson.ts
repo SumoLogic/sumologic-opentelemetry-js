@@ -4,6 +4,7 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.host/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.url/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/location.href/value/stringValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/xhr.root_span.http.url/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/rum.session_id/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([

@@ -8,7 +8,8 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as dropSingleSpanTraces from './drop-single-span-traces';
 import * as documentVisibilityState from './document-visibility-state';
-import * as findSpanContext from './find-span-context';
+import * as findLongTaskContext from './find-longtask-context';
+import * as xhrEnrichment from './xhr-enrichment';
 import * as sessionId from './session-id';
 
 export interface SumoLogicSpanProcessorConfig
@@ -27,7 +28,8 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   onStart(span: SdkTraceSpan, context?: Context): void {
     dropSingleSpanTraces.onStart(span, context);
     documentVisibilityState.onStart(span, context);
-    findSpanContext.onStart(span, context);
+    findLongTaskContext.onStart(span, context);
+    xhrEnrichment.onStart(span, context);
     if (this.shouldCollectSessionId) {
       sessionId.onStart(span, context);
     }
@@ -45,7 +47,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
       .then((shouldSpanBeProcessed) => {
         if (
           shouldSpanBeProcessed &&
-          findSpanContext.shouldSpanBeProcessed(span)
+          findLongTaskContext.shouldSpanBeProcessed(span)
         ) {
           super.onEnd(span);
         }
