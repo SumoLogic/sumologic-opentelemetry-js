@@ -57,6 +57,7 @@ interface InitializeOptions {
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
+  collectSessionId?: boolean;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -76,6 +77,7 @@ export const initialize = ({
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
   propagateTraceHeaderCorsUrls = [],
+  collectSessionId,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -131,6 +133,7 @@ export const initialize = ({
     new SumoLogicSpanProcessor(exporter, {
       maxQueueSize: bufferMaxSpans,
       scheduledDelayMillis: bufferTimeout,
+      collectSessionId,
     }),
   );
 
