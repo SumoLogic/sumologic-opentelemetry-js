@@ -5,7 +5,8 @@ import {
   Tracer,
 } from '@opentelemetry/sdk-trace-base';
 import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
-import { SumoLogicSpanProcessor } from './index';
+import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
+import { resetSessionIdCookie } from './session-id';
 
 delete window.location;
 window.location = new URL('https://www.unit-test-example.com');
@@ -27,6 +28,7 @@ const nextUID = () => String(lastUID++);
 
 describe('SumoLogicSpanProcessor', () => {
   let tracer: Tracer;
+  let exporter: SpanExporter;
   let span: Span;
   let spanProcessor: SumoLogicSpanProcessor;
   let superOnEnd: jest.Mock;
@@ -35,7 +37,7 @@ describe('SumoLogicSpanProcessor', () => {
     setDocumentVisibilityState('visible');
     document.dispatchEvent(new Event('visibilitychange'));
 
-    const exporter: SpanExporter = {
+    exporter = {
       export() {},
       shutdown() {
         return Promise.resolve();
@@ -49,12 +51,17 @@ describe('SumoLogicSpanProcessor', () => {
       { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
       SpanKind.INTERNAL,
     );
-    spanProcessor = new SumoLogicSpanProcessor(exporter, {});
+
+    createSpanProcessor({});
+  });
+
+  const createSpanProcessor = (config: SumoLogicSpanProcessorConfig) => {
+    spanProcessor = new SumoLogicSpanProcessor(exporter, config);
 
     superOnEnd = jest.fn();
     Object.getPrototypeOf(Object.getPrototypeOf(spanProcessor)).onEnd =
       superOnEnd;
-  });
+  };
 
   test('adds "location.href" attribute', () => {
     spanProcessor.onStart(span);
@@ -239,5 +246,83 @@ describe('SumoLogicSpanProcessor', () => {
     expect(xhrSpan.attributes['xhr.is_root_span']).toBe('true');
     expect('xhr.root_span.operation' in span.attributes).toBe(false);
     expect('xhr.root_span.http.url' in span.attributes).toBe(false);
+  });
+
+  describe('rum.session_id', () => {
+    beforeEach(() => {
+      resetSessionIdCookie();
+    });
+
+    test('is not added when collectSessionId option is disabled', () => {
+      createSpanProcessor({ collectSessionId: false });
+      spanProcessor.onStart(span);
+      expect('rum.session_id' in span.attributes).toBe(false);
+    });
+
+    test('is consistent in started spans', () => {
+      const span2 = new Span(
+        tracer,
+        ROOT_CONTEXT,
+        'test2',
+        {
+          spanId: nextUID(),
+          traceId: nextUID(),
+          traceFlags: TraceFlags.SAMPLED,
+        },
+        SpanKind.INTERNAL,
+      );
+      spanProcessor.onStart(span);
+      spanProcessor.onStart(span2);
+      expect(typeof span.attributes['rum.session_id']).toBe('string');
+      expect(String(span.attributes['rum.session_id']).length).toBe(32);
+      expect(span.attributes['rum.session_id']).toBe(
+        span2.attributes['rum.session_id'],
+      );
+    });
+
+    test('is consistent between spans with 5 minutes delay', () => {
+      const span2 = new Span(
+        tracer,
+        ROOT_CONTEXT,
+        'test2',
+        {
+          spanId: nextUID(),
+          traceId: nextUID(),
+          traceFlags: TraceFlags.SAMPLED,
+        },
+        SpanKind.INTERNAL,
+      );
+      jest.setSystemTime(new Date('2022-01-01 10:00').valueOf());
+      spanProcessor.onStart(span);
+      jest.setSystemTime(new Date('2022-01-01 10:05').valueOf());
+      spanProcessor.onStart(span2);
+      expect(typeof span.attributes['rum.session_id']).toBe('string');
+      expect(span.attributes['rum.session_id']).toBe(
+        span2.attributes['rum.session_id'],
+      );
+    });
+
+    test('is different between spans with more than 5 minutes delay', () => {
+      const span2 = new Span(
+        tracer,
+        ROOT_CONTEXT,
+        'test2',
+        {
+          spanId: nextUID(),
+          traceId: nextUID(),
+          traceFlags: TraceFlags.SAMPLED,
+        },
+        SpanKind.INTERNAL,
+      );
+      jest.setSystemTime(new Date('2022-01-01 10:00').valueOf());
+      spanProcessor.onStart(span);
+      jest.setSystemTime(new Date('2022-01-01 10:05:01').valueOf());
+      spanProcessor.onStart(span2);
+      expect(typeof span.attributes['rum.session_id']).toBe('string');
+      expect(typeof span2.attributes['rum.session_id']).toBe('string');
+      expect(span.attributes['rum.session_id']).not.toBe(
+        span2.attributes['rum.session_id'],
+      );
+    });
   });
 });

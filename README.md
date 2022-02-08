@@ -107,6 +107,7 @@ Both `script` tag and manual installation can be configured with following param
 | bufferTimeout                | `number`             | `2000`ms    | Maximum time in milliseconds for spans waiting to be send                                                   |
 | ignoreUrls                   | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
 | propagateTraceHeaderCorsUrls | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
+| collectSessionId             | `boolean`            | `true`      | Enables collecting `rum.session_id` attributes                                                              |
 
 ## Trace context propagation
 
