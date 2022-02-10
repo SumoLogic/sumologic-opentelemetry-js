@@ -7,6 +7,7 @@ import {
 import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
 import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
+import { resetSavedSpans } from './find-longtask-context';
 
 delete window.location;
 window.location = new URL('https://www.unit-test-example.com');
@@ -34,6 +35,7 @@ describe('SumoLogicSpanProcessor', () => {
   let superOnEnd: jest.Mock;
 
   beforeEach(() => {
+    resetSavedSpans();
     setDocumentVisibilityState('visible');
     document.dispatchEvent(new Event('visibilitychange'));
 

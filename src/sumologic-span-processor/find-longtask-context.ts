@@ -7,8 +7,14 @@ const LONGTASK_PRECISION_NS = 1e7; // 10 milliseconds
 const MAX_SPANS_SIZE = 100;
 const MAX_LONG_TASKS_SIZE = 10;
 
-const spans: ReadableSpan[] = [];
-const longTasks: ReadableSpan[] = [];
+let spans: ReadableSpan[] = [];
+let longTasks: ReadableSpan[] = [];
+
+// exported for unit tests
+export const resetSavedSpans = () => {
+  spans = [];
+  longTasks = [];
+};
 
 const isTimeRangeInSpan = (
   longtaskStartTimeNs: number,
