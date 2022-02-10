@@ -1,56 +1,61 @@
-import { Context, HrTime } from '@opentelemetry/api';
+import { HrTime } from '@opentelemetry/api';
 import { hrTimeToNanoseconds } from '@opentelemetry/core';
-import {
-  Span as SdkTraceSpan,
-  ReadableSpan,
-} from '@opentelemetry/sdk-trace-base';
+import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 
 const INSTRUMENTATION_LONG_TASK = '@opentelemetry/instrumentation-long-task';
 const LONGTASK_PRECISION_NS = 1e7; // 10 milliseconds
 const MAX_SPANS_SIZE = 100;
 const MAX_LONG_TASKS_SIZE = 10;
 
-const spans: SdkTraceSpan[] = [];
+const spans: ReadableSpan[] = [];
 const longTasks: ReadableSpan[] = [];
 
 const isTimeRangeInSpan = (
-  startTimeNs: number,
-  endTimeNs: number,
-  span: ReadableSpan,
-): boolean => {
-  return (
-    hrTimeToNanoseconds(span.startTime) - LONGTASK_PRECISION_NS <=
-      startTimeNs &&
-    hrTimeToNanoseconds(span.endTime) + LONGTASK_PRECISION_NS >= endTimeNs
-  );
-};
+  longtaskStartTimeNs: number,
+  spanStartTimeNs: number,
+  spanEndTimeNs: number,
+): boolean =>
+  longtaskStartTimeNs + LONGTASK_PRECISION_NS >= spanStartTimeNs &&
+  longtaskStartTimeNs - LONGTASK_PRECISION_NS <= spanEndTimeNs;
 
 const findBestSpanInTime = (
-  startTimeHrTime: HrTime,
-  endTimeHrTime: HrTime,
-): SdkTraceSpan | undefined => {
-  const startTime = hrTimeToNanoseconds(startTimeHrTime);
-  const endTime = hrTimeToNanoseconds(endTimeHrTime);
+  longtaskStartTimeHrTime: HrTime,
+): ReadableSpan | undefined => {
+  const longtaskStartTime = hrTimeToNanoseconds(longtaskStartTimeHrTime);
 
   for (let i = spans.length - 1; i >= 0; i -= 1) {
     const span = spans[i];
-    if (isTimeRangeInSpan(startTime, endTime, span)) {
+    if (
+      isTimeRangeInSpan(
+        longtaskStartTime,
+        hrTimeToNanoseconds(span.startTime),
+        hrTimeToNanoseconds(span.endTime),
+      )
+    ) {
       return span;
     }
   }
 };
 
-const findBestLongTaskInTime = (
-  startTimeHrTime: HrTime,
-  endTimeHrTime: HrTime,
-): [longTask: ReadableSpan, index: number] | undefined => {
-  const startTime = hrTimeToNanoseconds(startTimeHrTime);
-  const endTime = hrTimeToNanoseconds(endTimeHrTime);
+const attachBestLongTasks = (
+  span: ReadableSpan,
+  onLongTaskFound: (span: ReadableSpan) => void,
+) => {
+  const startTime = hrTimeToNanoseconds(span.startTime);
+  const endTime = hrTimeToNanoseconds(span.endTime);
 
   for (let i = longTasks.length - 1; i >= 0; i -= 1) {
     const longTask = longTasks[i];
-    if (isTimeRangeInSpan(startTime, endTime, longTask)) {
-      return [longTask, i];
+    if (
+      isTimeRangeInSpan(
+        hrTimeToNanoseconds(longTask.startTime),
+        startTime,
+        endTime,
+      )
+    ) {
+      longTasks.splice(i, 1);
+      attachLongTaskToSpan(longTask, span);
+      onLongTaskFound(longTask);
     }
   }
 };
@@ -64,22 +69,13 @@ const attachLongTaskToSpan = (
   longTask.spanContext().traceId = parentSpan.spanContext().traceId;
 };
 
-export const onStart = (span: SdkTraceSpan, context?: Context): void => {
-  if (span.instrumentationLibrary.name !== INSTRUMENTATION_LONG_TASK) {
-    spans.push(span);
-    if (spans.length > MAX_SPANS_SIZE) {
-      spans.shift();
-    }
-  }
-};
-
 export const onEnd = (
   span: ReadableSpan,
   superOnEnd: (span: ReadableSpan) => void,
 ): void => {
   if (span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK) {
     if (!span.parentSpanId) {
-      const bestParentSpan = findBestSpanInTime(span.startTime, span.endTime);
+      const bestParentSpan = findBestSpanInTime(span.startTime);
       if (bestParentSpan) {
         attachLongTaskToSpan(span, bestParentSpan);
       } else {
@@ -92,17 +88,14 @@ export const onEnd = (
       }
     }
   } else {
-    // try previously ended longtasks without context
-    const bestLongTaskEntry = findBestLongTaskInTime(
-      span.startTime,
-      span.endTime,
-    );
-    if (bestLongTaskEntry) {
-      const [longTask, index] = bestLongTaskEntry;
-      longTasks.splice(index, 1);
-      attachLongTaskToSpan(longTask, span);
-      superOnEnd(longTask);
+    // save ended span so it can be used for further longtasks
+    spans.push(span);
+    if (spans.length > MAX_SPANS_SIZE) {
+      spans.shift();
     }
+
+    // try previously ended longtasks without context
+    attachBestLongTasks(span, superOnEnd);
   }
 
   superOnEnd(span);

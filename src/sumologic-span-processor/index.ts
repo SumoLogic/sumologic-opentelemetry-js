@@ -37,7 +37,6 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     }
 
     documentVisibilityState.onStart(span, context);
-    findLongTaskContext.onStart(span, context);
     xhrEnrichment.onStart(span, context);
     if (this.shouldCollectSessionId) {
       sessionId.onStart(span, context);
@@ -58,8 +57,12 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
       : resolvedPromise;
 
     shouldSpanBeProcessedPromise.then((shouldSpanBeProcessed) => {
-      if (!shouldSpanBeProcessed) return;
-      findLongTaskContext.onEnd(span, super.onEnd);
+      if (!shouldSpanBeProcessed) {
+        return;
+      }
+      findLongTaskContext.onEnd(span, (spanToEnd) => {
+        super.onEnd(spanToEnd);
+      });
     });
   }
 }
