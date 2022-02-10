@@ -22,6 +22,7 @@ import {
   BUFFER_MAX_SPANS,
   BUFFER_TIMEOUT,
   INSTRUMENTED_EVENT_NAMES,
+  MAX_EXPORT_BATCH_SIZE,
   UNKNOWN_SERVICE_NAME,
 } from './constants';
 import { getUserInteractionSpanName, tryNumber } from './utils';
@@ -54,6 +55,7 @@ interface InitializeOptions {
   defaultAttributes?: api.SpanAttributes;
   samplingProbability?: number | string;
   bufferMaxSpans?: number;
+  maxExportBatchSize?: number;
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
@@ -79,6 +81,7 @@ export const initialize = ({
   defaultAttributes,
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
+  maxExportBatchSize = MAX_EXPORT_BATCH_SIZE,
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
   propagateTraceHeaderCorsUrls = [],
@@ -138,6 +141,7 @@ export const initialize = ({
   provider.addSpanProcessor(
     new SumoLogicSpanProcessor(exporter, {
       maxQueueSize: bufferMaxSpans,
+      maxExportBatchSize,
       scheduledDelayMillis: bufferTimeout,
       collectSessionId,
       dropSingleUserInteractionTraces,
