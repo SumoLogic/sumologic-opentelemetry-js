@@ -67,6 +67,10 @@ if (useWindow) {
   window.sumoLogicOpenTelemetryRum = window.sumoLogicOpenTelemetryRum || {};
 }
 
+// create context manager right now to patch APIs for situations when 'initialize' is called later
+const contextManager = new SumoLogicContextManager();
+contextManager.enable();
+
 export const initialize = ({
   collectionSourceUrl,
   authorizationToken,
@@ -100,7 +104,7 @@ export const initialize = ({
   });
 
   provider.register({
-    contextManager: new SumoLogicContextManager(),
+    contextManager,
     propagator: new W3CTraceContextPropagator(),
   });
 
