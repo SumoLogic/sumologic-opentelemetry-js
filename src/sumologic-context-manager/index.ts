@@ -1,10 +1,13 @@
-import { Context, ContextManager, ROOT_CONTEXT } from '@opentelemetry/api';
+import {
+  Context,
+  ContextManager,
+  ROOT_CONTEXT,
+  trace,
+  context as apiContext,
+} from '@opentelemetry/api';
 import { patchEvents, unpatchEvents } from './events';
 import { patchMessageChannel, unpatchMessageChannel } from './message-channel';
-import {
-  patchMutationObserver,
-  unpatchMutationObserver,
-} from './mutation-observer';
+import { patchObservers, unpatchObservers } from './observers';
 import { patchPromise, unpatchPromise } from './promise';
 import { patchTimers, unpatchTimers } from './timers';
 import { getObjectContext } from './utils';
@@ -79,7 +82,7 @@ export class SumoLogicContextManager implements ContextManager {
     unpatchTimers();
     unpatchEvents();
     unpatchMessageChannel();
-    unpatchMutationObserver();
+    unpatchObservers();
     this._currentContext = ROOT_CONTEXT;
     this._enabled = false;
     return this;
@@ -96,7 +99,7 @@ export class SumoLogicContextManager implements ContextManager {
     patchTimers(this);
     patchEvents(this);
     patchMessageChannel(this);
-    patchMutationObserver(this);
+    patchObservers(this);
     this._enabled = true;
     this._currentContext = ROOT_CONTEXT;
     return this;

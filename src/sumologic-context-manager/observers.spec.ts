@@ -1,4 +1,5 @@
 import * as api from '@opentelemetry/api';
+import { ROOT_CONTEXT } from '@opentelemetry/api';
 import { SumoLogicContextManager } from './index';
 
 const NativeMutationObserver = window.MutationObserver;
@@ -23,6 +24,10 @@ describe('MutationObserver', () => {
     expect(MutationObserver).not.toBe(NativeMutationObserver);
   });
 
+  test('name is not changed', () => {
+    expect(MutationObserver.name).toBe('MutationObserver');
+  });
+
   test('toString() is native', () => {
     expect(MutationObserver.toString()).toBe(NativeMutationObserver.toString());
   });
@@ -41,5 +46,23 @@ describe('MutationObserver', () => {
     });
 
     expect(callbackContext).toBe(context);
+  });
+
+  test('context is not carried by callback after 300ms', async () => {
+    const context = contextManager.active().setValue(Symbol(), '');
+    const callbackContext = await new Promise<api.Context>((resolve) => {
+      contextManager.with(context, () => {
+        const observer = new MutationObserver(() => {
+          observer.disconnect();
+          resolve(contextManager.active());
+        });
+        setTimeout(() => {
+          observer.observe(document.body, { childList: true });
+          document.body.appendChild(document.createElement('div'));
+        }, 300);
+      });
+    });
+
+    expect(callbackContext).toBe(ROOT_CONTEXT);
   });
 });
