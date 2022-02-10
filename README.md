@@ -2,6 +2,19 @@
 
 The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation for JavaScript library enables tracing in the browser.
 
+## Features
+
+- XMLHttpRequest and Fetch APIs auto-instrumentation
+- user interactions like click, submit, drop etc.
+- document load with fetched resources
+- History API and hash change support
+- web-vitals
+- session id
+- longtasks with automatic context attaching
+- support for manual instrumentation
+- automatic context carrying through timers, promises, native async-await, events, observers and more
+- 88 KB (26 KB gzipped)
+
 ## Installation
 
 The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on your website:
@@ -23,11 +36,11 @@ The easiest way to start collecting traces from your website is to put the code 
 </script>
 ```
 
-See [functionalities](#Functionalities) for informations about the script size and [configuration](#Configuration) for all supported options.
+See [configuration](#Configuration) for all supported options.
 
 There are no other required actions needed to take. With properly provided `collectionSourceUrl` and `serviceName` your website is ready and will send collected traces to the specified Sumo Logic collector.
 
-You can load the script asynchronously using the script below but some functionalities like user interactions or requests made before script run will be limited.
+You can load the script asynchronously using the script below, but some functionalities like user interactions or requests made before script run will be limited.
 
 ```html
 <script>
@@ -76,20 +89,6 @@ initialize({
   propagateTraceHeaderCorsUrls: ['list_of_domains_to_receive_trace_context'],
 });
 ```
-
-## Functionalities
-
-This library contains built-in OpenTelemetry packages:
-
-- [@opentelemetry/core](https://www.npmjs.com/package/@opentelemetry/core)
-- [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing)
-- [@opentelemetry/web](https://www.npmjs.com/package/@opentelemetry/web)
-- [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/package/@opentelemetry/instrumentation-xml-http-request)
-- [@opentelemetry/context-zone](https://www.npmjs.com/package/@opentelemetry/context-zone)
-- [@opentelemetry/instrumentation-document-load](https://www.npmjs.com/package/@opentelemetry/instrumentation-document-load)
-- [@opentelemetry/instrumentation-user-interaction](https://www.npmjs.com/package/@opentelemetry/instrumentation-user-interaction)
-
-See [@opentelemetry/instrumentation-xml-http-request](https://www.npmjs.com/package/@opentelemetry/instrumentation-xml-http-request), [@opentelemetry/instrumentation-document-load](https://www.npmjs.com/package/@opentelemetry/instrumentation-document-load) and [@opentelemetry/instrumentation-user-interaction](https://www.npmjs.com/package/@opentelemetry/instrumentation-user-interaction) for more details about auto-instrumented functionalities.
 
 ## Configuration
 
@@ -170,7 +169,7 @@ All method are available under the `window.sumoLogicOpenTelemetryRum` object.
 
 Extends the list of default attributes specified during initialization.
 
-Example: `window.sumoLogicOpenTelemetryRum.setDefaultAttribute('organization_id', orgId)`
+Example: `window.sumoLogicOpenTelemetryRum.setDefaultAttribute('user_id', userId)`
 
 # License
 

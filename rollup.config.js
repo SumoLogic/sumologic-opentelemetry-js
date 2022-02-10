@@ -10,7 +10,7 @@ export default {
   input: 'src/index.ts',
   output: [
     {
-      file: pkg.browser,
+      file: './dist/browser.js',
       format: 'iife',
       sourcemap: true,
     },
