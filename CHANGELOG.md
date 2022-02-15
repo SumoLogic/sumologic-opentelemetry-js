@@ -73,3 +73,8 @@
 - added 'maxExportBatchSize' configuration option and changed default values of current exporter-related configuration
 - automatic removing of single user interaction traces (can be disabled using the `dropSingleUserInteractionTraces` option)
 - new context manager with better support for native async-await, observers and more
+- new attribute 'document.visibilityState' and span events 'pageshow' and 'pagehide'
+
+## 2.1.1
+
+- fixed 'Error: timeout' logs
