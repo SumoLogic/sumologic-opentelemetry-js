@@ -84,5 +84,6 @@
 - updated `@opentelemetry/api` to `1.1.0` - breaking changes
 - updated `opentelemetry-js` to `1.0.1`
 - updated `opentelemetry-js-contrib` to `935149c`
+- added `sumologic.rum.version` default attribute
 
 Check "Manual instrumentation" in README for the new instructions.
