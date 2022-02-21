@@ -78,3 +78,11 @@
 ## 2.1.1
 
 - fixed 'Error: timeout' logs
+
+## 3.0.0
+
+- updated `@opentelemetry/api` to `1.1.0` - breaking changes
+- updated `opentelemetry-js` to `1.0.1`
+- updated `opentelemetry-js-contrib` to `935149c`
+
+Check "Manual instrumentation" in README for the new instructions.

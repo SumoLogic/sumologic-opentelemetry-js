@@ -140,15 +140,13 @@ When initialized by the `<script />` tag, window attribute `sumoLogicOpenTelemet
 Example:
 
 ```javascript
-const span = sumoLogicOpenTelemetryRum.tracer.startSpan('fetchUserData', {
+const { tracer, api } = sumoLogicOpenTelemetryRum;
+const span = tracer.startSpan('fetchUserData', {
   attributes: { organization: 'client-a' },
 });
-sumoLogicOpenTelemetryRum.api.context.with(
-  api.setSpan(api.context.active(), span),
-  () => {
-    // long running operation
-  },
-);
+api.context.with(api.trace.setSpan(api.context.active(), span), () => {
+  // long running operation
+});
 ```
 
 ## Disable instrumentation
