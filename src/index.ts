@@ -26,6 +26,7 @@ import {
   UNKNOWN_SERVICE_NAME,
 } from './constants';
 import { getUserInteractionSpanName, tryNumber } from './utils';
+import { version } from '../package.json';
 
 type ReadyListener = () => void;
 
@@ -113,6 +114,7 @@ export const initialize = ({
 
   const attributes: OTLPExporterConfigBase['attributes'] = {
     ...defaultAttributes,
+    ['sumologic.rum.version']: version,
 
     // This is a temporary solution not covered by the specification.
     // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
