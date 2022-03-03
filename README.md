@@ -169,6 +169,12 @@ Extends the list of default attributes specified during initialization.
 
 Example: `window.sumoLogicOpenTelemetryRum.setDefaultAttribute('user_id', userId)`
 
+### getCurrentSessionId()
+
+Returns current value of the `rum.session_id` attribute. Returned value may change in time, so don't cache it.
+
+Example: `window.sumoLogicOpenTelemetryRum.getCurrentSessionId()`
+
 # License
 
 This project is released under the [Apache 2.0 License](./LICENSE).

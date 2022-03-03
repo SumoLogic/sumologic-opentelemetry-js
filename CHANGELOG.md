@@ -85,5 +85,6 @@
 - updated `opentelemetry-js` to `1.0.1`
 - updated `opentelemetry-js-contrib` to `935149c`
 - added `sumologic.rum.version` default attribute
+- added `sumoLogicOpenTelemetryRum.getCurrentSessionId()`
 
-Check "Manual instrumentation" in README for the new instructions.
+Check "Manual instrumentation" in README for new instructions.
