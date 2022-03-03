@@ -39,7 +39,7 @@ export const resetSessionIdCookie = () => {
   cookie = undefined;
 };
 
-export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+export const getCurrentSessionId = () => {
   const now = Date.now();
 
   if (cookie) {
@@ -61,5 +61,9 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
     setCookieValue(cookie);
   }
 
-  span.setAttribute(SESSION_ID_ATTRIBUTE, cookie.sessionId);
+  return cookie.sessionId;
+};
+
+export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+  span.setAttribute(SESSION_ID_ATTRIBUTE, getCurrentSessionId());
 };

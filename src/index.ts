@@ -27,6 +27,7 @@ import {
 } from './constants';
 import { getUserInteractionSpanName, tryNumber } from './utils';
 import { version } from '../package.json';
+import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 
 type ReadyListener = () => void;
 
@@ -44,6 +45,7 @@ declare global {
         key: string,
         value: api.SpanAttributeValue | undefined,
       ) => void;
+      getCurrentSessionId: () => string;
     };
   }
 }
@@ -207,6 +209,7 @@ export const initialize = ({
     registerInstrumentations,
     disableInstrumentations,
     setDefaultAttribute,
+    getCurrentSessionId,
   };
 
   if (useWindow) {
