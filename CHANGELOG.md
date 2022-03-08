@@ -86,5 +86,6 @@
 - updated `opentelemetry-js-contrib` to `935149c`
 - added `sumologic.rum.version` default attribute
 - added `sumoLogicOpenTelemetryRum.getCurrentSessionId()`
+- added attribute `new.location.href` to `Navigation: *` spans
 
 Check "Manual instrumentation" in README for new instructions.

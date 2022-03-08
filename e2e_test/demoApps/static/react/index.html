@@ -11,10 +11,11 @@
           serviceName: 'react-service-name',
           applicationName: 'react-application-name',
           samplingProbability: 1,
+          maxExportBatchSize: 100,
+          bufferTimeout: 4000,
           defaultAttributes: {
             'routing.mechanism': 'history.api',
           },
-          bufferTimeout: 1_000,
         });
     </script>
     <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>

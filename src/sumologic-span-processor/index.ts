@@ -50,6 +50,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   onEnd(span: ReadableSpan): void {
     documentVisibilityState.onEnd(span);
+    xhrEnrichment.onEnd(span);
 
     const shouldSpanBeProcessedPromise = this
       .shouldDropSingleUserInteractionTraces
