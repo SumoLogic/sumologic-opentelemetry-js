@@ -284,6 +284,9 @@ describe('SumoLogicSpanProcessor', () => {
 
     spanProcessor.onStart(xhrSpan);
 
+    spanProcessor.onEnd(span);
+    spanProcessor.onEnd(xhrSpan);
+
     expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
     expect(xhrSpan.attributes['xhr.root_span.operation']).toBe('test');
     expect(xhrSpan.attributes['xhr.root_span.http.url']).toBe(
@@ -310,6 +313,9 @@ describe('SumoLogicSpanProcessor', () => {
       'https://www.unit-test-example.com/signup';
 
     spanProcessor.onStart(xhrSpan);
+
+    spanProcessor.onEnd(span);
+    spanProcessor.onEnd(xhrSpan);
 
     expect(span.attributes['xhr.is_root_span']).toBe(true);
     expect('xhr.root_span.operation' in span.attributes).toBe(false);
