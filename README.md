@@ -21,7 +21,7 @@ The easiest way to start collecting traces from your website is to put the code 
 
 ```html
 <script
-  src="https://rum.sumologic.com/sumologic-rum.js"
+  src="https://rum.sumologic.com/sumologic-rum-v3.js"
   type="text/javascript"
 ></script>
 <script>
@@ -58,7 +58,7 @@ You can load the script asynchronously using the script below, but some function
     window,
     'sumoLogicOpenTelemetryRum',
     document,
-    'https://rum.sumologic.com/sumologic-rum.js',
+    'https://rum.sumologic.com/sumologic-rum-v3.js',
   );
   window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
