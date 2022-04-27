@@ -58,7 +58,7 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
 
   for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, timestampInHrTime, state } = changes[i];
-    if (timestampInNanoseconds <= startTimeInNanoseconds) {
+    if (timestampInNanoseconds < startTimeInNanoseconds) {
       break;
     }
     if (

@@ -25,7 +25,7 @@ const verifyData = async (
     ),
   );
 
-  deepEqualOtelJson(data, fixture);
+  deepEqualOtelJson(data, fixture, fixtureName);
 };
 
 export interface DemoAppTestConfig {
@@ -99,10 +99,15 @@ export const createVerifyDemoAppTest = async ({
 
     // click at the third item on the list
     await page.click('text=Yavin XIV');
+    await expect(page.locator('dt').first()).toHaveText('name');
 
-    const planetTitle = page.locator('h1').first();
-    await expect(planetTitle).toHaveText('Planet');
+    // some instrumentation needs some time to end spans, e.g. instrumentation-fetch
+    await page.waitForTimeout(500);
 
+    // let te page know that it's going to be closed to all the waiting spans will be flushed
+    await page.evaluate(() => {
+      window.dispatchEvent(new Event('pagehide'));
+    });
     const secondBatch = await axios.get(`${httpServerUrl}/traces`, {
       timeout: 5_000,
     });

@@ -64,6 +64,6 @@ export const createComparePageWithFixtureTest = ({
         'utf-8',
       ),
     );
-    deepEqualOtelJson(result.data, fixture);
+    deepEqualOtelJson(result.data, fixture, name);
   });
 };
