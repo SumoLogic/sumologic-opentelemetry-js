@@ -19,6 +19,13 @@ const changes: {
 }[] = [];
 let currentState = document.visibilityState;
 
+// exported for tests
+export const resetDocumentVisibilityStateChanges = () => {
+  while (changes.length) {
+    changes.pop();
+  }
+};
+
 const updateState = () => {
   const newState = document.visibilityState;
   if (currentState !== newState) {
@@ -54,7 +61,13 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
 export const onEnd = (readableSpan: ReadableSpan): void => {
   const span = readableSpan as SdkTraceSpan;
   const startTimeInNanoseconds = hrTimeToNanoseconds(span.startTime);
-  const endTimeInNanoseconds = hrTimeToNanoseconds(span.endTime);
+
+  // In almost all cases, span is ended without custom time (the endTime is equal current time).
+  // Rarely (e.g. in document-load auto-instrumentation) the root span ends when the whole trace ends.
+  // Because there could be no child span to put the 'pagehide' event, we're extending root spans.
+  const endTimeInNanoseconds = readableSpan.parentSpanId
+    ? hrTimeToNanoseconds(span.endTime)
+    : Infinity;
 
   for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, timestampInHrTime, state } = changes[i];
