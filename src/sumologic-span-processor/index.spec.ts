@@ -5,9 +5,11 @@ import {
   Tracer,
 } from '@opentelemetry/sdk-trace-base';
 import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
+import { hrTime } from '@opentelemetry/core';
 import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
 import { resetSavedSpans } from './find-longtask-context';
+import { resetDocumentVisibilityStateChanges } from './document-visibility-state';
 
 delete window.location;
 window.location = new URL('https://www.unit-test-example.com');
@@ -48,13 +50,18 @@ describe('SumoLogicSpanProcessor', () => {
   let spanProcessor: SumoLogicSpanProcessor;
   let superOnEnd: jest.Mock;
 
-  const createSpan = (name = 'test') =>
+  const createSpan = (name = 'test', parentSpan?: Span) =>
     new Span(
       tracer,
       ROOT_CONTEXT,
       name,
-      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
+      {
+        spanId: nextUID(),
+        traceId: parentSpan?.spanContext().traceId ?? nextUID(),
+        traceFlags: TraceFlags.SAMPLED,
+      },
       SpanKind.INTERNAL,
+      parentSpan?.spanContext().spanId,
     );
 
   beforeEach(() => {
@@ -62,6 +69,7 @@ describe('SumoLogicSpanProcessor', () => {
     resetSavedSpans();
     setDocumentVisibilityState('visible');
     document.dispatchEvent(new Event('visibilitychange'));
+    resetDocumentVisibilityStateChanges();
 
     exporter = {
       export() {},
@@ -98,6 +106,7 @@ describe('SumoLogicSpanProcessor', () => {
     test('when page is visible', () => {
       spanProcessor.onStart(span);
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('visible');
     });
 
@@ -107,6 +116,7 @@ describe('SumoLogicSpanProcessor', () => {
       document.dispatchEvent(new Event('visibilitychange'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
 
@@ -116,6 +126,7 @@ describe('SumoLogicSpanProcessor', () => {
       window.dispatchEvent(new Event('pagehide'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
 
@@ -127,6 +138,39 @@ describe('SumoLogicSpanProcessor', () => {
       window.dispatchEvent(new Event('pageshow'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
+      expect(span.attributes['document.visibilityState']).toBe('hidden');
+    });
+
+    test('with visibility changes triggered only between child span start time and end time', () => {
+      setSystemTime('2022-01-01 10:00');
+      spanProcessor.onStart(span);
+      const childSpan = createSpan('child span', span);
+      spanProcessor.onStart(childSpan);
+      setSystemTime('2022-01-01 10:01');
+      const endTime = hrTime();
+      setSystemTime('2022-01-01 10:02');
+      setDocumentVisibilityState('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      span.end();
+      spanProcessor.onEnd(span);
+      childSpan.end(endTime); // end time is before page was hidden
+      spanProcessor.onEnd(childSpan);
+      jest.runAllTimers();
+      expect(childSpan.attributes['document.visibilityState']).toBe('visible');
+    });
+
+    test('with visibility changes triggered between root span start time and current time', () => {
+      setSystemTime('2022-01-01 10:00');
+      spanProcessor.onStart(span);
+      setSystemTime('2022-01-01 10:01');
+      const endTime = hrTime();
+      setSystemTime('2022-01-01 10:02');
+      setDocumentVisibilityState('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      span.end(endTime); // end time is before page was hidden
+      spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
   });
@@ -140,6 +184,7 @@ describe('SumoLogicSpanProcessor', () => {
       document.dispatchEvent(new Event('visibilitychange'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.events.length).toBe(1);
       expect(span.events[0].name).toBe('pagehide');
     });
@@ -152,6 +197,7 @@ describe('SumoLogicSpanProcessor', () => {
       window.dispatchEvent(new Event('pagehide'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.events.length).toBe(1);
       expect(span.events[0].name).toBe('pagehide');
     });
@@ -166,9 +212,44 @@ describe('SumoLogicSpanProcessor', () => {
       window.dispatchEvent(new Event('pageshow'));
       span.end();
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
       expect(span.events.length).toBe(2);
       expect(span.events[1].name).toBe('pagehide');
       expect(span.events[0].name).toBe('pageshow');
+    });
+
+    test('with visibility changes triggered only between child span start time and end time', () => {
+      setSystemTime('2022-01-05 10:00');
+      spanProcessor.onStart(span);
+      const childSpan = createSpan('child span', span);
+      spanProcessor.onStart(childSpan);
+      setSystemTime('2022-01-05 10:01');
+      const endTime = hrTime();
+      setSystemTime('2022-01-05 10:02');
+      setDocumentVisibilityState('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      span.end();
+      spanProcessor.onEnd(span);
+      childSpan.end(endTime); // end time is before page was hidden
+      spanProcessor.onEnd(childSpan);
+      jest.runAllTimers();
+      expect(childSpan.events.length).toBe(0);
+    });
+
+    test('with visibility changes triggered between root span start time and current time', () => {
+      setSystemTime('2022-01-06 10:00');
+      spanProcessor.onStart(span);
+      setSystemTime('2022-01-06 10:01');
+      const endTime = hrTime();
+      setSystemTime('2022-01-06 10:02');
+      setDocumentVisibilityState('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      span.end(endTime); // end time is before page was hidden
+      spanProcessor.onEnd(span);
+      jest.runAllTimers();
+      expect(span.events.length).toBe(1);
+      expect(span.events[0].name).toBe('pagehide');
+      expect(span.events[0].time[0]).toBeGreaterThan(endTime[0]);
     });
   });
 
