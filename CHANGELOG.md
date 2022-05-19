@@ -89,3 +89,8 @@
 - added attribute `new.location.href` to `Navigation: *` spans
 
 Check "Manual instrumentation" in README for new instructions.
+
+## 3.1.0
+
+- Extended `document.visbilityState` discoverability for root spans
+- XHR metrics
