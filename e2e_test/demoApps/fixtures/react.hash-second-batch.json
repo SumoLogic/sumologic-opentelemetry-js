@@ -12,7 +12,7 @@
           {
             "key": "sumologic.rum.version",
             "value": {
-              "stringValue": "3.0.1"
+              "stringValue": "3.1.0-0"
             }
           },
           {
@@ -106,6 +106,18 @@
                   "key": "http.url",
                   "value": {
                     "stringValue": "https://swapi.dev/api/planets/3"
+                  }
+                },
+                {
+                  "key": "xhr.root_span.operation",
+                  "value": {
+                    "stringValue": "Navigation: /react/index_hash.html#/planet/3"
+                  }
+                },
+                {
+                  "key": "xhr.root_span.http.url",
+                  "value": {
+                    "stringValue": "http://localhost:50296/react/index_hash.html#/planet/3"
                   }
                 },
                 {
@@ -788,6 +800,12 @@
                   "key": "new.location.href",
                   "value": {
                     "stringValue": "http://localhost:50296/react/index_hash.html#/planet/3"
+                  }
+                },
+                {
+                  "key": "xhr.is_root_span",
+                  "value": {
+                    "boolValue": true
                   }
                 },
                 {

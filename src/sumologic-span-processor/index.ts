@@ -8,6 +8,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as documentVisibilityState from './document-visibility-state';
 import * as findLongTaskContext from './find-longtask-context';
+import * as xhrEnrichment from './xhr-enrichment';
 import { createTraceProcessor } from './trace-processor';
 import * as sessionId from './session-id';
 
@@ -32,6 +33,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   onStart(span: SdkTraceSpan, context?: Context): void {
     documentVisibilityState.onStart(span, context);
+    xhrEnrichment.onStart(span, context);
     this.traceProcessor.onStart(span, context);
     if (this.shouldCollectSessionId) {
       sessionId.onStart(span, context);
@@ -45,6 +47,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   onEnd(span: ReadableSpan): void {
     documentVisibilityState.onEnd(span);
+    xhrEnrichment.onEnd(span);
 
     // we use callbacks instead of Promises, because even immediately resolved Promise won't be executed synchronously
     // which will break when spans are ended before closing a page

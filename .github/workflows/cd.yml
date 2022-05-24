@@ -19,6 +19,10 @@ jobs:
           node-version: 14.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      # TODO: don't change 'latest' dist-tag for beta versions;
+      # currently when publishing version with a suffix,
+      # the latest tag needs to be manually restored with
+      # 'npm dist-tag add @sumologic/opentelemetry-rum@{version} latest'
       - run: |
           npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
           npm publish --access public
