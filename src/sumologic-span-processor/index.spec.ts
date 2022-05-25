@@ -5,7 +5,7 @@ import {
   Tracer,
 } from '@opentelemetry/sdk-trace-base';
 import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
-import { hrTime } from '@opentelemetry/core';
+import { hrTime, InstrumentationLibrary } from '@opentelemetry/core';
 import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
 import { resetSavedSpans } from './find-longtask-context';
@@ -50,6 +50,13 @@ describe('SumoLogicSpanProcessor', () => {
   let spanProcessor: SumoLogicSpanProcessor;
   let superOnEnd: jest.Mock;
 
+  const setInstrumentationLibrary = (
+    span: Span,
+    instrumentationLibrary: InstrumentationLibrary,
+  ): void => {
+    (span as any).instrumentationLibrary = instrumentationLibrary;
+  };
+
   const createSpan = (name = 'test', parentSpan?: Span) =>
     new Span(
       tracer,
@@ -63,6 +70,21 @@ describe('SumoLogicSpanProcessor', () => {
       SpanKind.INTERNAL,
       parentSpan?.spanContext().spanId,
     );
+
+  const createXhrSpan = (name: string, parentSpan?: Span): Span => {
+    const span = createSpan(name, parentSpan);
+    (span as any).kind = SpanKind.CLIENT;
+    return span;
+  };
+
+  const createLongtaskSpan = (parentSpan?: Span): Span => {
+    const span = createSpan('longtask', parentSpan);
+    setInstrumentationLibrary(span, {
+      name: '@opentelemetry/instrumentation-long-task',
+      version: undefined,
+    });
+    return span;
+  };
 
   beforeEach(() => {
     setSystemTime('2022-01-01 10:00');
@@ -254,10 +276,10 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('drops root spans from instrumentation-user-interaction when there is no children', () => {
-    (span as any).instrumentationLibrary = {
+    setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
       version: undefined,
-    };
+    });
     spanProcessor.onStart(span);
     span.end();
     spanProcessor.onEnd(span);
@@ -267,10 +289,10 @@ describe('SumoLogicSpanProcessor', () => {
 
   test('does not drop root spans from instrumentation-user-interaction when dropSingleUserInteractionTraces option is disabled', () => {
     createSpanProcessor({ dropSingleUserInteractionTraces: false });
-    (span as any).instrumentationLibrary = {
+    setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
       version: undefined,
-    };
+    });
     spanProcessor.onStart(span);
     span.end();
     spanProcessor.onEnd(span);
@@ -279,10 +301,10 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('finds context for longtask spans', () => {
-    (span as any).instrumentationLibrary = {
+    setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
-    };
+    });
     const parent = new Span(
       tracer,
       ROOT_CONTEXT,
@@ -306,17 +328,11 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('finds context for longtask spans on spans ended after the longtask', () => {
-    (span as any).instrumentationLibrary = {
+    setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
-    };
-    const parent = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'parent test span',
-      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
-      SpanKind.INTERNAL,
-    );
+    });
+    const parent = createSpan('parent test span');
 
     spanProcessor.onStart(parent);
     spanProcessor.onStart(span);
@@ -333,17 +349,11 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('longtask spans without context are dropped', () => {
-    (span as any).instrumentationLibrary = {
+    setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
-    };
-    const parent = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'parent test span',
-      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
-      SpanKind.INTERNAL,
-    );
+    });
+    const parent = createSpan('parent test span');
 
     // in this case the parent span is not ended so longtask should not be attached
     spanProcessor.onStart(parent);
@@ -353,49 +363,8 @@ describe('SumoLogicSpanProcessor', () => {
     expect(superOnEnd).not.toBeCalled();
   });
 
-  test('enrich non-root xhr spans', () => {
-    const xhrSpan = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'HTTP GET',
-      {
-        spanId: nextUID(),
-        traceId: span.spanContext().traceId,
-        traceFlags: TraceFlags.SAMPLED,
-      },
-      SpanKind.CLIENT,
-      span.spanContext().spanId,
-    );
-
-    spanProcessor.onStart(span);
-    span.attributes['location.href'] =
-      'https://www.unit-test-example.com/signup';
-
-    spanProcessor.onStart(xhrSpan);
-
-    spanProcessor.onEnd(span);
-    spanProcessor.onEnd(xhrSpan);
-
-    expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
-    expect(xhrSpan.attributes['xhr.root_span.operation']).toBe('test');
-    expect(xhrSpan.attributes['xhr.root_span.http.url']).toBe(
-      'https://www.unit-test-example.com/signup',
-    );
-  });
-
-  test('enrich root xhr spans', () => {
-    const xhrSpan = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'HTTP GET',
-      {
-        spanId: nextUID(),
-        traceId: span.spanContext().traceId,
-        traceFlags: TraceFlags.SAMPLED,
-      },
-      SpanKind.CLIENT,
-      span.spanContext().spanId,
-    );
+  test('enrich non-root xhr span', () => {
+    const xhrSpan = createXhrSpan('HTTP GET', span);
 
     spanProcessor.onStart(span);
     span.attributes['location.href'] =
@@ -407,10 +376,86 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onEnd(xhrSpan);
 
     expect(span.attributes['xhr.is_root_span']).toBe(true);
-    expect('xhr.root_span.operation' in span.attributes).toBe(false);
-    expect('xhr.root_span.http.url' in span.attributes).toBe(false);
+    expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
+
+    expect(xhrSpan.attributes['root_span.operation']).toBe('test');
+    expect(xhrSpan.attributes['root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/signup',
+    );
+  });
+
+  test('does not enrich root xhr span', () => {
+    const xhrSpan = createXhrSpan('HTTP GET');
+
+    spanProcessor.onStart(xhrSpan);
+    spanProcessor.onEnd(xhrSpan);
 
     expect('xhr.is_root_span' in xhrSpan.attributes).toBe(false);
+    expect('root_span.operation' in xhrSpan.attributes).toBe(false);
+    expect('root_span.http.url' in xhrSpan.attributes).toBe(false);
+  });
+
+  test('enrich non-root longtask span', () => {
+    const longtaskSpan = createLongtaskSpan(span);
+
+    spanProcessor.onStart(span);
+    span.attributes['location.href'] =
+      'https://www.unit-test-example.com/signup';
+
+    spanProcessor.onStart(longtaskSpan);
+
+    spanProcessor.onEnd(span);
+    spanProcessor.onEnd(longtaskSpan);
+
+    expect('xhr.is_root_span' in span.attributes).toBe(false);
+    expect('xhr.is_root_span' in longtaskSpan.attributes).toBe(false);
+
+    expect(longtaskSpan.attributes['root_span.operation']).toBe('test');
+    expect(longtaskSpan.attributes['root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/signup',
+    );
+    expect('longtask.type' in longtaskSpan.attributes).toBe(false);
+  });
+
+  test('enrich longtask span in documentLoad trace', () => {
+    span.name = 'documentLoad';
+
+    const longtaskSpan = createLongtaskSpan(span);
+
+    spanProcessor.onStart(span);
+    spanProcessor.onStart(longtaskSpan);
+
+    spanProcessor.onEnd(span);
+    spanProcessor.onEnd(longtaskSpan);
+
+    expect(longtaskSpan.attributes['longtask.type']).toBe('documentLoad');
+  });
+
+  test('enrich longtask span in xhr trace', () => {
+    const xhrSpan = createXhrSpan('HTTP POST', span);
+    const longtaskSpan = createLongtaskSpan(span);
+
+    spanProcessor.onStart(span);
+    spanProcessor.onStart(xhrSpan);
+    spanProcessor.onStart(longtaskSpan);
+    spanProcessor.onEnd(longtaskSpan);
+
+    spanProcessor.onEnd(span);
+    spanProcessor.onEnd(xhrSpan);
+
+    expect(span.attributes['xhr.is_root_span']).toBe(true);
+    expect(longtaskSpan.attributes['longtask.type']).toBe('xhr');
+  });
+
+  test('does not enrich root longtask span', () => {
+    const longtaskSpan = createLongtaskSpan();
+
+    spanProcessor.onStart(longtaskSpan);
+    spanProcessor.onEnd(longtaskSpan);
+
+    expect('longtask.type' in longtaskSpan.attributes).toBe(false);
+    expect('root_span.operation' in longtaskSpan.attributes).toBe(false);
+    expect('root_span.http.url' in longtaskSpan.attributes).toBe(false);
   });
 
   describe('rum.session_id', () => {
@@ -425,17 +470,7 @@ describe('SumoLogicSpanProcessor', () => {
     });
 
     test('is consistent in started spans', () => {
-      const span2 = new Span(
-        tracer,
-        ROOT_CONTEXT,
-        'test2',
-        {
-          spanId: nextUID(),
-          traceId: nextUID(),
-          traceFlags: TraceFlags.SAMPLED,
-        },
-        SpanKind.INTERNAL,
-      );
+      const span2 = createSpan('test2');
       spanProcessor.onStart(span);
       spanProcessor.onStart(span2);
       expect(typeof span.attributes['rum.session_id']).toBe('string');
@@ -446,17 +481,7 @@ describe('SumoLogicSpanProcessor', () => {
     });
 
     test('is consistent between spans with 5 minutes delay', () => {
-      const span2 = new Span(
-        tracer,
-        ROOT_CONTEXT,
-        'test2',
-        {
-          spanId: nextUID(),
-          traceId: nextUID(),
-          traceFlags: TraceFlags.SAMPLED,
-        },
-        SpanKind.INTERNAL,
-      );
+      const span2 = createSpan('test2');
       jest.setSystemTime(new Date('2022-01-01 10:00').valueOf());
       spanProcessor.onStart(span);
       jest.setSystemTime(new Date('2022-01-01 10:05').valueOf());
@@ -468,17 +493,7 @@ describe('SumoLogicSpanProcessor', () => {
     });
 
     test('is different between spans with more than 5 minutes delay', () => {
-      const span2 = new Span(
-        tracer,
-        ROOT_CONTEXT,
-        'test2',
-        {
-          spanId: nextUID(),
-          traceId: nextUID(),
-          traceFlags: TraceFlags.SAMPLED,
-        },
-        SpanKind.INTERNAL,
-      );
+      const span2 = createSpan('test2');
       jest.setSystemTime(new Date('2022-01-01 10:00').valueOf());
       spanProcessor.onStart(span);
       jest.setSystemTime(new Date('2022-01-01 10:05:01').valueOf());
@@ -493,21 +508,7 @@ describe('SumoLogicSpanProcessor', () => {
 
   test('http.longtasks_sum metric is properly calculated', () => {
     setSystemTime('2022-01-01 10:00');
-    const longtask1 = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'longtask',
-      {
-        spanId: nextUID(),
-        traceId: nextUID(),
-        traceFlags: TraceFlags.NONE,
-      },
-      SpanKind.INTERNAL,
-    );
-    (longtask1 as any).instrumentationLibrary = {
-      name: '@opentelemetry/instrumentation-long-task',
-      version: undefined,
-    };
+    const longtask1 = createLongtaskSpan();
     spanProcessor.onStart(span);
     spanProcessor.onStart(longtask1);
 
@@ -516,21 +517,7 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onEnd(longtask1);
 
     setSystemTime('2022-01-01 10:15');
-    const longtask2 = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'longtask',
-      {
-        spanId: nextUID(),
-        traceId: nextUID(),
-        traceFlags: TraceFlags.NONE,
-      },
-      SpanKind.INTERNAL,
-    );
-    (longtask2 as any).instrumentationLibrary = {
-      name: '@opentelemetry/instrumentation-long-task',
-      version: undefined,
-    };
+    const longtask2 = createLongtaskSpan();
     spanProcessor.onStart(longtask2);
 
     setSystemTime('2022-01-01 10:16');
