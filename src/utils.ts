@@ -17,7 +17,7 @@ export const getUserInteractionSpanName = (
     if (id.length > 20) {
       id = `${id.slice(0, 17)}...`;
     }
-    return `${eventType} on "${id}"`;
+    return `${eventType} on '${id}'`;
   }
 };
 
