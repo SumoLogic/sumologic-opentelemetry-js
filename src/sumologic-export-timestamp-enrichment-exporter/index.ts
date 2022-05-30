@@ -1,4 +1,8 @@
-import { ExportResult } from '@opentelemetry/core';
+import {
+  ExportResult,
+  hrTime,
+  hrTimeToMilliseconds,
+} from '@opentelemetry/core';
 import { ReadableSpan, SpanExporter } from '@opentelemetry/sdk-trace-base';
 
 const TELEMETRY_SDK_EXPORT_TIMESTAMP =
@@ -15,7 +19,7 @@ export class ExportTimestampEnrichmentExporter implements SpanExporter {
     spans: ReadableSpan[],
     resultCallback: (result: ExportResult) => void,
   ) {
-    const exportTimestamp = Date.now();
+    const exportTimestamp = hrTimeToMilliseconds(hrTime());
     spans.forEach((span) => {
       span.resource.attributes[TELEMETRY_SDK_EXPORT_TIMESTAMP] =
         exportTimestamp;

@@ -3,8 +3,19 @@ import { Resource } from '@opentelemetry/resources';
 import { ReadableSpan, SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { ExportTimestampEnrichmentExporter } from '.';
 
+const nativePerformance = performance;
+
 beforeAll(() => {
-  jest.useFakeTimers('modern').setSystemTime(new Date('2020-10-01').getTime());
+  const ms = new Date('2020-10-01').getTime();
+  jest.useFakeTimers('modern').setSystemTime(ms);
+  Object.defineProperty(nativePerformance, 'timeOrigin', {
+    configurable: true,
+    get: () => ms,
+  });
+  Object.defineProperty(nativePerformance, 'now', {
+    configurable: true,
+    get: () => () => 0,
+  });
 });
 
 afterAll(() => {
