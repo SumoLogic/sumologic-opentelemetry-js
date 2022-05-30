@@ -15,6 +15,9 @@ const rootSpansByTraceId: Record<string, SdkTraceSpan> = {};
 const storedTraceIds: string[] = [];
 const childSpansToEnrich = new WeakMap<SdkTraceSpan, SdkTraceSpan[]>();
 
+const getRootSpan = (span: SdkTraceSpan): SdkTraceSpan | undefined =>
+  rootSpansByTraceId[span.spanContext().traceId];
+
 const isXhrSpan = (span: SdkTraceSpan): boolean =>
   span.name.startsWith('HTTP ') && span.kind === SpanKind.CLIENT;
 
@@ -33,42 +36,14 @@ const enrichChildSpan = (span: SdkTraceSpan, rootSpan: SdkTraceSpan) => {
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   const { parentSpanId } = span;
-  const isXhr = isXhrSpan(span);
-  const isLongtask = isLongtaskSpan(span);
-  if (isXhr || isLongtask) {
-    if (span.parentSpanId) {
-      const rootSpan = rootSpansByTraceId[span.spanContext().traceId];
-      if (rootSpan) {
-        if (isXhr) {
-          // root span of a xhr span gets this special attribute to indicate that it contains xhr spans
-          rootSpan.attributes[XHR_IS_ROOT_SPAN] = true;
-        }
-
-        if (isLongtask) {
-          // longtasks can be assigned either to documentLoad trace or a trace with xhr spans
-          // this special attribute is required to calculate longtask metric with proper dimensions
-          if (rootSpan.name === 'documentLoad') {
-            span.setAttribute(LONGTASK_TYPE, 'documentLoad');
-          } else if (rootSpan.attributes[XHR_IS_ROOT_SPAN]) {
-            span.setAttribute(LONGTASK_TYPE, 'xhr');
-          }
-        }
-
-        if (rootSpan.ended) {
-          // root span is neded so we can enrich child span
-          enrichChildSpan(span, rootSpan);
-        } else {
-          // we enrich child spans later because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
-          const spansToEnrich = childSpansToEnrich.get(rootSpan);
-          if (spansToEnrich) {
-            spansToEnrich.push(span);
-          } else {
-            childSpansToEnrich.set(rootSpan, [span]);
-          }
-        }
-      }
+  if (isXhrSpan(span) && parentSpanId) {
+    const rootSpan = getRootSpan(span);
+    if (rootSpan) {
+      // root span of a xhr span gets this special attribute to indicate that it contains xhr spans
+      rootSpan.attributes[XHR_IS_ROOT_SPAN] = true;
     }
-  } else if (!parentSpanId) {
+  }
+  if (!parentSpanId) {
     // save root spans for later use
     const { traceId } = span.spanContext();
     rootSpansByTraceId[traceId] = span;
@@ -82,8 +57,39 @@ export const onStart = (span: SdkTraceSpan, context?: Context): void => {
 
 export const onEnd = (span: ReadableSpan): void => {
   const sdkSpan = span as SdkTraceSpan;
+
   const childSpans = childSpansToEnrich.get(sdkSpan);
   if (childSpans) {
     childSpans.forEach((span) => enrichChildSpan(span, sdkSpan));
+  }
+
+  const isXhr = isXhrSpan(sdkSpan);
+  const isLongtask = isLongtaskSpan(sdkSpan);
+  if (span.parentSpanId && (isXhr || isLongtask)) {
+    const rootSpan = getRootSpan(sdkSpan);
+    if (rootSpan) {
+      if (isLongtask) {
+        // longtasks can be assigned either to documentLoad trace or a trace with xhr spans
+        // this special attribute is required to calculate longtask metric with proper dimensions
+        if (rootSpan.name === 'documentLoad') {
+          span.attributes[LONGTASK_TYPE] = 'documentLoad';
+        } else if (rootSpan.attributes[XHR_IS_ROOT_SPAN]) {
+          span.attributes[LONGTASK_TYPE] = 'xhr';
+        }
+      }
+
+      if (rootSpan.ended) {
+        // root span is neded so we can enrich child span
+        enrichChildSpan(sdkSpan, rootSpan);
+      } else {
+        // we enrich child spans later because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
+        const spansToEnrich = childSpansToEnrich.get(rootSpan);
+        if (spansToEnrich) {
+          spansToEnrich.push(sdkSpan);
+        } else {
+          childSpansToEnrich.set(rootSpan, [sdkSpan]);
+        }
+      }
+    }
   }
 };

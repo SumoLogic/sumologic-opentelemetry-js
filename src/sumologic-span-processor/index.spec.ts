@@ -77,8 +77,8 @@ describe('SumoLogicSpanProcessor', () => {
     return span;
   };
 
-  const createLongtaskSpan = (parentSpan?: Span): Span => {
-    const span = createSpan('longtask', parentSpan);
+  const createLongtaskSpan = (): Span => {
+    const span = createSpan('longtask');
     setInstrumentationLibrary(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
@@ -372,6 +372,7 @@ describe('SumoLogicSpanProcessor', () => {
 
     spanProcessor.onStart(xhrSpan);
 
+    span.end();
     spanProcessor.onEnd(span);
     spanProcessor.onEnd(xhrSpan);
 
@@ -396,7 +397,7 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('enrich non-root longtask span', () => {
-    const longtaskSpan = createLongtaskSpan(span);
+    const longtaskSpan = createLongtaskSpan();
 
     spanProcessor.onStart(span);
     span.attributes['location.href'] =
@@ -404,7 +405,9 @@ describe('SumoLogicSpanProcessor', () => {
 
     spanProcessor.onStart(longtaskSpan);
 
+    span.end();
     spanProcessor.onEnd(span);
+    longtaskSpan.end();
     spanProcessor.onEnd(longtaskSpan);
 
     expect('xhr.is_root_span' in span.attributes).toBe(false);
@@ -420,12 +423,14 @@ describe('SumoLogicSpanProcessor', () => {
   test('enrich longtask span in documentLoad trace', () => {
     span.name = 'documentLoad';
 
-    const longtaskSpan = createLongtaskSpan(span);
+    const longtaskSpan = createLongtaskSpan();
 
     spanProcessor.onStart(span);
     spanProcessor.onStart(longtaskSpan);
 
+    span.end();
     spanProcessor.onEnd(span);
+    longtaskSpan.end();
     spanProcessor.onEnd(longtaskSpan);
 
     expect(longtaskSpan.attributes['longtask.type']).toBe('documentLoad');
@@ -433,14 +438,17 @@ describe('SumoLogicSpanProcessor', () => {
 
   test('enrich longtask span in xhr trace', () => {
     const xhrSpan = createXhrSpan('HTTP POST', span);
-    const longtaskSpan = createLongtaskSpan(span);
+    const longtaskSpan = createLongtaskSpan();
 
     spanProcessor.onStart(span);
     spanProcessor.onStart(xhrSpan);
     spanProcessor.onStart(longtaskSpan);
-    spanProcessor.onEnd(longtaskSpan);
 
+    longtaskSpan.end();
+    spanProcessor.onEnd(longtaskSpan);
+    span.end();
     spanProcessor.onEnd(span);
+    xhrSpan.end();
     spanProcessor.onEnd(xhrSpan);
 
     expect(span.attributes['xhr.is_root_span']).toBe(true);
@@ -451,6 +459,7 @@ describe('SumoLogicSpanProcessor', () => {
     const longtaskSpan = createLongtaskSpan();
 
     spanProcessor.onStart(longtaskSpan);
+    longtaskSpan.end();
     spanProcessor.onEnd(longtaskSpan);
 
     expect('longtask.type' in longtaskSpan.attributes).toBe(false);

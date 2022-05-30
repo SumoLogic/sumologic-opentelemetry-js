@@ -47,11 +47,11 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   onEnd(span: ReadableSpan): void {
     documentVisibilityState.onEnd(span);
-    rootToChildEnrichment.onEnd(span);
 
     // we use callbacks instead of Promises, because even immediately resolved Promise won't be executed synchronously
     // which will break when spans are ended before closing a page
     findLongTaskContext.onEnd(span, (span2) => {
+      rootToChildEnrichment.onEnd(span2);
       this.traceProcessor.onEnd(span2, (span3) => {
         super.onEnd(span3);
       });
