@@ -95,3 +95,7 @@ Check "Manual instrumentation" in README for new instructions.
 - Extended `document.visbilityState` discoverability for root spans
 - Fixed broken span timings on some browsers
 - XHR & longtask metrics
+
+## Unreleased
+
+- Fixed `document.visibilityState` for pages open in background

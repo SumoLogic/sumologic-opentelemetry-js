@@ -4,7 +4,7 @@ import {
   SpanExporter,
   Tracer,
 } from '@opentelemetry/sdk-trace-base';
-import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
+import { HrTime, ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
 import { hrTime, InstrumentationLibrary } from '@opentelemetry/core';
 import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
@@ -57,7 +57,7 @@ describe('SumoLogicSpanProcessor', () => {
     (span as any).instrumentationLibrary = instrumentationLibrary;
   };
 
-  const createSpan = (name = 'test', parentSpan?: Span) =>
+  const createSpan = (name = 'test', parentSpan?: Span, startTime?: HrTime) =>
     new Span(
       tracer,
       ROOT_CONTEXT,
@@ -69,6 +69,8 @@ describe('SumoLogicSpanProcessor', () => {
       },
       SpanKind.INTERNAL,
       parentSpan?.spanContext().spanId,
+      [],
+      startTime,
     );
 
   const createXhrSpan = (name: string, parentSpan?: Span): Span => {
@@ -164,7 +166,7 @@ describe('SumoLogicSpanProcessor', () => {
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
 
-    test('with visibility changes triggered only between child span start time and end time', () => {
+    test('for child span ended with custom time', () => {
       setSystemTime('2022-01-01 10:00');
       spanProcessor.onStart(span);
       const childSpan = createSpan('child span', span);
@@ -179,10 +181,11 @@ describe('SumoLogicSpanProcessor', () => {
       childSpan.end(endTime); // end time is before page was hidden
       spanProcessor.onEnd(childSpan);
       jest.runAllTimers();
+      expect(span.attributes['document.visibilityState']).toBe('hidden');
       expect(childSpan.attributes['document.visibilityState']).toBe('visible');
     });
 
-    test('with visibility changes triggered between root span start time and current time', () => {
+    test('for root span ended with custom time', () => {
       setSystemTime('2022-01-01 10:00');
       spanProcessor.onStart(span);
       setSystemTime('2022-01-01 10:01');
@@ -192,6 +195,33 @@ describe('SumoLogicSpanProcessor', () => {
       document.dispatchEvent(new Event('visibilitychange'));
       span.end(endTime); // end time is before page was hidden
       spanProcessor.onEnd(span);
+      jest.runAllTimers();
+
+      // Although page was hidden after span end time, we still marked it as 'hidden'.
+      // It's a special case that only applies for root spans.
+      // It was introduced to support `documentLoad` page visibility.
+      // Because `documentLoad` span ends when page was loaded, there are may be gaps in spans, so there would be no span
+      // where we may put the 'pagehide' event.
+      expect(span.attributes['document.visibilityState']).toBe('hidden');
+    });
+
+    test('for span started with custom time', () => {
+      setSystemTime('2022-01-01 10:00');
+      setDocumentVisibilityState('hidden'); // page is initially hidden
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      setSystemTime('2022-01-01 10:01');
+      const startTime = hrTime(); // our root span will start at this point
+
+      setSystemTime('2022-01-01 10:02');
+      setDocumentVisibilityState('visible'); // page is visible when span is creating
+      document.dispatchEvent(new Event('visibilitychange'));
+      span = createSpan('root', undefined, startTime);
+      spanProcessor.onStart(span);
+      setSystemTime('2022-01-01 10:03');
+      span.end();
+      spanProcessor.onEnd(span);
+
       jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
