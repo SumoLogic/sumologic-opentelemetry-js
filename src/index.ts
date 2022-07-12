@@ -14,8 +14,11 @@ import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
 import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { Resource, ResourceAttributes } from '@opentelemetry/resources';
+import {
+  SemanticAttributes,
+  SemanticResourceAttributes,
+} from '@opentelemetry/semantic-conventions';
 import { SumoLogicSpanProcessor } from './sumologic-span-processor';
 import { LongTaskInstrumentation } from '@opentelemetry/instrumentation-long-task';
 import { SumoLogicLogsExporter } from './sumologic-logs-exporter';
@@ -57,7 +60,8 @@ interface InitializeOptions {
   authorizationToken?: string;
   serviceName?: string;
   applicationName?: string;
-  defaultAttributes?: api.SpanAttributes;
+  deploymentEnvironment?: string;
+  defaultAttributes?: api.Attributes;
   samplingProbability?: number | string;
   bufferMaxSpans?: number;
   maxExportBatchSize?: number;
@@ -83,6 +87,7 @@ export const initialize = ({
   authorizationToken,
   serviceName,
   applicationName,
+  deploymentEnvironment,
   defaultAttributes,
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
@@ -101,10 +106,19 @@ export const initialize = ({
 
   const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
 
-  const resource = new Resource({
+  const resourceAttributes: ResourceAttributes = {
     [SemanticResourceAttributes.SERVICE_NAME]:
       serviceName ?? UNKNOWN_SERVICE_NAME,
-  });
+    ['sumologic.rum.version']: version,
+  };
+  if (applicationName) {
+    resourceAttributes.application = applicationName;
+  }
+  if (deploymentEnvironment) {
+    resourceAttributes[SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT] =
+      deploymentEnvironment;
+  }
+  const resource = new Resource(resourceAttributes);
 
   const provider = new WebTracerProvider({
     resource,
@@ -117,20 +131,14 @@ export const initialize = ({
   });
 
   const attributes: OTLPExporterConfigBase['attributes'] = {
-    ...defaultAttributes,
-    ['sumologic.rum.version']: version,
-
     // This is a temporary solution not covered by the specification.
     // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
     ['sampling.probability']: samplingProbabilityMaybeNumber,
   };
-  if (applicationName) {
-    attributes.application = applicationName;
-  }
 
   const setDefaultAttribute = (
     key: string,
-    value: api.SpanAttributeValue | undefined,
+    value: api.AttributeValue | undefined,
   ) => {
     attributes[key] = value;
   };
@@ -154,8 +162,13 @@ export const initialize = ({
     }),
   );
 
+  const logsResource = resource.merge(
+    new Resource({
+      [SemanticAttributes.HTTP_USER_AGENT]: navigator.userAgent,
+    }),
+  );
   const logsExporter = new SumoLogicLogsExporter({
-    resource,
+    resource: logsResource,
     collectorUrl: `${collectionSourceUrl}/v1/logs`,
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,

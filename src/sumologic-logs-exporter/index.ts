@@ -58,6 +58,8 @@ interface ProtoLogRecord {
   body?: ProtoValue;
   attributes?: ProtoAttribute[];
   droppedAttributesCount: number;
+  traceId?: string;
+  spanId?: string;
 }
 
 enum ProtoSeverityNumber {
@@ -201,16 +203,11 @@ export class SumoLogicLogsExporter {
     const attributes: ProtoLogRecord['attributes'] = [
       protoAttribute('type', log.type),
       protoAttribute('http.url', location.href),
-      protoAttribute('http.user_agent', navigator.userAgent),
     ];
 
     const span = api.trace.getSpan(api.context.active());
-    if (span) {
-      attributes.push(protoAttribute('trace_id', span.spanContext().traceId));
-      attributes.push(protoAttribute('span_id', span.spanContext().spanId));
-      if (isReadableSpan(span)) {
-        attributes.push(protoAttribute('span_name', span.name));
-      }
+    if (span && isReadableSpan(span)) {
+      attributes.push(protoAttribute('operation', span.name));
     }
 
     if (log.element) {
@@ -243,6 +240,8 @@ export class SumoLogicLogsExporter {
       },
       attributes,
       droppedAttributesCount: 0,
+      traceId: span?.spanContext().traceId,
+      spanId: span?.spanContext().spanId,
     });
 
     this.exportWhenNeeded();
