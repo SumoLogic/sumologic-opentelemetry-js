@@ -100,6 +100,7 @@ Both `script` tag and manual installation can be configured with following param
 | authorizationToken              | `string`             |             | Sumo Logic collector authorization token                                                                    |
 | serviceName                     | `string`             | `"unknown"` | Name of your web service                                                                                    |
 | applicationName                 | `string`             |             | Name of your application                                                                                    |
+| deploymentEnvironment           | `string`             |             | The software deployment (e.g. `staging`, `production`)                                                      |
 | defaultAttributes               | `object`             | `{}`        | Attributes added to each span                                                                               |
 | samplingProbability             | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent |
 | bufferMaxSpans                  | `number`             | `2048`      | Maximum number of spans waiting to be send                                                                  |
