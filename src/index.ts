@@ -30,7 +30,11 @@ import {
   MAX_EXPORT_BATCH_SIZE,
   UNKNOWN_SERVICE_NAME,
 } from './constants';
-import { getUserInteractionSpanName, tryNumber } from './utils';
+import {
+  getCollectionSourceUrl,
+  getUserInteractionSpanName,
+  tryNumber,
+} from './utils';
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 
@@ -143,8 +147,10 @@ export const initialize = ({
     attributes[key] = value;
   };
 
+  const parsedCollectionSourceUrl = getCollectionSourceUrl(collectionSourceUrl);
+
   const collectorExporter = new OTLPTraceExporter({
-    url: collectionSourceUrl,
+    url: `${parsedCollectionSourceUrl}v1/traces`,
     attributes,
     headers: authorizationToken
       ? { Authorization: authorizationToken }
@@ -169,7 +175,7 @@ export const initialize = ({
   );
   const logsExporter = new SumoLogicLogsExporter({
     resource: logsResource,
-    collectorUrl: `${collectionSourceUrl}/v1/logs`,
+    collectorUrl: `${parsedCollectionSourceUrl}v1/logs`,
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,
   });
