@@ -273,7 +273,7 @@ export class SumoLogicLogsExporter {
                 name,
                 version,
               },
-              logs,
+              logRecords: logs,
             },
           ],
         },
