@@ -18,15 +18,16 @@ const changes: {
   timestampInHrTime: HrTime;
   state: DocumentVisibilityState;
 }[] = [];
-let currentState: DocumentVisibilityState | undefined;
+let initialState = document.visibilityState;
+let currentState = initialState;
 
 // exported for tests
 export const resetDocumentVisibilityStateChanges = () => {
   while (changes.length) {
     changes.pop();
   }
-  currentState = undefined;
-  updateState();
+  initialState = document.visibilityState;
+  currentState = initialState;
 };
 
 const updateState = () => {
@@ -45,8 +46,6 @@ const updateState = () => {
   }
 };
 
-updateState(); // we want to keep the initial state in the history as well
-
 document.addEventListener('visibilitychange', () => {
   updateState();
 });
@@ -60,6 +59,8 @@ window.addEventListener('pageshow', () => {
 });
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+  span.setAttribute(ATTRIBUTE_NAME, initialState);
+
   const startTimeInNanoseconds = hrTimeToNanoseconds(span.startTime);
   for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, state } = changes[i];
@@ -83,7 +84,7 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
 
   // we skip the initial change because it's already covered by the onStart function
   // and we don't want to save initial state as an event
-  for (let i = changes.length - 1; i >= 1; i -= 1) {
+  for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, timestampInHrTime, state } = changes[i];
     if (timestampInNanoseconds < startTimeInNanoseconds) {
       break;

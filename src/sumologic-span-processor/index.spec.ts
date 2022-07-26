@@ -144,6 +144,20 @@ describe('SumoLogicSpanProcessor', () => {
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
 
+    test('when page was initially open hidden', () => {
+      setDocumentVisibilityState('hidden');
+      resetDocumentVisibilityStateChanges();
+      // span can be created with a timestamp before RUM script run, e.g. in document-load
+      setSystemTime('2022-01-01 09:00');
+      span = createSpan();
+      spanProcessor.onStart(span);
+      setSystemTime('2022-01-01 09:02');
+      span.end();
+      spanProcessor.onEnd(span);
+      jest.runAllTimers();
+      expect(span.attributes['document.visibilityState']).toBe('hidden');
+    });
+
     test('when page becomes hidden using "pagehide" event', () => {
       spanProcessor.onStart(span);
       setDocumentVisibilityState('hidden');
