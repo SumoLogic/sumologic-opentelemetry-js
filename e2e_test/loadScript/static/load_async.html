@@ -16,7 +16,7 @@
   })(window, 'sumoLogicOpenTelemetryRum', document, 'rum.js');
   window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
-      collectionSourceUrl: 'http://localhost:{{port}}/traces',
+      collectionSourceUrl: 'http://localhost:{{port}}/rum',
       serviceName: 'load-async-test-service-name',
       applicationName: 'load-async-test-application-name',
       defaultAttributes: {

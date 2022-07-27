@@ -11,9 +11,10 @@ The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation 
 - web-vitals
 - session id
 - longtasks with automatic context attaching
+- uncaught exceptions, unhandled rejections, document errors and console errors
 - support for manual instrumentation
 - automatic context carrying through timers, promises, native async-await, events, observers and more
-- 88 KB (26 KB gzipped)
+- 98 KB (29 KB gzipped)
 
 ## Installation
 
@@ -94,22 +95,23 @@ initialize({
 
 Both `script` tag and manual installation can be configured with following parameters:
 
-| Parameter                       | Type                 | Default     | Description                                                                                                 |
-| ------------------------------- | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
-| collectionSourceUrl             | `string`             | _required_  | Sumo Logic collector source url                                                                             |
-| authorizationToken              | `string`             |             | Sumo Logic collector authorization token                                                                    |
-| serviceName                     | `string`             | `"unknown"` | Name of your web service                                                                                    |
-| applicationName                 | `string`             |             | Name of your application                                                                                    |
-| deploymentEnvironment           | `string`             |             | The software deployment (e.g. `staging`, `production`)                                                      |
-| defaultAttributes               | `object`             | `{}`        | Attributes added to each span                                                                               |
-| samplingProbability             | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent |
-| bufferMaxSpans                  | `number`             | `2048`      | Maximum number of spans waiting to be send                                                                  |
-| maxExportBatchSize              | `number`             | `50`        | Maximum number of spans in one request                                                                      |
-| bufferTimeout                   | `number`             | `2000`ms    | Time in milliseconds for spans waiting to be send                                                           |
-| ignoreUrls                      | `(string\|RegExp)[]` | `[]`        | List of URLs from which traces will not be collected                                                        |
-| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP headers will be injected  |
-| collectSessionId                | `boolean`            | `true`      | Enables collecting `rum.session_id` attributes                                                              |
-| dropSingleUserInteractionTraces | `boolean`            | `true`      | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.) |
+| Parameter                       | Type                 | Default     | Description                                                                                                  |
+| ------------------------------- | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| collectionSourceUrl             | `string`             | _required_  | Sumo Logic collector source url                                                                              |
+| authorizationToken              | `string`             |             | Sumo Logic collector authorization token                                                                     |
+| serviceName                     | `string`             | `"unknown"` | Name of your web service                                                                                     |
+| applicationName                 | `string`             |             | Name of your application                                                                                     |
+| deploymentEnvironment           | `string`             |             | The software deployment (e.g. `staging`, `production`)                                                       |
+| defaultAttributes               | `object`             | `{}`        | Attributes added to each span                                                                                |
+| samplingProbability             | `number`             | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent  |
+| bufferMaxSpans                  | `number`             | `2048`      | Maximum number of spans waiting to be send                                                                   |
+| maxExportBatchSize              | `number`             | `50`        | Maximum number of spans in one request                                                                       |
+| bufferTimeout                   | `number`             | `2000`ms    | Time in milliseconds for spans waiting to be send                                                            |
+| ignoreUrls                      | `(string\|RegExp)[]` | `[]`        | List of XHR URLs to ignore (e.g. analytics)                                                                  |
+| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]` | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP header will be injected    |
+| collectSessionId                | `boolean`            | `true`      | Enables collecting `rum.session_id` attribute                                                                |
+| dropSingleUserInteractionTraces | `boolean`            | `true`      | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)  |
+| collectErrors                   | `boolean`            | `true`      | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
 
 ## Trace context propagation
 
@@ -136,19 +138,23 @@ propagateTraceHeaderCorsUrls: [
 When initialized by the `<script />` tag, window attribute `sumoLogicOpenTelemetryRum` is exposed. It gives possibility to create spans manually. Global `sumoLogicOpenTelemetryRum` objects contains:
 
 - `api` - exposed [@opentelemetry/api](https://www.npmjs.com/package/@opentelemetry/api) module
-- `tracer` - an instance of a `Tracer` from [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing).
+- `tracer` - an instance of a `Tracer` from [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing)
+- `recordError` - a function to create an error with the given message and optional attributes.
 
 Example:
 
 ```javascript
-const { tracer, api } = sumoLogicOpenTelemetryRum;
+const { tracer, api, recordError } = sumoLogicOpenTelemetryRum;
 const span = tracer.startSpan('fetchUserData', {
   attributes: { organization: 'client-a' },
 });
 api.context.with(api.trace.setSpan(api.context.active(), span), () => {
   // long running operation
 });
+recordError('Cannot load data', { organization: 'test' });
 ```
+
+Using in production, make sure your website works when `sumoLogicOpenTelemetryRum` is not defined (e.g. blocked by a browser extension).
 
 ## Disable instrumentation
 
@@ -175,6 +181,12 @@ Example: `window.sumoLogicOpenTelemetryRum.setDefaultAttribute('user_id', userId
 Returns current value of the `rum.session_id` attribute. Returned value may change in time, so don't cache it.
 
 Example: `window.sumoLogicOpenTelemetryRum.getCurrentSessionId()`
+
+### recordError()
+
+Sends an error with the given message and optional attributes.
+
+Example: `window.sumoLogicOpenTelemetryRum.recordError('Cannot load data', { organization: 'test' })`
 
 # License
 
