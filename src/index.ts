@@ -52,9 +52,10 @@ declare global {
       disableInstrumentations: () => void;
       setDefaultAttribute: (
         key: string,
-        value: api.SpanAttributeValue | undefined,
+        value: api.AttributeValue | undefined,
       ) => void;
       getCurrentSessionId: () => string;
+      recordError: (message: string, attributes?: Record<string, any>) => void;
     };
   }
 }
@@ -74,6 +75,7 @@ interface InitializeOptions {
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
+  collectErrors?: boolean;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -101,6 +103,7 @@ export const initialize = ({
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
   dropSingleUserInteractionTraces,
+  collectErrors,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -108,7 +111,7 @@ export const initialize = ({
     );
   }
 
-  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
+  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
 
   const resourceAttributes: ResourceAttributes = {
     [SemanticResourceAttributes.SERVICE_NAME]:
@@ -124,8 +127,15 @@ export const initialize = ({
   }
   const resource = new Resource(resourceAttributes);
 
+  const tracesResource = resource.merge(
+    new Resource({
+      // This is a temporary solution not covered by the specification.
+      // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
+      ['sampling.probability']: samplingProbabilityMaybeNumber,
+    }),
+  );
   const provider = new WebTracerProvider({
-    resource,
+    resource: tracesResource,
     sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
@@ -135,9 +145,7 @@ export const initialize = ({
   });
 
   const attributes: OTLPExporterConfigBase['attributes'] = {
-    // This is a temporary solution not covered by the specification.
-    // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
-    ['sampling.probability']: samplingProbabilityMaybeNumber,
+    ...defaultAttributes,
   };
 
   const setDefaultAttribute = (
@@ -179,16 +187,18 @@ export const initialize = ({
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,
   });
-  const logsInstrumentation = new SumoLogicLogsInstrumentation({
-    exporter: logsExporter,
-  });
+  const logsInstrumentation = collectErrors
+    ? new SumoLogicLogsInstrumentation({
+        exporter: logsExporter,
+      })
+    : undefined;
 
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
     if (disableOpenTelemetryInstrumentations) {
       disableOpenTelemetryInstrumentations();
-      logsInstrumentation.disable();
+      logsInstrumentation?.disable();
       logsExporter.disable();
       disableOpenTelemetryInstrumentations = undefined;
     }
@@ -197,7 +207,7 @@ export const initialize = ({
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
-    logsInstrumentation.enable();
+    logsInstrumentation?.enable();
     disableOpenTelemetryInstrumentations =
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,

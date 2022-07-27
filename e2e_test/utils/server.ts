@@ -79,7 +79,7 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     resolveTracesSecondBatch = resolve;
   });
 
-  app.post('/traces', (req, res) => {
+  app.post('/rum/v1/traces', (req, res) => {
     ++postCounter;
 
     let resolveFunctionToCall =

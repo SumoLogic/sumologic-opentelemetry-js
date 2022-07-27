@@ -50,7 +50,7 @@ export const createComparePageWithFixtureTest = ({
 
     await page.goto(`http://localhost:${port}/${name}.html`);
     const result = await axios.get(`http://localhost:${port}/traces`, {
-      timeout: 50_000,
+      timeout: 5_000,
     });
     if ('WRITE_FIXTURES' in process.env) {
       await fs.writeFile(
