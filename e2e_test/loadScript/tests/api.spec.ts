@@ -2,6 +2,12 @@ import { createComparePageWithFixtureTest } from '../../utils/comparePageWithFix
 
 createComparePageWithFixtureTest({
   basedir: __dirname,
-  title: 'public API is properly supported',
-  name: 'api',
+  title: 'setDefaultAttribute public API is properly supported',
+  name: 'api/setDefaultAttribute',
+});
+
+createComparePageWithFixtureTest({
+  basedir: __dirname,
+  title: 'recordError public API is properly supported',
+  name: 'api/recordError',
 });

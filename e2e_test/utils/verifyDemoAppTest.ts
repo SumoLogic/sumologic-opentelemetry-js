@@ -13,14 +13,14 @@ const verifyData = async (
 ): Promise<void> => {
   if ('WRITE_FIXTURES' in process.env) {
     await fs.writeFile(
-      path.join(basedir, `../fixtures/${fixtureName}.json`),
+      path.join(basedir, `../fixtures/${fixtureName}.traces.json`),
       JSON.stringify(data, null, 2),
     );
   }
 
   const fixture = JSON.parse(
     await fs.readFile(
-      path.join(basedir, `../fixtures/${fixtureName}.json`),
+      path.join(basedir, `../fixtures/${fixtureName}.traces.json`),
       'utf-8',
     ),
   );
