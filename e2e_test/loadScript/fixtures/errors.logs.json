@@ -1,0 +1,285 @@
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "load-sync-test-service-name"
+            }
+          },
+          {
+            "key": "sumologic.rum.version",
+            "value": {
+              "stringValue": "3.2.0-2"
+            }
+          },
+          {
+            "key": "application",
+            "value": {
+              "stringValue": "load-sync-test-application-name"
+            }
+          },
+          {
+            "key": "deployment.environment",
+            "value": {
+              "stringValue": "staging"
+            }
+          },
+          {
+            "key": "http.user_agent",
+            "value": {
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+            }
+          }
+        ]
+      },
+      "instrumentationLibraryLogs": [
+        {
+          "instrumentationLibrary": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "3.2.0-2"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": 1658941086110600000,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Custom error"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "customError"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57201/errors.html"
+                  }
+                },
+                {
+                  "key": "data",
+                  "value": {
+                    "intValue": 1
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            },
+            {
+              "timeUnixNano": 1658941086112600000,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Cannot load user 123 from the API { reason: ... }"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "consoleError"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57201/errors.html"
+                  }
+                },
+                {
+                  "key": "operation",
+                  "value": {
+                    "stringValue": "childSpan"
+                  }
+                },
+                {
+                  "key": "arguments",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "Cannot load user"
+                        },
+                        {
+                          "intValue": 123
+                        },
+                        {
+                          "stringValue": "from the API"
+                        },
+                        {
+                          "kvlistValue": {
+                            "values": [
+                              {
+                                "key": "reason",
+                                "value": {
+                                  "kvlistValue": {
+                                    "values": [
+                                      {
+                                        "key": "code",
+                                        "value": {
+                                          "intValue": 400
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "traceId": "667b71a6e90ec4ed3d86670615242146",
+              "spanId": "412499e9f9eda49d"
+            },
+            {
+              "timeUnixNano": 1658941086113500000,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Uncaught TypeError: uncaught exception"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "uncaughtException"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57201/errors.html"
+                  }
+                },
+                {
+                  "key": "error.name",
+                  "value": {
+                    "stringValue": "TypeError"
+                  }
+                },
+                {
+                  "key": "error.message",
+                  "value": {
+                    "stringValue": "uncaught exception"
+                  }
+                },
+                {
+                  "key": "error.stack",
+                  "value": {
+                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:57201/errors.html:38:11\n    at http://localhost:57201/rum.js:1:93556\n    at Object.with (http://localhost:57201/rum.js:1:94530)\n    at r (http://localhost:57201/rum.js:1:93512)"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            },
+            {
+              "timeUnixNano": 1658941086122500000,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Uncaught error in element //html/body/img"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "documentError"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57201/errors.html"
+                  }
+                },
+                {
+                  "key": "element.xpath",
+                  "value": {
+                    "stringValue": "//html/body/img"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            },
+            {
+              "timeUnixNano": 1658941086123100000,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Unhandled rejection TypeError: unhandled rejection"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "unhandledRejection"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:57201/errors.html"
+                  }
+                },
+                {
+                  "key": "error.name",
+                  "value": {
+                    "stringValue": "TypeError"
+                  }
+                },
+                {
+                  "key": "error.message",
+                  "value": {
+                    "stringValue": "unhandled rejection"
+                  }
+                },
+                {
+                  "key": "error.stack",
+                  "value": {
+                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:57201/errors.html:42:11\n    at http://localhost:57201/rum.js:1:93556\n    at Object.with (http://localhost:57201/rum.js:1:94530)\n    at r (http://localhost:57201/rum.js:1:93512)"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

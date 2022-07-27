@@ -9,6 +9,8 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/new.location.href/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/root_span.http.url/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/rum.session_id/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logRecords/attributes/http.url/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logRecords/attributes/error.stack/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -56,7 +58,7 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
 
   if (Array.isArray(resp1)) {
     return resp1.map((element, index) =>
-      prepareOtelJson(element, resp2[index], path),
+      prepareOtelJson(element, resp2?.[index], path),
     );
   }
 

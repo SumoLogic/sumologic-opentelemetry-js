@@ -1,0 +1,141 @@
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "load-sync-test-service-name"
+            }
+          },
+          {
+            "key": "sumologic.rum.version",
+            "value": {
+              "stringValue": "3.2.0-2"
+            }
+          },
+          {
+            "key": "application",
+            "value": {
+              "stringValue": "load-sync-test-application-name"
+            }
+          },
+          {
+            "key": "deployment.environment",
+            "value": {
+              "stringValue": "staging"
+            }
+          },
+          {
+            "key": "http.user_agent",
+            "value": {
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+            }
+          }
+        ]
+      },
+      "instrumentationLibraryLogs": [
+        {
+          "instrumentationLibrary": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "3.2.0-2"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": 1658938982682199800,
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Cannot load data"
+              },
+              "attributes": [
+                {
+                  "key": "api.default.attr",
+                  "value": {
+                    "intValue": 1
+                  }
+                },
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "customError"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:55422/api/recordError.html"
+                  }
+                },
+                {
+                  "key": "user",
+                  "value": {
+                    "intValue": 12
+                  }
+                },
+                {
+                  "key": "org",
+                  "value": {
+                    "stringValue": "test"
+                  }
+                },
+                {
+                  "key": "extra",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "deep",
+                          "value": {
+                            "kvlistValue": {
+                              "values": [
+                                {
+                                  "key": "array",
+                                  "value": {
+                                    "arrayValue": {
+                                      "values": [
+                                        {
+                                          "intValue": 1
+                                        },
+                                        {
+                                          "intValue": 2
+                                        },
+                                        {
+                                          "kvlistValue": {
+                                            "values": [
+                                              {
+                                                "key": "key",
+                                                "value": {
+                                                  "stringValue": "val"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "key": "bool",
+                                  "value": {
+                                    "boolValue": true
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

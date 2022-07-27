@@ -68,36 +68,40 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     res.sendFile(path.join(__dirname, '../../dist/browser.js'));
   });
 
-  let postCounter = 0;
-  let getCounter = 0;
-  let resolveTracesFirstBatch: (value: any) => void;
-  let resolveTracesSecondBatch: (value: any) => void;
-  let tracesFirstBatch = new Promise<any>((resolve) => {
-    resolveTracesFirstBatch = resolve;
-  });
-  let tracesSecondBatch = new Promise<any>((resolve) => {
-    resolveTracesSecondBatch = resolve;
-  });
+  const createOtelTelemetry = (telemetrySignalType: string) => {
+    let postCounter = 0;
+    let getCounter = 0;
+    let resolveFirstBatch: (value: any) => void;
+    let resolveSecondBatch: (value: any) => void;
+    let firstBatch = new Promise<any>((resolve) => {
+      resolveFirstBatch = resolve;
+    });
+    let secondBatch = new Promise<any>((resolve) => {
+      resolveSecondBatch = resolve;
+    });
 
-  app.post('/rum/v1/traces', (req, res) => {
-    ++postCounter;
+    app.post(`/rum/v1/${telemetrySignalType}`, (req, res) => {
+      ++postCounter;
 
-    let resolveFunctionToCall =
-      postCounter === 1 ? resolveTracesFirstBatch : resolveTracesSecondBatch;
+      let resolveFunctionToCall =
+        postCounter === 1 ? resolveFirstBatch : resolveSecondBatch;
 
-    resolveFunctionToCall(req.body);
+      resolveFunctionToCall(req.body);
 
-    res.send('');
-  });
+      res.send('');
+    });
 
-  app.get('/traces', async (req, res) => {
-    ++getCounter;
+    app.get(`/${telemetrySignalType}`, async (req, res) => {
+      ++getCounter;
 
-    let promiseToResolve =
-      getCounter === 1 ? tracesFirstBatch : tracesSecondBatch;
+      let promiseToResolve = getCounter === 1 ? firstBatch : secondBatch;
 
-    res.send(await promiseToResolve);
-  });
+      res.send(await promiseToResolve);
+    });
+  };
+
+  createOtelTelemetry('traces');
+  createOtelTelemetry('logs');
 
   return new Promise<StartServerResult>((resolve, reject) => {
     const server = app.listen(0, () => {

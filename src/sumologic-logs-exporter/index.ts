@@ -1,12 +1,13 @@
 import { hrTime, hrTimeToNanoseconds } from '@opentelemetry/core';
 import { Resource } from '@opentelemetry/resources';
 import * as api from '@opentelemetry/api';
-import type { Attributes, Span } from '@opentelemetry/api';
+import type { Attributes } from '@opentelemetry/api';
 import { name, version } from '../../package.json';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 
 interface SumoLogicLogsExporterOptions {
   resource: Resource;
+  attributes: Attributes;
   collectorUrl: string;
   maxQueueSize: number;
   scheduledDelayMillis: number;
@@ -147,6 +148,7 @@ const sendData = (url: string, json: string) => {
 
 export class SumoLogicLogsExporter {
   private resource: Resource;
+  private defaultAttributes: Attributes;
   private collectorUrl: string;
   private maxQueueSize: number;
   private scheduledDelayMillis: number;
@@ -155,11 +157,13 @@ export class SumoLogicLogsExporter {
 
   constructor({
     resource,
+    attributes,
     collectorUrl,
     maxQueueSize,
     scheduledDelayMillis,
   }: SumoLogicLogsExporterOptions) {
     this.resource = resource;
+    this.defaultAttributes = attributes;
     this.collectorUrl = collectorUrl;
     this.maxQueueSize = maxQueueSize;
     this.scheduledDelayMillis = scheduledDelayMillis;
@@ -201,6 +205,7 @@ export class SumoLogicLogsExporter {
 
   recordLog(log: LogRecord) {
     const attributes: ProtoLogRecord['attributes'] = [
+      ...protoAttributes(this.defaultAttributes),
       protoAttribute('type', log.type),
       protoAttribute('http.url', location.href),
     ];

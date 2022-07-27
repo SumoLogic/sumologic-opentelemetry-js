@@ -103,7 +103,7 @@ export const initialize = ({
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
   dropSingleUserInteractionTraces,
-  collectErrors,
+  collectErrors = true,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -183,6 +183,7 @@ export const initialize = ({
   );
   const logsExporter = new SumoLogicLogsExporter({
     resource: logsResource,
+    attributes,
     collectorUrl: `${parsedCollectionSourceUrl}v1/logs`,
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,
