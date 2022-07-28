@@ -4,6 +4,7 @@ import * as api from '@opentelemetry/api';
 import type { Attributes } from '@opentelemetry/api';
 import { name, version } from '../../package.json';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
+import { getTraceById } from '../sumologic-span-processor/trace-processor';
 
 interface SumoLogicLogsExporterOptions {
   resource: Resource;
@@ -212,7 +213,10 @@ export class SumoLogicLogsExporter {
 
     const span = api.trace.getSpan(api.context.active());
     if (span && isReadableSpan(span)) {
-      attributes.push(protoAttribute('operation', span.name));
+      const rootSpan = getTraceById(span.spanContext().traceId)?.rootSpan;
+      if (rootSpan) {
+        attributes.push(protoAttribute('root_span.operation', rootSpan.name));
+      }
     }
 
     if (log.element) {

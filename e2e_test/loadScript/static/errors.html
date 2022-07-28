@@ -21,8 +21,8 @@
   setTimeout(() => {
     const { tracer, api, recordError } = sumoLogicOpenTelemetryRum;
     const rootSpan = tracer.startSpan('rootSpan');
-    const childSpan = tracer.startSpan('childSpan');
     api.context.with(api.trace.setSpan(api.context.active(), rootSpan), () => {
+      const childSpan = tracer.startSpan('childSpan');
       api.context.with(
         api.trace.setSpan(api.context.active(), childSpan),
         () => {
