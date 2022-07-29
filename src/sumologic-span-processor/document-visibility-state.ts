@@ -61,6 +61,9 @@ window.addEventListener('pageshow', () => {
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   span.setAttribute(ATTRIBUTE_NAME, initialState);
 
+  // We need to check history of changes, because span can be created with a custom time.
+  // This is a common situation in document-load auto-instrumentation, when spans are created
+  // with page loading times, when the RUM script was not yet initialized.
   const startTimeInNanoseconds = hrTimeToNanoseconds(span.startTime);
   for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, state } = changes[i];
@@ -82,8 +85,6 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
     ? hrTimeToNanoseconds(span.endTime)
     : Infinity;
 
-  // we skip the initial change because it's already covered by the onStart function
-  // and we don't want to save initial state as an event
   for (let i = changes.length - 1; i >= 0; i -= 1) {
     const { timestampInNanoseconds, timestampInHrTime, state } = changes[i];
     if (timestampInNanoseconds < startTimeInNanoseconds) {
