@@ -11,6 +11,7 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/rum.session_id/value/stringValue',
   'resourceLogs/instrumentationLibraryLogs/logRecords/attributes/http.url/value/stringValue',
   'resourceLogs/instrumentationLibraryLogs/logRecords/attributes/error.stack/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logRecords/attributes/root_span.http.url/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',

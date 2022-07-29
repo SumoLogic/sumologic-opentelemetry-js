@@ -3,12 +3,15 @@ import {
   Span as SdkTraceSpan,
   ReadableSpan,
 } from '@opentelemetry/sdk-trace-base';
+import {
+  HTTP_ACTION_TYPE,
+  ROOT_SPAN_HTTP_URL,
+  ROOT_SPAN_OPERATION,
+  XHR_IS_ROOT_SPAN,
+} from '../constants';
+import { getSpanHttpUrl, getTraceHttpActionType } from './utils';
 
 const INSTRUMENTATION_LONG_TASK = '@opentelemetry/instrumentation-long-task';
-const ROOT_SPAN_OPERATION = 'root_span.operation';
-const ROOT_SPAN_HTTP_URL = 'root_span.http.url';
-const XHR_IS_ROOT_SPAN = 'xhr.is_root_span';
-const LONGTASK_TYPE = 'longtask.type';
 const MAX_STORED_TRACE_IDS = 50;
 
 const rootSpansByTraceId: Record<string, SdkTraceSpan> = {};
@@ -25,11 +28,10 @@ const isLongtaskSpan = (span: SdkTraceSpan): boolean =>
   span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK;
 
 const enrichChildSpan = (span: SdkTraceSpan, rootSpan: SdkTraceSpan) => {
-  const rootSpanHttpUrl =
-    rootSpan.attributes['new.location.href'] ||
-    rootSpan.attributes['location.href'];
+  const rootSpanHttpUrl = getSpanHttpUrl(rootSpan);
+
+  span.attributes[ROOT_SPAN_OPERATION] = rootSpan.name;
   if (rootSpanHttpUrl) {
-    span.attributes[ROOT_SPAN_OPERATION] = rootSpan.name;
     span.attributes[ROOT_SPAN_HTTP_URL] = rootSpanHttpUrl;
   }
 };
@@ -69,12 +71,10 @@ export const onEnd = (span: ReadableSpan): void => {
     const rootSpan = getRootSpan(sdkSpan);
     if (rootSpan) {
       if (isLongtask) {
-        // longtasks can be assigned either to documentLoad trace or a trace with xhr spans
         // this special attribute is required to calculate longtask metric with proper dimensions
-        if (rootSpan.name === 'documentLoad') {
-          span.attributes[LONGTASK_TYPE] = 'documentLoad';
-        } else if (rootSpan.attributes[XHR_IS_ROOT_SPAN]) {
-          span.attributes[LONGTASK_TYPE] = 'xhr';
+        const actionType = getTraceHttpActionType(rootSpan);
+        if (actionType) {
+          span.attributes[HTTP_ACTION_TYPE] = actionType;
         }
       }
 

@@ -466,6 +466,9 @@ describe('SumoLogicSpanProcessor', () => {
 
   test('enrich longtask span in documentLoad trace', () => {
     span.name = 'documentLoad';
+    setInstrumentationLibrary(span, {
+      name: '@opentelemetry/instrumentation-document-load',
+    });
 
     const longtaskSpan = createLongtaskSpan();
 
@@ -477,7 +480,7 @@ describe('SumoLogicSpanProcessor', () => {
     longtaskSpan.end();
     spanProcessor.onEnd(longtaskSpan);
 
-    expect(longtaskSpan.attributes['longtask.type']).toBe('documentLoad');
+    expect(longtaskSpan.attributes['http.action_type']).toBe('document_loads');
   });
 
   test('enrich longtask span in xhr trace', () => {
@@ -496,7 +499,31 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onEnd(xhrSpan);
 
     expect(span.attributes['xhr.is_root_span']).toBe(true);
-    expect(longtaskSpan.attributes['longtask.type']).toBe('xhr');
+    expect(longtaskSpan.attributes['http.action_type']).toBe('xhr_requests');
+  });
+
+  test('enrich longtask span in navigation trace', () => {
+    span.name = 'Navigation: /hello';
+    setInstrumentationLibrary(span, {
+      name: '@opentelemetry/instrumentation-user-interaction',
+    });
+
+    const xhrSpan = createXhrSpan('HTTP POST', span);
+    const longtaskSpan = createLongtaskSpan();
+
+    spanProcessor.onStart(span);
+    spanProcessor.onStart(xhrSpan);
+    spanProcessor.onStart(longtaskSpan);
+
+    longtaskSpan.end();
+    spanProcessor.onEnd(longtaskSpan);
+    span.end();
+    spanProcessor.onEnd(span);
+    xhrSpan.end();
+    spanProcessor.onEnd(xhrSpan);
+
+    expect(span.attributes['xhr.is_root_span']).toBe(true);
+    expect(longtaskSpan.attributes['http.action_type']).toBe('route_changes');
   });
 
   test('does not enrich root longtask span', () => {

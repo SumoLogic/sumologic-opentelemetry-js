@@ -22,7 +22,9 @@
     const { tracer, api, recordError } = sumoLogicOpenTelemetryRum;
     const rootSpan = tracer.startSpan('rootSpan');
     api.context.with(api.trace.setSpan(api.context.active(), rootSpan), () => {
-      const childSpan = tracer.startSpan('childSpan');
+      const childSpan = tracer.startSpan('HTTP GET', {
+        kind: api.SpanKind.CLIENT,
+      });
       api.context.with(
         api.trace.setSpan(api.context.active(), childSpan),
         () => {
