@@ -6,24 +6,28 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 
 const ATTRIBUTE_NAME = 'document.visibilityState';
-const VISIBILITY_STATE_TO_EVENT_NAMES: Record<VisibilityState, string> = {
-  visible: 'pageshow',
-  hidden: 'pagehide',
-};
+const VISIBILITY_STATE_TO_EVENT_NAMES: Record<DocumentVisibilityState, string> =
+  {
+    visible: 'pageshow',
+    hidden: 'pagehide',
+  };
 const MAX_CHANGES = 100;
 
 const changes: {
   timestampInNanoseconds: number;
   timestampInHrTime: HrTime;
-  state: VisibilityState;
+  state: DocumentVisibilityState;
 }[] = [];
-let currentState = document.visibilityState;
+let initialState = document.visibilityState;
+let currentState = initialState;
 
 // exported for tests
 export const resetDocumentVisibilityStateChanges = () => {
   while (changes.length) {
     changes.pop();
   }
+  initialState = document.visibilityState;
+  currentState = initialState;
 };
 
 const updateState = () => {
@@ -55,7 +59,19 @@ window.addEventListener('pageshow', () => {
 });
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
-  span.setAttribute(ATTRIBUTE_NAME, currentState);
+  span.setAttribute(ATTRIBUTE_NAME, initialState);
+
+  // We need to check history of changes, because span can be created with a custom time.
+  // This is a common situation in document-load auto-instrumentation, when spans are created
+  // with page loading times, when the RUM script was not yet initialized.
+  const startTimeInNanoseconds = hrTimeToNanoseconds(span.startTime);
+  for (let i = changes.length - 1; i >= 0; i -= 1) {
+    const { timestampInNanoseconds, state } = changes[i];
+    if (timestampInNanoseconds <= startTimeInNanoseconds) {
+      span.setAttribute(ATTRIBUTE_NAME, state);
+      break;
+    }
+  }
 };
 
 export const onEnd = (readableSpan: ReadableSpan): void => {
@@ -83,7 +99,7 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
         attributes: undefined,
         time: timestampInHrTime,
       });
-      if (state === 'hidden' && span.attributes[ATTRIBUTE_NAME] === 'visible') {
+      if (state === 'hidden') {
         span.attributes[ATTRIBUTE_NAME] = state;
       }
     }
