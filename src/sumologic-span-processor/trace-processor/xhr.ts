@@ -1,7 +1,6 @@
 import { hrTimeToNanoseconds } from '@opentelemetry/core';
-import { Span as SdkTraceSpan } from '@opentelemetry/sdk-trace-base';
-import { SpanKind } from '@opentelemetry/api';
 import { TraceProcessor } from '../trace-processor';
+import { isXhrSpan } from '../utils';
 
 export const TIME_TO_FIRST_XHR = 'http.time_to_first_xhr';
 export const TIME_IN_XHR_CALLS = 'http.time_in_xhr_calls';
@@ -9,9 +8,6 @@ export const TIME_TO_LAST_XHR = 'http.time_to_last_xhr';
 export const TIME_TO_PROCESSING_END = 'http.time_to_xhr_processing_end';
 
 type SpanInterval = [startTime: number, endTime: number];
-
-const isXhrSpan = (span: SdkTraceSpan): boolean =>
-  span.name.startsWith('HTTP ') && span.kind === SpanKind.CLIENT;
 
 export const xhrTraceProcessor: TraceProcessor = (rootSpan, spans) => {
   const xhrSpans = spans

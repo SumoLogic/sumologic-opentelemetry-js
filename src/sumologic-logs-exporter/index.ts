@@ -5,6 +5,15 @@ import type { Attributes } from '@opentelemetry/api';
 import { name, version } from '../../package.json';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { getTraceById } from '../sumologic-span-processor/trace-processor';
+import {
+  HTTP_ACTION_TYPE,
+  ROOT_SPAN_HTTP_URL,
+  ROOT_SPAN_OPERATION,
+} from '../constants';
+import {
+  getSpanHttpUrl,
+  getTraceHttpActionType,
+} from '../sumologic-span-processor/utils';
 
 interface SumoLogicLogsExporterOptions {
   resource: Resource;
@@ -215,7 +224,15 @@ export class SumoLogicLogsExporter {
     if (span && isReadableSpan(span)) {
       const rootSpan = getTraceById(span.spanContext().traceId)?.rootSpan;
       if (rootSpan) {
-        attributes.push(protoAttribute('root_span.operation', rootSpan.name));
+        attributes.push(protoAttribute(ROOT_SPAN_OPERATION, rootSpan.name));
+        const httpUrl = getSpanHttpUrl(rootSpan);
+        if (httpUrl) {
+          attributes.push(protoAttribute(ROOT_SPAN_HTTP_URL, httpUrl));
+        }
+        const actionType = getTraceHttpActionType(rootSpan);
+        if (actionType) {
+          attributes.push(protoAttribute(HTTP_ACTION_TYPE, actionType));
+        }
       }
     }
 
