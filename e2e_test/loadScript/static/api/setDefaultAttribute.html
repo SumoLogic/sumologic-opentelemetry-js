@@ -8,10 +8,12 @@
     collectionSourceUrl: 'http://localhost:{{port}}/rum',
     serviceName: 'load-sync-test-service-name',
     applicationName: 'load-sync-test-application-name',
+    deploymentEnvironment: 'staging',
     defaultAttributes: {
       'loadSync.default.attr': 1,
     },
   });
+  window.sumoLogicOpenTelemetryRum.setDefaultAttribute('org_id', 123);
 </script>
 
 <img src="logo.png" />

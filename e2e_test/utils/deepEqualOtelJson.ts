@@ -9,6 +9,10 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/new.location.href/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/root_span.http.url/value/stringValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/rum.session_id/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logs/attributes/http.url/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logs/attributes/error.stack/value/stringValue',
+  'resourceLogs/instrumentationLibraryLogs/logs/attributes/root_span.http.url/value/stringValue',
+  'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -17,12 +21,13 @@ const ANY_NUMBER_KEYS = new Set([
 ]);
 const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/resource/attributes/sumologic.telemetry.sdk.export_timestamp/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.response_content_length/value/intValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_first_xhr/value/intValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_last_xhr/value/intValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_xhr_processing_end/value/intValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_in_xhr_calls/value/intValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.response_content_length/value/doubleValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_first_xhr/value/doubleValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_last_xhr/value/doubleValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
+  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
 ]);
+const ARRAYS_TO_SORT = new Map([['events', 'name']]);
 
 const anyStringMapping: Record<string, string> = {};
 
@@ -55,13 +60,32 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
   }
 
   if (Array.isArray(resp1)) {
-    return resp1.map((element, index) =>
-      prepareOtelJson(element, resp2[index], path),
+    const resultArray = resp1.map((element, index) =>
+      prepareOtelJson(element, resp2?.[index], path),
     );
+
+    if (ARRAYS_TO_SORT.has(lastPathElement)) {
+      const sortedByKey = ARRAYS_TO_SORT.get(lastPathElement)!;
+
+      resultArray.sort((r1, r2) =>
+        r1[sortedByKey].localeCompare(r2[sortedByKey]),
+      );
+    }
+
+    return resultArray;
   }
 
   if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
-    return Object.entries(resp1).reduce((target, [key, keyValue]) => {
+    return Object.entries(resp1).reduce((target, [_key, keyValue]) => {
+      // numeric value can appear in a form of either { value: { intValue: number } } or { value: { doubleValue: number } }.
+      // let's unify that
+
+      const key =
+        (_key === 'intValue' || _key === 'doubleValue') &&
+        lastPathElement === 'value'
+          ? 'doubleValue'
+          : _key;
+
       target[key] = prepareOtelJson(
         keyValue,
         resp2[key],

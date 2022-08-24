@@ -49,21 +49,69 @@ export const createComparePageWithFixtureTest = ({
     });
 
     await page.goto(`http://localhost:${port}/${name}.html`);
-    const result = await axios.get(`http://localhost:${port}/traces`, {
-      timeout: 50_000,
-    });
-    if ('WRITE_FIXTURES' in process.env) {
-      await fs.writeFile(
-        path.join(basedir, `../fixtures/${name}.json`),
-        JSON.stringify(result.data, null, 2),
-      );
-    }
-    const fixture = JSON.parse(
-      await fs.readFile(
-        path.join(basedir, `../fixtures/${name}.json`),
+
+    let rowTracesFixture: string | undefined;
+    let rowLogsFixture: string | undefined;
+
+    try {
+      rowTracesFixture = await fs.readFile(
+        path.join(basedir, `../fixtures/${name}.traces.json`),
         'utf-8',
-      ),
-    );
-    deepEqualOtelJson(result.data, fixture, name);
+      );
+    } catch (error) {
+      // NOP
+    }
+
+    try {
+      rowLogsFixture = await fs.readFile(
+        path.join(basedir, `../fixtures/${name}.logs.json`),
+        'utf-8',
+      );
+    } catch (error) {
+      // NOP
+    }
+
+    const [resultTraces, resultLogs] = await Promise.all([
+      rowTracesFixture
+        ? axios.get(`http://localhost:${port}/traces`, {
+            timeout: 5_000,
+          })
+        : undefined,
+      rowLogsFixture
+        ? axios.get(`http://localhost:${port}/logs`, {
+            timeout: 5_000,
+          })
+        : undefined,
+    ]);
+    if ('WRITE_FIXTURES' in process.env) {
+      if (resultTraces != null) {
+        await fs.writeFile(
+          path.join(basedir, `../fixtures/${name}.traces.json`),
+          JSON.stringify(resultTraces.data, null, 2),
+        );
+      }
+      if (resultLogs != null) {
+        await fs.writeFile(
+          path.join(basedir, `../fixtures/${name}.logs.json`),
+          JSON.stringify(resultLogs.data, null, 2),
+        );
+      }
+    } else {
+      if (rowTracesFixture != null) {
+        deepEqualOtelJson(
+          resultTraces!.data,
+          JSON.parse(rowTracesFixture),
+          `${name}.traces`,
+        );
+      }
+
+      if (rowLogsFixture != null) {
+        deepEqualOtelJson(
+          resultLogs!.data,
+          JSON.parse(rowLogsFixture),
+          `${name}.logs`,
+        );
+      }
+    }
   });
 };

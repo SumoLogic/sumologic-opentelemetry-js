@@ -14,10 +14,15 @@ import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
 import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { Resource, ResourceAttributes } from '@opentelemetry/resources';
+import {
+  SemanticAttributes,
+  SemanticResourceAttributes,
+} from '@opentelemetry/semantic-conventions';
 import { SumoLogicSpanProcessor } from './sumologic-span-processor';
 import { LongTaskInstrumentation } from '@opentelemetry/instrumentation-long-task';
+import { SumoLogicLogsExporter } from './sumologic-logs-exporter';
+import { SumoLogicLogsInstrumentation } from './sumologic-logs-instrumentation';
 import {
   BUFFER_MAX_SPANS,
   BUFFER_TIMEOUT,
@@ -25,7 +30,11 @@ import {
   MAX_EXPORT_BATCH_SIZE,
   UNKNOWN_SERVICE_NAME,
 } from './constants';
-import { getUserInteractionSpanName, tryNumber } from './utils';
+import {
+  getCollectionSourceUrl,
+  getUserInteractionSpanName,
+  tryNumber,
+} from './utils';
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 
@@ -43,9 +52,10 @@ declare global {
       disableInstrumentations: () => void;
       setDefaultAttribute: (
         key: string,
-        value: api.SpanAttributeValue | undefined,
+        value: api.AttributeValue | undefined,
       ) => void;
       getCurrentSessionId: () => string;
+      recordError: (message: string, attributes?: Record<string, any>) => void;
     };
   }
 }
@@ -55,7 +65,8 @@ interface InitializeOptions {
   authorizationToken?: string;
   serviceName?: string;
   applicationName?: string;
-  defaultAttributes?: api.SpanAttributes;
+  deploymentEnvironment?: string;
+  defaultAttributes?: api.Attributes;
   samplingProbability?: number | string;
   bufferMaxSpans?: number;
   maxExportBatchSize?: number;
@@ -64,6 +75,7 @@ interface InitializeOptions {
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
+  collectErrors?: boolean;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -81,6 +93,7 @@ export const initialize = ({
   authorizationToken,
   serviceName,
   applicationName,
+  deploymentEnvironment,
   defaultAttributes,
   samplingProbability = 1,
   bufferMaxSpans = BUFFER_MAX_SPANS,
@@ -90,6 +103,7 @@ export const initialize = ({
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
   dropSingleUserInteractionTraces,
+  collectErrors = true,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -97,15 +111,31 @@ export const initialize = ({
     );
   }
 
-  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability);
+  const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
 
-  const resource = new Resource({
+  const resourceAttributes: ResourceAttributes = {
     [SemanticResourceAttributes.SERVICE_NAME]:
       serviceName ?? UNKNOWN_SERVICE_NAME,
-  });
+    ['sumologic.rum.version']: version,
+  };
+  if (applicationName) {
+    resourceAttributes.application = applicationName;
+  }
+  if (deploymentEnvironment) {
+    resourceAttributes[SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT] =
+      deploymentEnvironment;
+  }
+  const resource = new Resource(resourceAttributes);
 
+  const tracesResource = resource.merge(
+    new Resource({
+      // This is a temporary solution not covered by the specification.
+      // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
+      ['sampling.probability']: samplingProbabilityMaybeNumber,
+    }),
+  );
   const provider = new WebTracerProvider({
-    resource,
+    resource: tracesResource,
     sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
@@ -116,25 +146,19 @@ export const initialize = ({
 
   const attributes: OTLPExporterConfigBase['attributes'] = {
     ...defaultAttributes,
-    ['sumologic.rum.version']: version,
-
-    // This is a temporary solution not covered by the specification.
-    // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
-    ['sampling.probability']: samplingProbabilityMaybeNumber,
   };
-  if (applicationName) {
-    attributes.application = applicationName;
-  }
 
   const setDefaultAttribute = (
     key: string,
-    value: api.SpanAttributeValue | undefined,
+    value: api.AttributeValue | undefined,
   ) => {
     attributes[key] = value;
   };
 
+  const parsedCollectionSourceUrl = getCollectionSourceUrl(collectionSourceUrl);
+
   const collectorExporter = new OTLPTraceExporter({
-    url: collectionSourceUrl,
+    url: `${parsedCollectionSourceUrl}v1/traces`,
     attributes,
     headers: authorizationToken
       ? { Authorization: authorizationToken }
@@ -152,17 +176,39 @@ export const initialize = ({
     }),
   );
 
+  const logsResource = resource.merge(
+    new Resource({
+      [SemanticAttributes.HTTP_USER_AGENT]: navigator.userAgent,
+    }),
+  );
+  const logsExporter = new SumoLogicLogsExporter({
+    resource: logsResource,
+    attributes,
+    collectorUrl: `${parsedCollectionSourceUrl}v1/logs`,
+    maxQueueSize: bufferMaxSpans,
+    scheduledDelayMillis: bufferTimeout,
+  });
+  const logsInstrumentation = collectErrors
+    ? new SumoLogicLogsInstrumentation({
+        exporter: logsExporter,
+      })
+    : undefined;
+
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
     if (disableOpenTelemetryInstrumentations) {
       disableOpenTelemetryInstrumentations();
+      logsInstrumentation?.disable();
+      logsExporter.disable();
       disableOpenTelemetryInstrumentations = undefined;
     }
   };
 
   const registerInstrumentations = () => {
     disableInstrumentations();
+    logsExporter.enable();
+    logsInstrumentation?.enable();
     disableOpenTelemetryInstrumentations =
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
@@ -210,6 +256,7 @@ export const initialize = ({
     disableInstrumentations,
     setDefaultAttribute,
     getCurrentSessionId,
+    recordError: logsExporter.recordCustomError,
   };
 
   if (useWindow) {

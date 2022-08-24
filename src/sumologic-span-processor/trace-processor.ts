@@ -10,7 +10,7 @@ import { xhrTraceProcessor } from './trace-processor/xhr';
 
 type TraceId = string;
 
-interface TraceRecord {
+interface InternalTraceRecord {
   traceId: TraceId;
   timeout: number;
 
@@ -20,9 +20,11 @@ interface TraceRecord {
   /** Call it when metrics are calculated and the root span is ready to be send */
   send?: () => void;
 
-  /** All spans in a trace */
+  /** All ended spans in a trace */
   spans: SdkTraceSpan[];
 }
+
+export type TraceRecord = Pick<InternalTraceRecord, 'rootSpan' | 'spans'>;
 
 export enum TraceProcessorResult {
   DROP_ROOT_SPAN,
@@ -41,9 +43,17 @@ const PROCESSORS: TraceProcessor[] = [
   xhrTraceProcessor,
 ];
 
-export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
-  const traces: Record<TraceId, TraceRecord> = {};
+const traces: Record<TraceId, InternalTraceRecord> = {};
 
+export const getTraceById = (traceId: TraceId): TraceRecord | undefined => {
+  const record = traces[traceId];
+  if (record) {
+    const { rootSpan, spans } = record;
+    return { rootSpan, spans };
+  }
+};
+
+export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
   const flush = () => {
     // we may have no other chance to process saved traces so we need to calculate and send them right now
     Object.values(traces).forEach((traceRecord) => {
@@ -64,7 +74,7 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
     rootSpan,
     send,
     spans,
-  }: TraceRecord) => {
+  }: InternalTraceRecord) => {
     delete traces[traceId];
 
     if (!rootSpan || !send) {
@@ -86,7 +96,7 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
     }
   };
 
-  const processTraceRecordLater = (traceRecord: TraceRecord) => {
+  const processTraceRecordLater = (traceRecord: InternalTraceRecord) => {
     clearTimeout(traceRecord.timeout);
     traceRecord.timeout = setTimeout(() => {
       processTraceRecord(traceRecord);
@@ -101,6 +111,9 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
         traceRecord = { traceId, timeout: -1, spans: [] };
         traces[traceId] = traceRecord;
       }
+      if (!span.parentSpanId && !traceRecord.rootSpan) {
+        traceRecord.rootSpan = span;
+      }
       processTraceRecordLater(traceRecord);
     },
     onEnd: (
@@ -113,9 +126,8 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
       const traceRecord = traces[traceId];
       if (traceRecord) {
         traceRecord.spans.push(span);
-        if (!span.parentSpanId && !traceRecord.rootSpan) {
+        if (traceRecord.rootSpan === span) {
           shouldCallOnEnd = false;
-          traceRecord.rootSpan = span;
           traceRecord.send = () => {
             superOnEnd(readableSpan);
           };

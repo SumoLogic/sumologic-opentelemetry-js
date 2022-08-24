@@ -27,3 +27,12 @@ export const tryNumber = (input?: string | number): number | undefined => {
   }
   return input != null && Number.isFinite(+input) ? +input : undefined;
 };
+
+export const getCollectionSourceUrl = (sourceUrl: string): string => {
+  const url = new URL(sourceUrl);
+  url.pathname = url.pathname.replace(/\/v1\/(traces|metrics|logs)\/?$/, '');
+  if (!url.pathname.endsWith('/')) {
+    url.pathname += '/';
+  }
+  return url.href;
+};
