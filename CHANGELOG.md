@@ -12,7 +12,8 @@
 
 ## 1.0.0
 
-- [BREAKING CHANGE] changed exporter to [@opentelemetry/exporter-collector](https://www.npmjs.com/package/@opentelemetry/exporter-collector)
+- [BREAKING CHANGE] changed exporter
+  to [@opentelemetry/exporter-collector](https://www.npmjs.com/package/@opentelemetry/exporter-collector)
 - bump [opentelemetry-js](https://github.com/open-telemetry/opentelemetry-js) version to 0.16.0
 - bump [opentelemetry-js-contrib](https://github.com/open-telemetry/opentelemetry-js-contrib) version to 0.12.1
 - added new config options: `authorizationToken` and `applicationName`
@@ -36,7 +37,8 @@
 
 ## 1.4.0
 
-- added `registerInstrumentations()` and `disableInstrumentations()` methods to turn on and off instrumentations in runtime
+- added `registerInstrumentations()` and `disableInstrumentations()` methods to turn on and off instrumentations in
+  runtime
 
 ## 1.4.1
 
@@ -71,7 +73,8 @@
 - longtasks with automatic context attaching
 - added 'setDefaultAttribute' method
 - added 'maxExportBatchSize' configuration option and changed default values of current exporter-related configuration
-- automatic removing of single user interaction traces (can be disabled using the `dropSingleUserInteractionTraces` option)
+- automatic removing of single user interaction traces (can be disabled using the `dropSingleUserInteractionTraces`
+  option)
 - new context manager with better support for native async-await, observers and more
 - new attribute 'document.visibilityState' and span events 'pageshow' and 'pagehide'
 
@@ -92,10 +95,12 @@ Check "Manual instrumentation" in README for new instructions.
 
 ## 3.1.0
 
-- Extended `document.visbilityState` discoverability for root spans
-- Fixed broken span timings on some browsers
+- extended `document.visbilityState` discoverability for root spans
+- fixed broken span timings on some browsers
 - XHR & longtask metrics
 
-## Unreleased
+## 4.0.0
 
-- Fixed `document.visibilityState` for pages open in background
+- support for collecting uncaught exceptions, unhandled rejections, document errors and console errors
+- new properties in the `initialize` function: `deploymentEnvironment` and `collectErrors`
+- fixed `document.visibilityState` for pages open in background
