@@ -19,6 +19,7 @@ const getFileNames = () => {
     `sumologic-rum-v${uriVersion}.js`,
     `sumologic-rum-v${major}.${minor}.js`,
     `sumologic-rum-v${major}.js`,
+    `sumologic-rum.js`,
   ];
 };
 

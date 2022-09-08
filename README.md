@@ -1,6 +1,7 @@
 # Sumo Logic OpenTelemetry RUM
 
-The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation for JavaScript library enables tracing in the browser.
+The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation for JavaScript library enables tracing
+in the browser.
 
 ## Features
 
@@ -18,11 +19,12 @@ The [Sumo Logic](https://www.sumologic.com/) OpenTelemetry auto-instrumentation 
 
 ## Installation
 
-The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on your website:
+The easiest way to start collecting traces from your website is to put the code below inside the `<head></head>` tags on
+your website:
 
 ```html
 <script
-  src="https://rum.sumologic.com/sumologic-rum-v3.js"
+  src="https://rum.sumologic.com/sumologic-rum.js"
   type="text/javascript"
 ></script>
 <script>
@@ -33,15 +35,18 @@ The easiest way to start collecting traces from your website is to put the code 
       propagateTraceHeaderCorsUrls: [
         'list_of_domains_to_receive_trace_context',
       ],
+      collectErrors: true,
     });
 </script>
 ```
 
 See [configuration](#Configuration) for all supported options.
 
-There are no other required actions needed to take. With properly provided `collectionSourceUrl` and `serviceName` your website is ready and will send collected traces to the specified Sumo Logic collector.
+There are no other required actions needed to take. With properly provided `collectionSourceUrl` and `serviceName` your
+website is ready and will send collected traces to the specified Sumo Logic collector.
 
-You can load the script asynchronously using the script below, but some functionalities like user interactions or requests made before script run will be limited.
+You can load the script asynchronously using the script below, but some functionalities like user interactions or
+requests made before script run will be limited.
 
 ```html
 <script>
@@ -59,7 +64,7 @@ You can load the script asynchronously using the script below, but some function
     window,
     'sumoLogicOpenTelemetryRum',
     document,
-    'https://rum.sumologic.com/sumologic-rum-v3.js',
+    'https://rum.sumologic.com/sumologic-rum.js',
   );
   window.sumoLogicOpenTelemetryRum.onReady(function () {
     window.sumoLogicOpenTelemetryRum.initialize({
@@ -68,10 +73,25 @@ You can load the script asynchronously using the script below, but some function
       propagateTraceHeaderCorsUrls: [
         'list_of_domains_to_receive_trace_context',
       ],
+      collectErrors: true,
     });
   });
 </script>
 ```
+
+**Note**: XHR and navigation/route changes support as well as errors collection requires RUM script in version 4 or
+higher (https://rum.sumologic.com/sumologic-rum-v4.js). Please ensure you are using the correct version in your pages.
+For automatic updates use https://rum.sumologic.com/sumologic-rum.js.
+
+**Note**: Above examples omit the version of the script in the `src` attribute and automatically uses most up to date
+version of it. If you want to manually control versioning of the script please use:
+
+- https://rum.sumologic.com/sumologic-rum-vX.js (e.g. https://rum.sumologic.com/sumologic-rum-v4.js) for major version
+  control (no breaking changes),
+- https://rum.sumologic.com/sumologic-rum-vX.Y.js (e.g. https://rum.sumologic.com/sumologic-rum-v4.0.js) for major
+  version control (only bugfixes are automatically included),
+- https://rum.sumologic.com/sumologic-rum-vX.Y.Z.js (e.g. https://rum.sumologic.com/sumologic-rum-v4.0.0.js) for major
+  version control (strict version control).
 
 ## Manual installation
 
@@ -115,13 +135,14 @@ Both `script` tag and manual installation can be configured with following param
 
 ## Trace context propagation
 
-By default, trace context propagation, allowing creation of end to and front end to backend traces for cross-origin requests is not enabled because of browser CORS security restrictions.
-To propagate tracing context to create front-end to back-end traces, set exact URLs or URL patterns in the `propagateTraceHeaderCorsUrls` configuration option.
-You must configure your server to return accept and return following CORS headers in its response:
-`Access-Control-Allow-Headers: traceparent, tracestate`.
-Read [W3C Trace Context](https://www.w3.org/TR/trace-context/) for more details.
-Sumo Logic cannot perform any validation correct configuration of services of other origins, so, please be careful when configuring this.
-You should always try enabling CORS in a test environment before setting it up in production.
+By default, trace context propagation, allowing creation of end to and front end to backend traces for cross-origin
+requests is not enabled because of browser CORS security restrictions. To propagate tracing context to create front-end
+to back-end traces, set exact URLs or URL patterns in the `propagateTraceHeaderCorsUrls` configuration option. You must
+configure your server to return accept and return following CORS headers in its response:
+`Access-Control-Allow-Headers: traceparent, tracestate`. Read [W3C Trace Context](https://www.w3.org/TR/trace-context/)
+for more details. Sumo Logic cannot perform any validation correct configuration of services of other origins, so,
+please be careful when configuring this. You should always try enabling CORS in a test environment before setting it up
+in production.
 
 For example:
 
@@ -135,10 +156,12 @@ propagateTraceHeaderCorsUrls: [
 
 ## Manual instrumentation
 
-When initialized by the `<script />` tag, window attribute `sumoLogicOpenTelemetryRum` is exposed. It gives possibility to create spans manually. Global `sumoLogicOpenTelemetryRum` objects contains:
+When initialized by the `<script />` tag, window attribute `sumoLogicOpenTelemetryRum` is exposed. It gives possibility
+to create spans manually. Global `sumoLogicOpenTelemetryRum` objects contains:
 
 - `api` - exposed [@opentelemetry/api](https://www.npmjs.com/package/@opentelemetry/api) module
-- `tracer` - an instance of a `Tracer` from [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing)
+- `tracer` - an instance of a `Tracer`
+  from [@opentelemetry/tracing](https://www.npmjs.com/package/@opentelemetry/tracing)
 - `recordError` - a function to create an error with the given message and optional attributes.
 
 Example:
@@ -154,11 +177,13 @@ api.context.with(api.trace.setSpan(api.context.active(), span), () => {
 recordError('Cannot load data', { organization: 'test' });
 ```
 
-Using in production, make sure your website works when `sumoLogicOpenTelemetryRum` is not defined (e.g. blocked by a browser extension).
+Using in production, make sure your website works when `sumoLogicOpenTelemetryRum` is not defined (e.g. blocked by a
+browser extension).
 
 ## Disable instrumentation
 
-Instrumentation can be disabled and enabled again in runtime using `registerInstrumentations()` and `disableInstrumentations()` methods.
+Instrumentation can be disabled and enabled again in runtime using `registerInstrumentations()`
+and `disableInstrumentations()` methods.
 
 ```javascript
 sumoLogicOpenTelemetryRum.disableInstrumentations();
