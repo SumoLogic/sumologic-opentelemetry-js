@@ -9,17 +9,7 @@ const CHANGELOG_URL =
 const RUM_CDN_URL = 'https://rum.sumologic.com';
 
 const getFileNames = () => {
-  const uriVersion = encodeURIComponent(version);
-  const [major, minor, patch] = uriVersion.split('.');
-  if (!Number.isInteger(Number(patch))) {
-    return [`sumologic-rum-v${uriVersion}.js`];
-  }
-
-  return [
-    `sumologic-rum-v${uriVersion}.js`,
-    `sumologic-rum-v${major}.${minor}.js`,
-    `sumologic-rum-v${major}.js`,
-  ];
+  return [`sumologic-rum.js`];
 };
 
 const MAX_AGE = 5 * 60 * 60; // 5 hours
@@ -79,7 +69,7 @@ const main = async () => {
     .promise();
 
   console.log('sending a message to slack');
-  await postMessageToSlack();
+  // await postMessageToSlack();
 };
 
 main().catch((error) => {
