@@ -76,6 +76,7 @@ interface InitializeOptions {
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
   collectErrors?: boolean;
+  userInteractionElementNameLimit?: number;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -104,6 +105,7 @@ export const initialize = ({
   collectSessionId,
   dropSingleUserInteractionTraces,
   collectErrors = true,
+  userInteractionElementNameLimit,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -221,7 +223,7 @@ export const initialize = ({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
             shouldPreventSpanCreation: (eventType, element, span) => {
-              const newName = getUserInteractionSpanName(eventType, element);
+              const newName = getUserInteractionSpanName(eventType, element, userInteractionElementNameLimit);
               if (newName) {
                 span.updateName(newName);
               }
