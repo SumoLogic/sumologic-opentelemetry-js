@@ -223,7 +223,11 @@ export const initialize = ({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
             shouldPreventSpanCreation: (eventType, element, span) => {
-              const newName = getUserInteractionSpanName(eventType, element, userInteractionElementNameLimit);
+              const newName = getUserInteractionSpanName(
+                eventType,
+                element,
+                userInteractionElementNameLimit,
+              );
               if (newName) {
                 span.updateName(newName);
               }

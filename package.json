@@ -14,7 +14,7 @@
     "prettier-format-all": "prettier --write .",
     "test": "npx jest && npx playwright test --retries=3 e2e_test/ && npm run prettier-check-all",
     "test:ut": "npx jest",
-    "test:e2e": "npx playwright test --retries=3 e2e_test/ && npm run prettier-check-all"
+    "test:e2e": "npx playwright test --retries=3 e2e_test"
   },
   "husky": {
     "hooks": {

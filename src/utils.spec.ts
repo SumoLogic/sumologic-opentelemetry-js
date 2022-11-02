@@ -11,17 +11,27 @@ describe('utils', () => {
 
     test('should return user interaction span name', () => {
       const element = createElementWithTextContent('This is DIV');
-      expect(getUserInteractionSpanName(eventType, element)).toBe(`click on 'This is DIV'`);
+      expect(getUserInteractionSpanName(eventType, element)).toBe(
+        `click on 'This is DIV'`,
+      );
     });
 
     test('should return user interaction span name with truncated element name', () => {
-      const element = createElementWithTextContent('This is DIV element with long content string');
-      expect(getUserInteractionSpanName(eventType, element)).toBe(`click on 'This is DIV eleme...'`);
+      const element = createElementWithTextContent(
+        'This is DIV element with long content string',
+      );
+      expect(getUserInteractionSpanName(eventType, element)).toBe(
+        `click on 'This is DIV eleme...'`,
+      );
     });
 
     test('should return user interaction span name with truncated element name based on given limit', () => {
-      const element = createElementWithTextContent('This is DIV element with long content string');
-      expect(getUserInteractionSpanName(eventType, element, 10)).toBe(`click on 'This is...'`);
+      const element = createElementWithTextContent(
+        'This is DIV element with long content string',
+      );
+      expect(getUserInteractionSpanName(eventType, element, 10)).toBe(
+        `click on 'This is...'`,
+      );
     });
   });
 
@@ -31,7 +41,9 @@ describe('utils', () => {
         getCollectionSourceUrl(
           'https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==',
         ),
-      ).toBe('https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==/');
+      ).toBe(
+        'https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==/',
+      );
     });
 
     test('works with old SumoLogic URLs', () => {
@@ -66,9 +78,9 @@ describe('utils', () => {
       expect(getCollectionSourceUrl('https://my-api-endpoint/v1/metrics')).toBe(
         'https://my-api-endpoint/',
       );
-      expect(getCollectionSourceUrl('https://my-api-endpoint/v1/metrics/')).toBe(
-        'https://my-api-endpoint/',
-      );
+      expect(
+        getCollectionSourceUrl('https://my-api-endpoint/v1/metrics/'),
+      ).toBe('https://my-api-endpoint/');
     });
 
     test('works with OTLP logs endpoint', () => {

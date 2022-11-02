@@ -17,7 +17,9 @@ export const getUserInteractionSpanName = (
     scanElement = scanElement.parentElement;
   }
   if (id) {
-    const limit = tryNumber(userInteractionElementNameLimit) ?? DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT;
+    const limit =
+      tryNumber(userInteractionElementNameLimit) ??
+      DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT;
     if (limit > 0 && id.length > limit) {
       id = `${id.slice(0, limit - 3)}...`;
     }
