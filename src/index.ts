@@ -26,6 +26,7 @@ import { SumoLogicLogsInstrumentation } from './sumologic-logs-instrumentation';
 import {
   BUFFER_MAX_SPANS,
   BUFFER_TIMEOUT,
+  DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   INSTRUMENTED_EVENT_NAMES,
   MAX_EXPORT_BATCH_SIZE,
   UNKNOWN_SERVICE_NAME,
@@ -105,7 +106,7 @@ export const initialize = ({
   collectSessionId,
   dropSingleUserInteractionTraces,
   collectErrors = true,
-  userInteractionElementNameLimit,
+  userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
