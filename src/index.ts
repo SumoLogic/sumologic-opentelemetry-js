@@ -26,6 +26,7 @@ import { SumoLogicLogsInstrumentation } from './sumologic-logs-instrumentation';
 import {
   BUFFER_MAX_SPANS,
   BUFFER_TIMEOUT,
+  DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   INSTRUMENTED_EVENT_NAMES,
   MAX_EXPORT_BATCH_SIZE,
   UNKNOWN_SERVICE_NAME,
@@ -76,6 +77,7 @@ interface InitializeOptions {
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
   collectErrors?: boolean;
+  userInteractionElementNameLimit?: number;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -104,6 +106,7 @@ export const initialize = ({
   collectSessionId,
   dropSingleUserInteractionTraces,
   collectErrors = true,
+  userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -221,7 +224,11 @@ export const initialize = ({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
             shouldPreventSpanCreation: (eventType, element, span) => {
-              const newName = getUserInteractionSpanName(eventType, element);
+              const newName = getUserInteractionSpanName(
+                eventType,
+                element,
+                userInteractionElementNameLimit,
+              );
               if (newName) {
                 span.updateName(newName);
               }

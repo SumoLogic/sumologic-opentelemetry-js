@@ -1,6 +1,9 @@
+import { DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT } from './constants';
+
 export const getUserInteractionSpanName = (
   eventType: keyof HTMLElementEventMap,
   element: HTMLElement,
+  userInteractionElementNameLimit?: number,
 ): string | undefined => {
   let id = '';
   let scanElement: HTMLElement | null = element;
@@ -14,8 +17,11 @@ export const getUserInteractionSpanName = (
     scanElement = scanElement.parentElement;
   }
   if (id) {
-    if (id.length > 20) {
-      id = `${id.slice(0, 17)}...`;
+    const limit =
+      tryNumber(userInteractionElementNameLimit) ??
+      DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT;
+    if (limit > 0 && id.length > limit) {
+      id = `${id.slice(0, limit - 3)}...`;
     }
     return `${eventType} on '${id}'`;
   }

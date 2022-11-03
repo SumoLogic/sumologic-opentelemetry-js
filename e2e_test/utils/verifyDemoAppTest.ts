@@ -98,6 +98,16 @@ export const createVerifyDemoAppTest = async ({
     await verifyData(basedir, firstBatch.data, `${fixtureName}-first-batch`);
 
     // click at the third item on the list
+    await page.route('https://swapi.dev/api/planets/3', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        path: path.join(basedir, '../fixtures/planet-3.json'),
+        headers: {
+          'access-control-allow-origin': '*',
+        },
+      });
+    });
     await page.click('text=Yavin XIV');
     await expect(page.locator('dt').first()).toHaveText('name');
 

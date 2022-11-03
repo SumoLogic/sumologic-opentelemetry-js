@@ -132,6 +132,7 @@ Both `script` tag and manual installation can be configured with following param
 | collectSessionId                | `boolean`            | `true`      | Enables collecting `rum.session_id` attribute                                                                |
 | dropSingleUserInteractionTraces | `boolean`            | `true`      | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)  |
 | collectErrors                   | `boolean`            | `true`      | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
+| userInteractionElementNameLimit | `number`             | `20`        | Limit for user interaction element name, after which the name will be truncated with `...` suffix.           |
 
 ## Trace context propagation
 
