@@ -27,7 +27,10 @@ const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
   'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
 ]);
-const ARRAYS_TO_SORT = new Map([['events', 'name']]);
+const ARRAYS_TO_SORT = new Map([
+  ['events', 'name'],
+  ['attributes', 'key'],
+]);
 
 const anyStringMapping: Record<string, string> = {};
 
