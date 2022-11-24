@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 4.1.0
+
 - added `userInteractionElementNameLimit` initialization option
 - fixed handling navigation event
 
