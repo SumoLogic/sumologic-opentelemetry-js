@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.1.0
+
+- added `userInteractionElementNameLimit` initialization option
+- fixed handling navigation event
+
 ## 4.0.0
 
 - support for collecting uncaught exceptions, unhandled rejections, document errors and console errors
