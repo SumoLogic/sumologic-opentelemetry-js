@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.1.1
+
+- fixed patching `addEventListener` in instrumentation-user-interaction
+
 ## 4.1.0
 
 - added `userInteractionElementNameLimit` initialization option
