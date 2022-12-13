@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.2.0
+
+- new property in the `initialize` function: `getOverriddenServiceName`, which allows to override the service name of a span during its creation
+
 ## 4.1.1
 
 - fixed patching `addEventListener` in instrumentation-user-interaction
