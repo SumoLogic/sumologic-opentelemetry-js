@@ -7,7 +7,7 @@ import {
   BatchSpanProcessorBrowserConfig,
 } from '@opentelemetry/sdk-trace-base';
 import * as documentVisibilityState from './document-visibility-state';
-import * as dynamicServiceNames from './dynamic-service-names';
+import * as overrideServiceName from './override-service-name';
 import * as findLongTaskContext from './find-longtask-context';
 import * as rootToChildEnrichment from './root-to-child-enrichment';
 import { createTraceProcessor } from './trace-processor';
@@ -18,21 +18,28 @@ export interface SumoLogicSpanProcessorConfig
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
   getOverriddenServiceName?: (span: SdkTraceSpan) => string;
+  defaultServiceName: string;
 }
 
 export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   public shouldCollectSessionId: boolean;
   public shouldDropSingleUserInteractionTraces: boolean;
-  private traceProcessor: ReturnType<typeof createTraceProcessor>;
-  private getOverriddenServiceName?: (span: SdkTraceSpan) => string;
 
-  constructor(exporter: SpanExporter, config?: SumoLogicSpanProcessorConfig) {
+  public getOverriddenServiceName?: (span: SdkTraceSpan) => string;
+  public defaultServiceName: string;
+
+  private traceProcessor: ReturnType<typeof createTraceProcessor>;
+
+  constructor(exporter: SpanExporter, config: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
-    this.shouldCollectSessionId = config?.collectSessionId ?? true;
+    this.shouldCollectSessionId = config.collectSessionId ?? true;
     this.shouldDropSingleUserInteractionTraces =
-      config?.dropSingleUserInteractionTraces ?? true;
+      config.dropSingleUserInteractionTraces ?? true;
+
+    this.getOverriddenServiceName = config.getOverriddenServiceName;
+    this.defaultServiceName = config.defaultServiceName;
+
     this.traceProcessor = createTraceProcessor(this);
-    this.getOverriddenServiceName = config?.getOverriddenServiceName;
   }
 
   onStart(span: SdkTraceSpan, context?: Context): void {
@@ -42,7 +49,10 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     if (this.shouldCollectSessionId) {
       sessionId.onStart(span, context);
     }
-    dynamicServiceNames.onStart(span, context, this.getOverriddenServiceName);
+    overrideServiceName.onStart(span, context, {
+      getOverriddenServiceName: this.getOverriddenServiceName,
+      defaultServiceName: this.defaultServiceName,
+    });
 
     // add attributes to all spans
     span.setAttribute('location.href', location.href);

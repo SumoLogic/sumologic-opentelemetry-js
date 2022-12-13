@@ -18,3 +18,4 @@ export const ROOT_SPAN_OPERATION = 'root_span.operation';
 export const ROOT_SPAN_HTTP_URL = 'root_span.http.url';
 export const XHR_IS_ROOT_SPAN = 'xhr.is_root_span';
 export const HTTP_ACTION_TYPE = 'http.action_type';
+export const DEFAULT_SERVICE_NAME = 'default.service.name';

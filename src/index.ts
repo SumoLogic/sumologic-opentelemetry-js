@@ -118,11 +118,13 @@ export const initialize = ({
 
   const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
 
+  const defaultServiceName = serviceName ?? UNKNOWN_SERVICE_NAME;
+
   const resourceAttributes: ResourceAttributes = {
-    [SemanticResourceAttributes.SERVICE_NAME]:
-      serviceName ?? UNKNOWN_SERVICE_NAME,
+    [SemanticResourceAttributes.SERVICE_NAME]: defaultServiceName,
     ['sumologic.rum.version']: version,
   };
+
   if (applicationName) {
     resourceAttributes.application = applicationName;
   }
@@ -130,6 +132,7 @@ export const initialize = ({
     resourceAttributes[SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT] =
       deploymentEnvironment;
   }
+
   const resource = new Resource(resourceAttributes);
 
   const tracesResource = resource.merge(
@@ -179,6 +182,7 @@ export const initialize = ({
       collectSessionId,
       dropSingleUserInteractionTraces,
       getOverriddenServiceName,
+      defaultServiceName,
     }),
   );
 
