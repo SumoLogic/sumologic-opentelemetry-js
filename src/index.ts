@@ -2,7 +2,7 @@ import {
   W3CTraceContextPropagator,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/core';
-import { Tracer } from '@opentelemetry/sdk-trace-base';
+import { Span, Tracer } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -78,6 +78,7 @@ interface InitializeOptions {
   dropSingleUserInteractionTraces?: boolean;
   collectErrors?: boolean;
   userInteractionElementNameLimit?: number;
+  getOverriddenServiceName?: (span: Span) => string;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -107,6 +108,7 @@ export const initialize = ({
   dropSingleUserInteractionTraces,
   collectErrors = true,
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
+  getOverriddenServiceName,
 }: InitializeOptions) => {
   if (!collectionSourceUrl) {
     throw new Error(
@@ -116,11 +118,13 @@ export const initialize = ({
 
   const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
 
+  const defaultServiceName = serviceName ?? UNKNOWN_SERVICE_NAME;
+
   const resourceAttributes: ResourceAttributes = {
-    [SemanticResourceAttributes.SERVICE_NAME]:
-      serviceName ?? UNKNOWN_SERVICE_NAME,
+    [SemanticResourceAttributes.SERVICE_NAME]: defaultServiceName,
     ['sumologic.rum.version']: version,
   };
+
   if (applicationName) {
     resourceAttributes.application = applicationName;
   }
@@ -128,6 +132,7 @@ export const initialize = ({
     resourceAttributes[SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT] =
       deploymentEnvironment;
   }
+
   const resource = new Resource(resourceAttributes);
 
   const tracesResource = resource.merge(
@@ -176,6 +181,8 @@ export const initialize = ({
       scheduledDelayMillis: bufferTimeout,
       collectSessionId,
       dropSingleUserInteractionTraces,
+      getOverriddenServiceName,
+      defaultServiceName,
     }),
   );
 
