@@ -481,6 +481,10 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onEnd(longtaskSpan);
 
     expect(longtaskSpan.attributes['http.action_type']).toBe('document_loads');
+    expect(longtaskSpan.attributes['root_span.operation']).toBe('documentLoad');
+    expect(longtaskSpan.attributes['root_span.http.url']).toBe(
+      'https://www.unit-test-example.com/',
+    );
   });
 
   test('enrich longtask span in xhr trace', () => {

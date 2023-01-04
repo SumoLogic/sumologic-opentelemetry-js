@@ -94,7 +94,7 @@ export const onEnd = (
       }
     }
   } else {
-    // save ended span so it can be used for further longtasks
+    // save ended span, so it can be used for further longtasks
     spans.push(span);
     if (spans.length > MAX_SPANS_SIZE) {
       spans.shift();
