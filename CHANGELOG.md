@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.2.1
+
+- fixed longtask `http.action_type` classification
+- fixed missing root span operation for some longtask spans
+
 ## 4.2.0
 
 - new property in the `initialize` function: `getOverriddenServiceName`, which allows to override the service name of a span during its creation
