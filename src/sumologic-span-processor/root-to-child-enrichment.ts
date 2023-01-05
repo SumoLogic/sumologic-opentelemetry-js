@@ -9,11 +9,7 @@ import {
   ROOT_SPAN_OPERATION,
   XHR_IS_ROOT_SPAN,
 } from '../constants';
-import {
-  getSpanHttpUrl,
-  getTraceHttpActionType,
-  isDocumentLoadSpan,
-} from './utils';
+import { getSpanHttpUrl, getTraceHttpActionType } from './utils';
 
 const INSTRUMENTATION_LONG_TASK = '@opentelemetry/instrumentation-long-task';
 const MAX_STORED_TRACE_IDS = 50;
@@ -83,12 +79,9 @@ export const onEnd = (span: ReadableSpan): void => {
   if (span.parentSpanId && (isXhr || isLongtask)) {
     const rootSpan = getRootSpan(sdkSpan);
     if (rootSpan) {
-      if (rootSpan.ended || isDocumentLoadSpan(rootSpan)) {
-        // root span is ended, so we can enrich child span
-        // documentLoad root span could end after child spans are send, so we need to enrich child spans immediate
-        enrichChildSpan(sdkSpan, rootSpan);
-      } else {
-        // we enrich child spans later because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
+      enrichChildSpan(sdkSpan, rootSpan);
+      if (!rootSpan.ended) {
+        // we enrich child spans later once again, because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
         const spansToEnrich = childSpansToEnrich.get(rootSpan);
         if (spansToEnrich) {
           spansToEnrich.push(sdkSpan);
