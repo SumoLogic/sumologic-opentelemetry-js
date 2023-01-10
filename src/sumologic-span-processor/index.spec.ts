@@ -530,6 +530,35 @@ describe('SumoLogicSpanProcessor', () => {
     expect(longtaskSpan.attributes['http.action_type']).toBe('route_changes');
   });
 
+  test('enrich longtask span in trace, that was updated as navigation trace', () => {
+    span.name = `click on 'This is DIV'`;
+    setInstrumentationLibrary(span, {
+      name: '@opentelemetry/instrumentation-user-interaction',
+    });
+
+    const xhrSpan = createXhrSpan('HTTP POST', span);
+    const longtaskSpan = createLongtaskSpan();
+
+    spanProcessor.onStart(span);
+    spanProcessor.onStart(xhrSpan);
+    spanProcessor.onStart(longtaskSpan);
+
+    longtaskSpan.end();
+    spanProcessor.onEnd(longtaskSpan);
+
+    xhrSpan.end();
+    spanProcessor.onEnd(xhrSpan);
+
+    expect(longtaskSpan.attributes['http.action_type']).toBe('xhr_requests');
+
+    span.name = 'Navigation: /hello';
+
+    span.end();
+    spanProcessor.onEnd(span);
+
+    expect(longtaskSpan.attributes['http.action_type']).toBe('route_changes');
+  });
+
   test('does not enrich root longtask span', () => {
     const longtaskSpan = createLongtaskSpan();
 
