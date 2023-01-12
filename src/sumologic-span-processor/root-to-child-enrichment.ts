@@ -34,6 +34,15 @@ const enrichChildSpan = (span: SdkTraceSpan, rootSpan: SdkTraceSpan) => {
   if (rootSpanHttpUrl) {
     span.attributes[ROOT_SPAN_HTTP_URL] = rootSpanHttpUrl;
   }
+
+  const isLongtask = isLongtaskSpan(span);
+  if (isLongtask) {
+    // this special attribute is required to calculate longtask metric with proper dimensions
+    const actionType = getTraceHttpActionType(rootSpan);
+    if (actionType) {
+      span.attributes[HTTP_ACTION_TYPE] = actionType;
+    }
+  }
 };
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
@@ -70,19 +79,9 @@ export const onEnd = (span: ReadableSpan): void => {
   if (span.parentSpanId && (isXhr || isLongtask)) {
     const rootSpan = getRootSpan(sdkSpan);
     if (rootSpan) {
-      if (isLongtask) {
-        // this special attribute is required to calculate longtask metric with proper dimensions
-        const actionType = getTraceHttpActionType(rootSpan);
-        if (actionType) {
-          span.attributes[HTTP_ACTION_TYPE] = actionType;
-        }
-      }
-
-      if (rootSpan.ended) {
-        // root span is neded so we can enrich child span
-        enrichChildSpan(sdkSpan, rootSpan);
-      } else {
-        // we enrich child spans later because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
+      enrichChildSpan(sdkSpan, rootSpan);
+      if (!rootSpan.ended) {
+        // we enrich child spans later once again, because 'new.location.href' may appear with some delay (see instrumentation-user-interaction)
         const spansToEnrich = childSpansToEnrich.get(rootSpan);
         if (spansToEnrich) {
           spansToEnrich.push(sdkSpan);
