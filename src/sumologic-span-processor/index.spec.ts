@@ -11,8 +11,8 @@ import { resetSessionIdCookie } from './session-id';
 import { resetSavedSpans } from './find-longtask-context';
 import { resetDocumentVisibilityStateChanges } from './document-visibility-state';
 
-delete window.location;
-window.location = new URL('https://www.unit-test-example.com');
+delete (window as any).location;
+window.location = new URL('https://www.unit-test-example.com') as any;
 
 const nativePerformance = performance;
 jest.useFakeTimers();
@@ -23,11 +23,11 @@ const setSystemTime = (value: string) => {
   jest.setSystemTime(ms);
   Object.defineProperty(nativePerformance, 'timeOrigin', {
     configurable: true,
-    get: () => ms,
+    get: () => 0,
   });
   Object.defineProperty(nativePerformance, 'now', {
     configurable: true,
-    get: () => () => 0,
+    get: () => () => ms,
   });
 };
 
@@ -111,8 +111,13 @@ describe('SumoLogicSpanProcessor', () => {
     jest.runAllTimers();
   });
 
-  const createSpanProcessor = (config: SumoLogicSpanProcessorConfig) => {
-    spanProcessor = new SumoLogicSpanProcessor(exporter, config);
+  const createSpanProcessor = (
+    config: Partial<SumoLogicSpanProcessorConfig>,
+  ) => {
+    spanProcessor = new SumoLogicSpanProcessor(exporter, {
+      defaultServiceName: 'unknown',
+      ...config,
+    });
 
     superOnEnd = jest.fn();
     Object.getPrototypeOf(Object.getPrototypeOf(spanProcessor)).onEnd =

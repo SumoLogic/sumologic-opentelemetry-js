@@ -2,9 +2,10 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "ES6",
     "target": "ES6",
+    "lib": ["DOM"],
     "moduleResolution": "node",
     "strict": true,
     "resolveJsonModule": true,
@@ -12,13 +13,21 @@
     "declaration": true,
     "declarationDir": "./dist",
     "baseUrl": "./",
+    "useUnknownInCatchVariables": false,
     "paths": {
-      "@opentelemetry/api": ["./src/opentelemetry-js-api"],
+      "@opentelemetry/api": ["./src/opentelemetry-js/api"],
       "@opentelemetry/*": [
+        "./src/opentelemetry-js/packages/*",
         "./src/opentelemetry-js/packages/opentelemetry-*",
+        "./src/opentelemetry-js/experimental/packages/*",
         "./src/opentelemetry-js/experimental/packages/opentelemetry-*",
         "./src/opentelemetry-js-contrib/plugins/web/opentelemetry-*"
       ]
     }
-  }
+  },
+  "exclude": [
+    "./dist",
+    "./src/opentelemetry-js",
+    "./src/opentelemetry-js-contrib"
+  ]
 }

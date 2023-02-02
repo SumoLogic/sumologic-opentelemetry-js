@@ -1,4 +1,4 @@
-import { Context } from '@opentelemetry/api';
+import { Attributes, Context, ROOT_CONTEXT } from '@opentelemetry/api';
 import {
   BatchSpanProcessor,
   Span as SdkTraceSpan,
@@ -15,6 +15,7 @@ import * as sessionId from './session-id';
 
 export interface SumoLogicSpanProcessorConfig
   extends BatchSpanProcessorBrowserConfig {
+  defaultAttributes?: Attributes;
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
   getOverriddenServiceName?: (span: SdkTraceSpan) => string;
@@ -42,7 +43,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     this.traceProcessor = createTraceProcessor(this);
   }
 
-  onStart(span: SdkTraceSpan, context?: Context): void {
+  onStart(span: SdkTraceSpan, context: Context = ROOT_CONTEXT): void {
     documentVisibilityState.onStart(span, context);
     rootToChildEnrichment.onStart(span, context);
     this.traceProcessor.onStart(span, context);
@@ -57,7 +58,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     // add attributes to all spans
     span.setAttribute('location.href', location.href);
 
-    super.onStart(span);
+    super.onStart(span, context);
   }
 
   onEnd(span: ReadableSpan): void {

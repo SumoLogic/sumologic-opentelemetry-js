@@ -9,7 +9,6 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     'src/opentelemetry-js',
-    'src/opentelemetry-js-api',
     'src/opentelemetry-js-contrib',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
