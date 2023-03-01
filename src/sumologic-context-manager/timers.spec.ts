@@ -1,9 +1,9 @@
 import * as api from '@opentelemetry/api';
 import { SumoLogicContextManager } from './index';
 
-window.setImmediate = (callback: any) => {
+window.setImmediate = ((callback: any) => {
   setTimeout(callback);
-};
+}) as any;
 
 const NativeSetTimeout = window.setTimeout;
 const NativeSetInterval = window.setInterval;

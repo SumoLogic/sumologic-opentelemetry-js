@@ -2,13 +2,13 @@ import { diffString } from 'json-diff';
 
 const ANY_STRING_KEYS = new Set(['traceId', 'spanId', 'parentSpanId']);
 const ANY_STRING_PATHS = new Set([
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.user_agent/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.host/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.url/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/location.href/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/new.location.href/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/root_span.http.url/value/stringValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/rum.session_id/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.user_agent/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.host/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.url/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/location.href/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/new.location.href/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/root_span.http.url/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/rum.session_id/value/stringValue',
   'resourceLogs/instrumentationLibraryLogs/logs/attributes/http.url/value/stringValue',
   'resourceLogs/instrumentationLibraryLogs/logs/attributes/error.stack/value/stringValue',
   'resourceLogs/instrumentationLibraryLogs/logs/attributes/root_span.http.url/value/stringValue',
@@ -21,11 +21,11 @@ const ANY_NUMBER_KEYS = new Set([
 ]);
 const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/resource/attributes/sumologic.telemetry.sdk.export_timestamp/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.response_content_length/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_first_xhr/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_last_xhr/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
-  'resourceSpans/instrumentationLibrarySpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.response_content_length/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.time_to_first_xhr/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.time_to_last_xhr/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
 ]);
 const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],

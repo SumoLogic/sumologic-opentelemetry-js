@@ -3,6 +3,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const PACKAGE_JSON = './package.json';
+const TSCONFIG_JSON = './tsconfig.json';
 
 const preparePackage = async (fullDir) => {
   // read package.json
@@ -17,6 +18,9 @@ const preparePackage = async (fullDir) => {
 
   // save modified package.json
   await fs.writeFile(packagePath, JSON.stringify(package, null, 4), 'utf-8');
+
+  // delete tsconfig files so IDE can properly use our custom paths from the main tsconfig
+  await fs.rm(path.join(fullDir, TSCONFIG_JSON), { force: true });
 
   // run necessary scripts
   for (const scriptName of ['version', 'version:update']) {
@@ -59,10 +63,10 @@ const main = async () => {
     recursive: true,
     force: true,
   });
+  await preparePackage('./src/opentelemetry-js/api');
   await scanDir('./src/opentelemetry-js/packages');
   await scanDir('./src/opentelemetry-js/experimental/packages');
   await scanDir('./src/opentelemetry-js-contrib/plugins/web');
-  await preparePackage('./src/opentelemetry-js-api');
 };
 
 main().catch((error) => {

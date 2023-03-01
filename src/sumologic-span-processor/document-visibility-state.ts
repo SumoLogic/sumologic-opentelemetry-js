@@ -5,6 +5,9 @@ import {
   Span as SdkTraceSpan,
 } from '@opentelemetry/sdk-trace-base';
 
+// @todo: remove when typescript gets updated
+type DocumentVisibilityState = typeof window.document.visibilityState;
+
 const ATTRIBUTE_NAME = 'document.visibilityState';
 const VISIBILITY_STATE_TO_EVENT_NAMES: Record<DocumentVisibilityState, string> =
   {

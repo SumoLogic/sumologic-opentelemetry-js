@@ -15,7 +15,7 @@ in the browser.
 - uncaught exceptions, unhandled rejections, document errors and console errors
 - support for manual instrumentation
 - automatic context carrying through timers, promises, native async-await, events, observers and more
-- 98 KB (29 KB gzipped)
+- 103 KB (31 KB gzipped)
 
 ## Installation
 

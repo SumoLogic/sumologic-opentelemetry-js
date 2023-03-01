@@ -1,8 +1,9 @@
+import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import {
-  W3CTraceContextPropagator,
+  Span,
+  Tracer,
   TraceIdRatioBasedSampler,
-} from '@opentelemetry/core';
-import { Span, Tracer } from '@opentelemetry/sdk-trace-base';
+} from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -13,7 +14,6 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
-import { OTLPExporterConfigBase } from '@opentelemetry/exporter-trace-otlp-http/src/types';
 import { Resource, ResourceAttributes } from '@opentelemetry/resources';
 import {
   SemanticAttributes,
@@ -38,6 +38,7 @@ import {
 } from './utils';
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
+import { Attributes } from '@opentelemetry/api';
 
 type ReadyListener = () => void;
 
@@ -137,6 +138,8 @@ export const initialize = ({
 
   const tracesResource = resource.merge(
     new Resource({
+      ...defaultAttributes,
+
       // This is a temporary solution not covered by the specification.
       // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
       ['sampling.probability']: samplingProbabilityMaybeNumber,
@@ -152,30 +155,30 @@ export const initialize = ({
     propagator: new W3CTraceContextPropagator(),
   });
 
-  const attributes: OTLPExporterConfigBase['attributes'] = {
-    ...defaultAttributes,
-  };
+  const runtimeDefaultAttributes: Attributes = { ...defaultAttributes };
 
   const setDefaultAttribute = (
     key: string,
     value: api.AttributeValue | undefined,
   ) => {
-    attributes[key] = value;
+    provider.resource.attributes[key] = value;
+    runtimeDefaultAttributes[key] = value;
   };
 
   const parsedCollectionSourceUrl = getCollectionSourceUrl(collectionSourceUrl);
 
   const collectorExporter = new OTLPTraceExporter({
     url: `${parsedCollectionSourceUrl}v1/traces`,
-    attributes,
     headers: authorizationToken
       ? { Authorization: authorizationToken }
       : undefined,
   });
-  const exporter = new ExportTimestampEnrichmentExporter(collectorExporter);
+  const tracesExporter = new ExportTimestampEnrichmentExporter(
+    collectorExporter,
+  );
 
   provider.addSpanProcessor(
-    new SumoLogicSpanProcessor(exporter, {
+    new SumoLogicSpanProcessor(tracesExporter, {
       maxQueueSize: bufferMaxSpans,
       maxExportBatchSize,
       scheduledDelayMillis: bufferTimeout,
@@ -193,7 +196,7 @@ export const initialize = ({
   );
   const logsExporter = new SumoLogicLogsExporter({
     resource: logsResource,
-    attributes,
+    attributes: runtimeDefaultAttributes,
     collectorUrl: `${parsedCollectionSourceUrl}v1/logs`,
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,

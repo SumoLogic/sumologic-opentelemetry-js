@@ -11,7 +11,7 @@ window.MessagePort = class MessagePort {
   postMessage() {
     this._secondPort.onmessage();
   }
-};
+} as any;
 
 window.MessageChannel = class MessageChannel {
   public port1: MessagePort;
