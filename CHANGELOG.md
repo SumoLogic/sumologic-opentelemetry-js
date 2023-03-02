@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.3.0
+
+- updated OT-JS to 0.35.0
+
 ## 4.2.1
 
 - fixed longtask `http.action_type` classification
