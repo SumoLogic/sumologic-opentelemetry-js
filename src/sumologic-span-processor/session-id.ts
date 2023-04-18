@@ -7,6 +7,8 @@ interface Cookie {
   lastActivityTimestamp: number;
 }
 
+const useDocument = typeof document === 'object' && document != null;
+
 const SESSION_ID_ATTRIBUTE = 'rum.session_id';
 const COOKIE_NAME = 'sumoLogicOpenTelemetryRumSessionId';
 const COOKIE_VALUE_SEPARATOR = '-';
@@ -14,6 +16,10 @@ const MAX_INACTIVITY_MS = 1000 * 60 * 5; // 5 minutes
 const REFRESH_ACTIVITY_TIME_AFTER_MS = 1000 * 30; // 30 seconds
 
 const getCookieValue = (): Cookie | undefined => {
+  if (!useDocument) {
+    return;
+  }
+
   const cookie = document.cookie
     .split('; ')
     .find((item) => item.startsWith(`${COOKIE_NAME}=`));
@@ -28,6 +34,10 @@ const getCookieValue = (): Cookie | undefined => {
 };
 
 const setCookieValue = ({ sessionId, lastActivityTimestamp }: Cookie): void => {
+  if (!useDocument) {
+    return;
+  }
+
   document.cookie = `${COOKIE_NAME}=${sessionId}${COOKIE_VALUE_SEPARATOR}${lastActivityTimestamp}; path=/`;
 };
 
