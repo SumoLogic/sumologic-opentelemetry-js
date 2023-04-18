@@ -8,6 +8,8 @@ import {
 // @todo: remove when typescript gets updated
 type DocumentVisibilityState = typeof window.document.visibilityState;
 
+const useDocument = typeof document === 'object' && document != null
+
 const ATTRIBUTE_NAME = 'document.visibilityState';
 const VISIBILITY_STATE_TO_EVENT_NAMES: Record<DocumentVisibilityState, string> =
   {
@@ -21,11 +23,15 @@ const changes: {
   timestampInHrTime: HrTime;
   state: DocumentVisibilityState;
 }[] = [];
-let initialState = document.visibilityState;
+let initialState = document?.visibilityState;
 let currentState = initialState;
 
 // exported for tests
 export const resetDocumentVisibilityStateChanges = () => {
+  if (!useDocument) {
+    return null
+  }
+
   while (changes.length) {
     changes.pop();
   }
@@ -34,6 +40,10 @@ export const resetDocumentVisibilityStateChanges = () => {
 };
 
 const updateState = () => {
+  if (!useDocument) {
+    return null
+  }
+
   const newState = document.visibilityState;
   if (currentState !== newState) {
     currentState = newState;
@@ -49,15 +59,15 @@ const updateState = () => {
   }
 };
 
-document.addEventListener('visibilitychange', () => {
+document?.addEventListener('visibilitychange', () => {
   updateState();
 });
 
-window.addEventListener('pagehide', () => {
+window?.addEventListener('pagehide', () => {
   updateState();
 });
 
-window.addEventListener('pageshow', () => {
+window?.addEventListener('pageshow', () => {
   updateState();
 });
 
