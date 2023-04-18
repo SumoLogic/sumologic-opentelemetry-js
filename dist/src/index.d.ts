@@ -41,7 +41,7 @@ export declare const initialize: ({ collectionSourceUrl, authorizationToken, ser
     onReady: (callback: ReadyListener) => void;
     api: typeof api;
     tracer: Tracer;
-    registerInstrumentations: () => void;
+    registerInstrumentations: (isBrowserEnvironment?: boolean) => void;
     disableInstrumentations: () => void;
     setDefaultAttribute: (key: string, value: api.AttributeValue | undefined) => void;
     getCurrentSessionId: () => string;
