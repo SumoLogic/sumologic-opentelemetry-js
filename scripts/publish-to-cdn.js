@@ -80,7 +80,7 @@ const main = async () => {
     .promise();
 
   console.log('sending a message to slack');
-  await postMessageToSlack();
+  // await postMessageToSlack();
 };
 
 main().catch((error) => {
