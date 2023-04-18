@@ -23,7 +23,7 @@ const changes: {
   timestampInHrTime: HrTime;
   state: DocumentVisibilityState;
 }[] = [];
-let initialState = document?.visibilityState;
+let initialState = useDocument ? document?.visibilityState : null;
 let currentState = initialState;
 
 // exported for tests
@@ -72,7 +72,13 @@ window?.addEventListener('pageshow', () => {
 });
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
-  span.setAttribute(ATTRIBUTE_NAME, initialState);
+  if (!useDocument) {
+    return;
+  }
+
+  if (initialState !== null && initialState !== undefined) {
+    span.setAttribute(ATTRIBUTE_NAME, initialState);
+  }
 
   // We need to check history of changes, because span can be created with a custom time.
   // This is a common situation in document-load auto-instrumentation, when spans are created
