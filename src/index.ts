@@ -83,6 +83,7 @@ interface InitializeOptions {
 }
 
 const useWindow = typeof window === 'object' && window != null;
+const useDocument = typeof document === 'object' && document != null
 
 if (useWindow) {
   window.sumoLogicOpenTelemetryRum = window.sumoLogicOpenTelemetryRum || {};
@@ -218,7 +219,7 @@ export const initialize = ({
     }
   };
 
-  const registerInstrumentations = () => {
+  const registerInstrumentations = (isBrowserEnvironment = true) => {
     disableInstrumentations();
     logsExporter.enable();
     logsInstrumentation?.enable();
@@ -229,7 +230,7 @@ export const initialize = ({
           new LongTaskInstrumentation({
             enabled: false,
           }),
-          new DocumentLoadInstrumentation({ enabled: false }),
+          ...(isBrowserEnvironment ? [new DocumentLoadInstrumentation({ enabled: false })] : []),
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
@@ -260,7 +261,7 @@ export const initialize = ({
   };
 
   const tracer = provider.getTracer('@sumologic/opentelemetry-rum');
-  registerInstrumentations();
+  registerInstrumentations(useDocument);
 
   const result = {
     readyListeners: [],
