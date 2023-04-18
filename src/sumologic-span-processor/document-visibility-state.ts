@@ -35,7 +35,7 @@ export const resetDocumentVisibilityStateChanges = () => {
   while (changes.length) {
     changes.pop();
   }
-  initialState = document.visibilityState;
+  initialState = document?.visibilityState;
   currentState = initialState;
 };
 
@@ -44,7 +44,7 @@ const updateState = () => {
     return null
   }
 
-  const newState = document.visibilityState;
+  const newState = document?.visibilityState;
   if (currentState !== newState) {
     currentState = newState;
     const timestampInHrTime = hrTime();
