@@ -8,7 +8,8 @@ import {
 // @todo: remove when typescript gets updated
 type DocumentVisibilityState = typeof window.document.visibilityState;
 
-const useDocument = typeof document === 'object' && document != null
+const useDocument = typeof document === 'object' && document != null;
+const useWindow = typeof window === 'object' && window != null;
 
 const ATTRIBUTE_NAME = 'document.visibilityState';
 const VISIBILITY_STATE_TO_EVENT_NAMES: Record<DocumentVisibilityState, string> =
@@ -59,17 +60,21 @@ const updateState = () => {
   }
 };
 
-document?.addEventListener('visibilitychange', () => {
-  updateState();
-});
+if (useDocument && useWindow) {
+  document.addEventListener('visibilitychange', () => {
+    updateState();
+  });
 
-window?.addEventListener('pagehide', () => {
-  updateState();
-});
+  window.addEventListener('pagehide', () => {
+    updateState();
+  });
 
-window?.addEventListener('pageshow', () => {
-  updateState();
-});
+  window.addEventListener('pageshow', () => {
+    updateState();
+  });
+}
+
+
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
   if (!useDocument) {
