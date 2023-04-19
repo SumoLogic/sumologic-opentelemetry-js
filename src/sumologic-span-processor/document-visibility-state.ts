@@ -4,6 +4,7 @@ import {
   ReadableSpan,
   Span as SdkTraceSpan,
 } from '@opentelemetry/sdk-trace-base';
+import { useDocument, useWindow } from "./utils";
 
 // @todo: remove when typescript gets updated
 type DocumentVisibilityState = typeof window.document.visibilityState;
@@ -21,20 +22,28 @@ const changes: {
   timestampInHrTime: HrTime;
   state: DocumentVisibilityState;
 }[] = [];
-let initialState = document.visibilityState;
+let initialState = useDocument ? document?.visibilityState : null;
 let currentState = initialState;
 
 // exported for tests
 export const resetDocumentVisibilityStateChanges = () => {
+  if (!useDocument) {
+    return;
+  }
+
   while (changes.length) {
     changes.pop();
   }
-  initialState = document.visibilityState;
+  initialState = document?.visibilityState;
   currentState = initialState;
 };
 
 const updateState = () => {
-  const newState = document.visibilityState;
+  if (!useDocument) {
+    return;
+  }
+
+  const newState = document?.visibilityState;
   if (currentState !== newState) {
     currentState = newState;
     const timestampInHrTime = hrTime();
@@ -49,19 +58,25 @@ const updateState = () => {
   }
 };
 
-document.addEventListener('visibilitychange', () => {
-  updateState();
-});
+if (useDocument && useWindow) {
+  document?.addEventListener('visibilitychange', () => {
+    updateState();
+  });
 
-window.addEventListener('pagehide', () => {
-  updateState();
-});
+  window?.addEventListener('pagehide', () => {
+    updateState();
+  });
 
-window.addEventListener('pageshow', () => {
-  updateState();
-});
+  window?.addEventListener('pageshow', () => {
+    updateState();
+  });
+}
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+  if (!useDocument || initialState === null) {
+    return;
+  }
+
   span.setAttribute(ATTRIBUTE_NAME, initialState);
 
   // We need to check history of changes, because span can be created with a custom time.

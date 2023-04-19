@@ -1,6 +1,7 @@
 import { Context } from '@opentelemetry/api';
 import { RandomIdGenerator } from '@opentelemetry/core';
 import { Span as SdkTraceSpan } from '@opentelemetry/sdk-trace-base';
+import { useDocument } from "./utils";
 
 interface Cookie {
   sessionId: string;
@@ -14,6 +15,10 @@ const MAX_INACTIVITY_MS = 1000 * 60 * 5; // 5 minutes
 const REFRESH_ACTIVITY_TIME_AFTER_MS = 1000 * 30; // 30 seconds
 
 const getCookieValue = (): Cookie | undefined => {
+  if (!useDocument) {
+    return;
+  }
+
   const cookie = document.cookie
     .split('; ')
     .find((item) => item.startsWith(`${COOKIE_NAME}=`));
@@ -28,6 +33,10 @@ const getCookieValue = (): Cookie | undefined => {
 };
 
 const setCookieValue = ({ sessionId, lastActivityTimestamp }: Cookie): void => {
+  if (!useDocument) {
+    return;
+  }
+
   document.cookie = `${COOKIE_NAME}=${sessionId}${COOKIE_VALUE_SEPARATOR}${lastActivityTimestamp}; path=/`;
 };
 

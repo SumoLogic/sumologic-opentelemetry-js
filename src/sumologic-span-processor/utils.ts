@@ -2,6 +2,9 @@ import { Span as SdkTraceSpan } from '@opentelemetry/sdk-trace-base';
 import { AttributeValue, SpanKind } from '@opentelemetry/api';
 import { XHR_IS_ROOT_SPAN } from '../constants';
 
+export const useWindow = typeof window === 'object' && window != null;
+export const useDocument = typeof document === 'object' && document != null;
+
 export const isXhrSpan = (span: SdkTraceSpan): boolean =>
   span.name.startsWith('HTTP ') && span.kind === SpanKind.CLIENT;
 
