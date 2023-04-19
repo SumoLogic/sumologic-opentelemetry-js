@@ -83,14 +83,17 @@ interface InitializeOptions {
 }
 
 const useWindow = typeof window === 'object' && window != null;
+const useDocument = typeof document === 'object' && document != null;
+
+let contextManager: SumoLogicContextManager | undefined
 
 if (useWindow) {
   window.sumoLogicOpenTelemetryRum = window.sumoLogicOpenTelemetryRum || {};
-}
 
-// create context manager right now to patch APIs for situations when 'initialize' is called later
-const contextManager = new SumoLogicContextManager();
-contextManager.enable();
+  // create context manager right now to patch APIs for situations when 'initialize' is called later
+  contextManager = new SumoLogicContextManager();
+  contextManager.enable();
+}
 
 export const initialize = ({
   collectionSourceUrl,
@@ -111,6 +114,8 @@ export const initialize = ({
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   getOverriddenServiceName,
 }: InitializeOptions) => {
+  if (!useWindow) return;
+
   if (!collectionSourceUrl) {
     throw new Error(
       'collectionSourceUrl needs to be defined to initialize Sumo Logic OpenTelemetry RUM',
@@ -229,7 +234,7 @@ export const initialize = ({
           new LongTaskInstrumentation({
             enabled: false,
           }),
-          new DocumentLoadInstrumentation({ enabled: false }),
+          ...(useDocument ? [new DocumentLoadInstrumentation({ enabled: false })] : []),
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
