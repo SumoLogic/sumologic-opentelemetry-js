@@ -4,7 +4,7 @@ import {
   ReadableSpan,
   Span as SdkTraceSpan,
 } from '@opentelemetry/sdk-trace-base';
-import { useDocument, useWindow } from "./utils";
+import { useDocument, useWindow } from './utils';
 
 // @todo: remove when typescript gets updated
 type DocumentVisibilityState = typeof window.document.visibilityState;
