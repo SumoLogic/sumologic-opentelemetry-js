@@ -83,7 +83,6 @@ interface InitializeOptions {
 }
 
 const useWindow = typeof window === 'object' && window != null;
-const useDocument = typeof document === 'object' && document != null;
 
 let contextManager: SumoLogicContextManager | undefined;
 
@@ -234,9 +233,7 @@ export const initialize = ({
           new LongTaskInstrumentation({
             enabled: false,
           }),
-          ...(useDocument
-            ? [new DocumentLoadInstrumentation({ enabled: false })]
-            : []),
+          new DocumentLoadInstrumentation({ enabled: false }),
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
