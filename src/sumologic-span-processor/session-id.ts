@@ -1,6 +1,7 @@
 import { Context } from '@opentelemetry/api';
 import { RandomIdGenerator } from '@opentelemetry/core';
 import { Span as SdkTraceSpan } from '@opentelemetry/sdk-trace-base';
+import { useDocument } from './utils';
 
 interface Cookie {
   sessionId: string;
@@ -32,7 +33,11 @@ const setCookieValue = ({ sessionId, lastActivityTimestamp }: Cookie): void => {
 };
 
 const idGenerator = new RandomIdGenerator();
-let cookie = getCookieValue();
+let cookie: Cookie | undefined;
+
+if (useDocument) {
+  cookie = getCookieValue();
+}
 
 // exported for unit tests
 export const resetSessionIdCookie = () => {
@@ -65,5 +70,7 @@ export const getCurrentSessionId = () => {
 };
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+  if (!useDocument) return;
+
   span.setAttribute(SESSION_ID_ATTRIBUTE, getCurrentSessionId());
 };
