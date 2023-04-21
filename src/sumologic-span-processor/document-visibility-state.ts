@@ -27,10 +27,6 @@ let currentState = initialState;
 
 // exported for tests
 export const resetDocumentVisibilityStateChanges = () => {
-  if (!useDocument) {
-    return;
-  }
-
   while (changes.length) {
     changes.pop();
   }
@@ -39,10 +35,6 @@ export const resetDocumentVisibilityStateChanges = () => {
 };
 
 const updateState = () => {
-  if (!useDocument) {
-    return;
-  }
-
   const newState = document?.visibilityState;
   if (currentState !== newState) {
     currentState = newState;

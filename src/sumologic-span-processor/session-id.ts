@@ -15,10 +15,6 @@ const MAX_INACTIVITY_MS = 1000 * 60 * 5; // 5 minutes
 const REFRESH_ACTIVITY_TIME_AFTER_MS = 1000 * 30; // 30 seconds
 
 const getCookieValue = (): Cookie | undefined => {
-  if (!useDocument) {
-    return;
-  }
-
   const cookie = document.cookie
     .split('; ')
     .find((item) => item.startsWith(`${COOKIE_NAME}=`));
@@ -33,15 +29,15 @@ const getCookieValue = (): Cookie | undefined => {
 };
 
 const setCookieValue = ({ sessionId, lastActivityTimestamp }: Cookie): void => {
-  if (!useDocument) {
-    return;
-  }
-
   document.cookie = `${COOKIE_NAME}=${sessionId}${COOKIE_VALUE_SEPARATOR}${lastActivityTimestamp}; path=/`;
 };
 
 const idGenerator = new RandomIdGenerator();
-let cookie = getCookieValue();
+let cookie: Cookie | undefined
+
+if (useDocument) {
+  cookie = getCookieValue();
+}
 
 // exported for unit tests
 export const resetSessionIdCookie = () => {
@@ -74,5 +70,7 @@ export const getCurrentSessionId = () => {
 };
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
+  if (!useDocument) return;
+
   span.setAttribute(SESSION_ID_ATTRIBUTE, getCurrentSessionId());
 };
