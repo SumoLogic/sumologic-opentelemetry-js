@@ -39,6 +39,7 @@ import {
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
+import { CompositePropagator, W3CBaggagePropagator } from '@opentelemetry/core';
 
 type ReadyListener = () => void;
 
@@ -154,9 +155,13 @@ export const initialize = ({
     sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
   });
 
+  const compositePropagator = new CompositePropagator({
+    propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+  });
+
   provider.register({
     contextManager,
-    propagator: new W3CTraceContextPropagator(),
+    propagator: compositePropagator,
   });
 
   const runtimeDefaultAttributes: Attributes = { ...defaultAttributes };
