@@ -39,7 +39,10 @@ import {
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
-import {CompositePropagator, W3CBaggagePropagator} from "@opentelemetry/core/src";
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+} from '@opentelemetry/core/src';
 
 type ReadyListener = () => void;
 
