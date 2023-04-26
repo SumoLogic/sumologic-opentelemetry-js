@@ -9,28 +9,35 @@ const CHANGELOG_URL =
 const RUM_CDN_URL = 'https://rum.sumologic.com';
 
 const getFileNames = () => {
+  const res = (paths) => ({
+    script: paths,
+    sourcemap: paths.map((path) => `${path}.map`),
+  });
+
   const uriVersion = encodeURIComponent(version);
   const [major, minor, patch] = uriVersion.split('.');
+
   if (!Number.isInteger(Number(patch))) {
-    return [`sumologic-rum-v${uriVersion}.js`];
+    return res([`sumologic-rum-v${uriVersion}.js`]);
   }
 
-  return [
+  return res([
     `sumologic-rum-v${uriVersion}.js`,
     `sumologic-rum-v${major}.${minor}.js`,
     `sumologic-rum-v${major}.js`,
     `sumologic-rum.js`,
-  ];
+  ]);
 };
 
 const MAX_AGE = 5 * 60 * 60; // 5 hours
 
-const filenames = getFileNames();
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 const cloudfront = new AWS.CloudFront({ apiVersion: '2020-05-31' });
 
-const postMessageToSlack = () => {
+const postMessageToSlack = (filenames) => {
   const hashVersion = version.replace(/\./g, '');
+
+  console.log('Sending a message to Slack');
 
   return axios.post(process.env.SLACK_WEBHOOK_TRACING_RELEASES, {
     blocks: [
@@ -49,24 +56,24 @@ const postMessageToSlack = () => {
   });
 };
 
-const main = async () => {
-  const file = await fs.readFile('./dist/browser.js');
+const uploadFileToCDN = (filename, file) => {
+  console.log(`Uploading ${filename} to CDN`);
 
-  for (const filename of filenames) {
-    console.log(`Upload ${filename}`);
-    await s3
-      .upload({
-        Bucket: process.env.RUM_S3_BUCKET,
-        Key: filename,
-        Body: file,
-        CacheControl: `max-age=${MAX_AGE}`,
-        ContentType: 'application/javascript',
-      })
-      .promise();
-  }
+  return s3
+    .upload({
+      Bucket: process.env.RUM_S3_BUCKET,
+      Key: filename,
+      Body: file,
+      CacheControl: `max-age=${MAX_AGE}`,
+      ContentType: 'application/javascript',
+    })
+    .promise();
+};
 
-  console.log('Invalidate files');
-  await cloudfront
+const invalidateKeyInCDN = (filenames) => {
+  console.log('Invalidating keys in CDN');
+
+  return cloudfront
     .createInvalidation({
       DistributionId: process.env.RUM_CLOUDFRONT_DISTRIBUTION_ID,
       InvalidationBatch: {
@@ -78,9 +85,26 @@ const main = async () => {
       },
     })
     .promise();
+};
 
-  console.log('sending a message to slack');
-  await postMessageToSlack();
+const main = async () => {
+  const filenames = getFileNames();
+
+  const scriptFile = await fs.readFile('./dist/browser.js');
+  const sourcemapFile = await fs.readFile('./dist/browser.js.map');
+
+  for (const filename of filenames.script) {
+    await uploadFileToCDN(filename, scriptFile);
+  }
+  for (const filename of filenames.sourcemap) {
+    await uploadFileToCDN(filename, sourcemapFile);
+  }
+
+  const allFilenames = [...filenames.script, ...filenames.sourcemap].sort();
+
+  await invalidateKeyInCDN(allFilenames);
+
+  await postMessageToSlack(allFilenames);
 };
 
 main().catch((error) => {
