@@ -156,6 +156,41 @@ propagateTraceHeaderCorsUrls: [
 ],
 ```
 
+### Baggage
+
+Baggage is contextual information that’s passed between spans. It’s a key-value store that resides alongside span
+context in a trace, making values available to any span created within that trace.
+
+Imagine you want to have a `customerId` attribute on every span in your trace, which involves multiple services;
+however, `customerId` is only available in one specific service. To accomplish your goal, you can use OpenTelemetry
+Baggage to propagate this value across your system. In that sense it is different than `defaultAttributes`, which does
+not allow for data to be added dynamically. It could be said that `setDefaultAttribute()` serves similar function as
+Baggage (as attributes can be defined dynamically); however it will not add attributes retroactively (spans sent before
+calling `setDefaultAttribute()`).
+
+OpenTelemetry uses Context Propagation to pass Baggage around, and each of the different library implementations has
+propagators that parse and make that Baggage available without you needing to explicitly implement it.
+
+Baggage can be used by accessing methods in our `window.sumoLogicOpenTelemetryRum` pulled from OpenTelemetry upstream:
+
+```javascript
+const baggage =
+  window.sumoLogicOpenTelemetryRum.api.propagation.getBaggage(
+    window.sumoLogicOpenTelemetryRum.api.context.active(),
+  ) || window.sumoLogicOpenTelemetryRum.api.propagation.createBaggage();
+
+baggage.setEntry('customerId', { value: 'customer-id-value' });
+window.sumoLogicOpenTelemetryRum.api.propagation.setBaggage(
+  window.sumoLogicOpenTelemetryRum.api.context.active(),
+  baggage,
+);
+```
+
+Useful links:
+
+- https://opentelemetry.io/docs/concepts/signals/baggage/
+- https://scoutapm.com/blog/opentelemetry-in-javascript
+
 ## Manual instrumentation
 
 When initialized by the `<script />` tag, window attribute `sumoLogicOpenTelemetryRum` is exposed. It gives possibility
