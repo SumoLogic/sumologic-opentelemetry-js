@@ -1,7 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWS = require('aws-sdk');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs/promises');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const axios = require('axios');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
 
 const CHANGELOG_URL =
@@ -104,7 +108,7 @@ const main = async () => {
 
   await invalidateKeyInCDN(allFilenames);
 
-  await postMessageToSlack(allFilenames);
+  // await postMessageToSlack(allFilenames);
 };
 
 main().catch((error) => {
