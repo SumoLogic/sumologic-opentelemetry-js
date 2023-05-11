@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 4.4.0
+
+- added support for [OpenTelemetry Baggage](https://opentelemetry.io/docs/concepts/signals/baggage/)
+- upload source map file for JS script to CDN
+- bug fixes
+
 ## 4.3.0
 
 - updated OT-JS to 0.35.0
