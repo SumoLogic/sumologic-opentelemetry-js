@@ -29,6 +29,12 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm i aws-sdk@^2.977.0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-east-1
+          role-to-assume: ${{ secrets.RELEASE_ROLE }}
+          role-session-name: OIDCSession
       - run: node scripts/publish-to-cdn.js
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
