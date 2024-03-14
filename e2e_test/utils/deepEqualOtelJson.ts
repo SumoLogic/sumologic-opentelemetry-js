@@ -55,7 +55,7 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
       ANY_NUMBER_KEYS.has(lastPathElement) ||
       ANY_NUMBER_PATHS.has(pathAsString)
     ) {
-      if (Number.isFinite(resp1)) {
+      if (Number.isFinite(+resp1)) {
         return '[any number]';
       }
       return resp1;
