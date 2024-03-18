@@ -25,7 +25,9 @@ afterAll(() => {
 describe('ExportTimestampEnrichmentExporter', () => {
   let exporter: SpanExporter;
   let originalExporter: jest.Mocked<SpanExporter>;
-  const resultCallback = () => {};
+  const resultCallback = () => {
+    // no-op
+  };
   const readableSpan: ReadableSpan = {
     name: 'my-span',
     kind: SpanKind.INTERNAL,
@@ -58,6 +60,9 @@ describe('ExportTimestampEnrichmentExporter', () => {
       name: 'default',
       version: '0.0.1',
     },
+    droppedAttributesCount: 0,
+    droppedEventsCount: 0,
+    droppedLinksCount: 0,
   };
 
   beforeEach(() => {
