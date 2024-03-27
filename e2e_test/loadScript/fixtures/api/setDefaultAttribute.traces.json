@@ -4,18 +4,6 @@
       "resource": {
         "attributes": [
           {
-            "key": "loadSync.default.attr",
-            "value": {
-              "intValue": 1
-            }
-          },
-          {
-            "key": "org_id",
-            "value": {
-              "intValue": 123
-            }
-          },
-          {
             "key": "service.name",
             "value": {
               "stringValue": "load-sync-test-service-name"
@@ -36,7 +24,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "1.9.0"
+              "stringValue": "1.22.0"
             }
           },
           {
@@ -58,15 +46,27 @@
             }
           },
           {
+            "key": "loadSync.default.attr",
+            "value": {
+              "intValue": 1
+            }
+          },
+          {
             "key": "sampling.probability",
             "value": {
               "intValue": 1
             }
           },
           {
+            "key": "org_id",
+            "value": {
+              "intValue": 123
+            }
+          },
+          {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1661179890268
+              "doubleValue": 1710765595370.1
             }
           }
         ],
@@ -74,15 +74,19 @@
       },
       "scopeSpans": [
         {
+          "scope": {
+            "name": "@opentelemetry/instrumentation-document-load",
+            "version": "0.36.0"
+          },
           "spans": [
             {
-              "traceId": "0a0ba540809e86e3dd848ed4b12cb36f",
-              "spanId": "b1943e9ffc7a9656",
-              "parentSpanId": "d056a2026e7ee5a3",
+              "traceId": "64b715522551346f223922647bb5b919",
+              "spanId": "f9f9f7bc5f4bee78",
+              "parentSpanId": "a3df33c227e58ca5",
               "name": "documentFetch",
               "kind": 1,
-              "startTimeUnixNano": 1661179887918200000,
-              "endTimeUnixNano": 1661179887969100000,
+              "startTimeUnixNano": "1710765593341499903",
+              "endTimeUnixNano": "1710765593343599903",
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -93,25 +97,19 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "55f1ffdac976504901b76edef8b31ef5"
+                    "stringValue": "9b1d6c8f1839098ae509c266bf51f3b9"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/setDefaultAttribute.html"
-                  }
-                },
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "document-load"
+                    "stringValue": "http://localhost:62742/api/setDefaultAttribute.html"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/setDefaultAttribute.html"
+                    "stringValue": "http://localhost:62742/api/setDefaultAttribute.html"
                   }
                 },
                 {
@@ -130,57 +128,51 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1661179887918200000,
+                  "attributes": [],
                   "name": "fetchStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593341499903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887919900000,
+                  "attributes": [],
                   "name": "domainLookupStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593341999903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887919900000,
+                  "attributes": [],
                   "name": "domainLookupEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593341999903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887919900000,
+                  "attributes": [],
                   "name": "connectStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593341999903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887917999900,
-                  "name": "secureConnectionStart",
                   "attributes": [],
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "timeUnixNano": 1661179887920200000,
                   "name": "connectEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593342399903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887920200000,
+                  "attributes": [],
                   "name": "requestStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593342399903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887968600000,
+                  "attributes": [],
                   "name": "responseStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593343399903",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887969100000,
-                  "name": "responseEnd",
                   "attributes": [],
+                  "name": "responseEnd",
+                  "timeUnixNano": "1710765593343599903",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -192,13 +184,13 @@
               "droppedLinksCount": 0
             },
             {
-              "traceId": "0a0ba540809e86e3dd848ed4b12cb36f",
-              "spanId": "32ad3e9391d22762",
-              "parentSpanId": "d056a2026e7ee5a3",
+              "traceId": "64b715522551346f223922647bb5b919",
+              "spanId": "9da3e0cc5d28168f",
+              "parentSpanId": "a3df33c227e58ca5",
               "name": "resourceFetch",
               "kind": 1,
-              "startTimeUnixNano": 1661179888010000000,
-              "endTimeUnixNano": 1661179888063000000,
+              "startTimeUnixNano": "1710765593346400000",
+              "endTimeUnixNano": "1710765593348800000",
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -209,88 +201,76 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "55f1ffdac976504901b76edef8b31ef5"
+                    "stringValue": "9b1d6c8f1839098ae509c266bf51f3b9"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/setDefaultAttribute.html"
-                  }
-                },
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "document-load"
+                    "stringValue": "http://localhost:62742/api/setDefaultAttribute.html"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/rum.js"
+                    "stringValue": "http://localhost:62742/api/rum.js"
                   }
                 },
                 {
                   "key": "http.response_content_length",
                   "value": {
-                    "intValue": 214092
+                    "intValue": 131540
                   }
                 }
               ],
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1661179888010000000,
+                  "attributes": [],
                   "name": "fetchStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888010000000,
+                  "attributes": [],
                   "name": "domainLookupStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888010000000,
+                  "attributes": [],
                   "name": "domainLookupEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888010000000,
+                  "attributes": [],
                   "name": "connectStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887917999900,
-                  "name": "secureConnectionStart",
                   "attributes": [],
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "timeUnixNano": 1661179888010000000,
                   "name": "connectEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888011100000,
+                  "attributes": [],
                   "name": "requestStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593346900000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888060700000,
+                  "attributes": [],
                   "name": "responseStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593348400000",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888063000000,
-                  "name": "responseEnd",
                   "attributes": [],
+                  "name": "responseEnd",
+                  "timeUnixNano": "1710765593348800000",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -302,13 +282,13 @@
               "droppedLinksCount": 0
             },
             {
-              "traceId": "0a0ba540809e86e3dd848ed4b12cb36f",
-              "spanId": "ba8f0e97005b4875",
-              "parentSpanId": "d056a2026e7ee5a3",
+              "traceId": "64b715522551346f223922647bb5b919",
+              "spanId": "c2bbcb9580f79eef",
+              "parentSpanId": "a3df33c227e58ca5",
               "name": "resourceFetch",
               "kind": 1,
-              "startTimeUnixNano": 1661179888011500000,
-              "endTimeUnixNano": 1661179888061000000,
+              "startTimeUnixNano": "1710765593347400049",
+              "endTimeUnixNano": "1710765593349500049",
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -319,25 +299,19 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "55f1ffdac976504901b76edef8b31ef5"
+                    "stringValue": "9b1d6c8f1839098ae509c266bf51f3b9"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/setDefaultAttribute.html"
-                  }
-                },
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "document-load"
+                    "stringValue": "http://localhost:62742/api/setDefaultAttribute.html"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/logo.png"
+                    "stringValue": "http://localhost:62742/api/logo.png"
                   }
                 },
                 {
@@ -350,57 +324,51 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1661179888011500000,
+                  "attributes": [],
                   "name": "fetchStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347400049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012100000,
+                  "attributes": [],
                   "name": "domainLookupStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347700049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012100000,
+                  "attributes": [],
                   "name": "domainLookupEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347700049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012100000,
+                  "attributes": [],
                   "name": "connectStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347700049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887917999900,
-                  "name": "secureConnectionStart",
                   "attributes": [],
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "timeUnixNano": 1661179888012399900,
                   "name": "connectEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347800049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012500000,
+                  "attributes": [],
                   "name": "requestStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347900049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888060100000,
+                  "attributes": [],
                   "name": "responseStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593349200049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888061000000,
-                  "name": "responseEnd",
                   "attributes": [],
+                  "name": "responseEnd",
+                  "timeUnixNano": "1710765593349500049",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -412,13 +380,13 @@
               "droppedLinksCount": 0
             },
             {
-              "traceId": "0a0ba540809e86e3dd848ed4b12cb36f",
-              "spanId": "cb363bb8789f6ffe",
-              "parentSpanId": "d056a2026e7ee5a3",
+              "traceId": "64b715522551346f223922647bb5b919",
+              "spanId": "0168355ef695ce6d",
+              "parentSpanId": "a3df33c227e58ca5",
               "name": "resourceFetch",
               "kind": 1,
-              "startTimeUnixNano": 1661179888012399900,
-              "endTimeUnixNano": 1661179888106200000,
+              "startTimeUnixNano": "1710765593347500049",
+              "endTimeUnixNano": "1710765593350900049",
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -429,25 +397,19 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "55f1ffdac976504901b76edef8b31ef5"
+                    "stringValue": "9b1d6c8f1839098ae509c266bf51f3b9"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/setDefaultAttribute.html"
-                  }
-                },
-                {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "document-load"
+                    "stringValue": "http://localhost:62742/api/setDefaultAttribute.html"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58061/api/logo-delay.png"
+                    "stringValue": "http://localhost:62742/api/logo-delay.png"
                   }
                 },
                 {
@@ -460,57 +422,51 @@
               "droppedAttributesCount": 0,
               "events": [
                 {
-                  "timeUnixNano": 1661179888012399900,
+                  "attributes": [],
                   "name": "fetchStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347500049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012399900,
+                  "attributes": [],
                   "name": "domainLookupStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347500049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012399900,
+                  "attributes": [],
                   "name": "domainLookupEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347500049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888012399900,
+                  "attributes": [],
                   "name": "connectStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347500049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179887917999900,
-                  "name": "secureConnectionStart",
                   "attributes": [],
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "timeUnixNano": 1661179888012399900,
                   "name": "connectEnd",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593347500049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888062100000,
+                  "attributes": [],
                   "name": "requestStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593349800049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888105500000,
+                  "attributes": [],
                   "name": "responseStart",
-                  "attributes": [],
+                  "timeUnixNano": "1710765593350600049",
                   "droppedAttributesCount": 0
                 },
                 {
-                  "timeUnixNano": 1661179888106200000,
-                  "name": "responseEnd",
                   "attributes": [],
+                  "name": "responseEnd",
+                  "timeUnixNano": "1710765593350900049",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -521,11 +477,7 @@
               "links": [],
               "droppedLinksCount": 0
             }
-          ],
-          "scope": {
-            "name": "@opentelemetry/instrumentation-document-load",
-            "version": "0.31.0"
-          }
+          ]
         }
       ]
     }
