@@ -39,6 +39,18 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     }, 1000);
   });
 
+  app.get('/api/planets', async (req, res) => {
+    const filename = path.join(basedir, '../fixtures/planets.json');
+    const file = await fs.readFile(filename, 'utf-8');
+    res.send(file);
+  });
+
+  app.get('/api/planets/3', async (req, res) => {
+    const filename = path.join(basedir, '../fixtures/planet-3.json');
+    const file = await fs.readFile(filename, 'utf-8');
+    res.send(file);
+  });
+
   app.use(async (req, res, next) => {
     try {
       const requestPath = path.join(basedir, '../static', req.url);
@@ -73,17 +85,17 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     let getCounter = 0;
     let resolveFirstBatch: (value: any) => void;
     let resolveSecondBatch: (value: any) => void;
-    let firstBatch = new Promise<any>((resolve) => {
+    const firstBatch = new Promise<any>((resolve) => {
       resolveFirstBatch = resolve;
     });
-    let secondBatch = new Promise<any>((resolve) => {
+    const secondBatch = new Promise<any>((resolve) => {
       resolveSecondBatch = resolve;
     });
 
     app.post(`/rum/v1/${telemetrySignalType}`, (req, res) => {
       ++postCounter;
 
-      let resolveFunctionToCall =
+      const resolveFunctionToCall =
         postCounter === 1 ? resolveFirstBatch : resolveSecondBatch;
 
       resolveFunctionToCall(req.body);
@@ -94,7 +106,7 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     app.get(`/${telemetrySignalType}`, async (req, res) => {
       ++getCounter;
 
-      let promiseToResolve = getCounter === 1 ? firstBatch : secondBatch;
+      const promiseToResolve = getCounter === 1 ? firstBatch : secondBatch;
 
       res.send(await promiseToResolve);
     });

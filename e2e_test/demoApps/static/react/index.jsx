@@ -1,3 +1,5 @@
+/* global ReactRouterDOM, ReactRouter, React, ReactDOM */
+
 const { BrowserRouter, HashRouter, Switch, Routes, Route, Link } =
   ReactRouterDOM;
 
@@ -13,7 +15,7 @@ const PlanetPage = () => {
   const [planet, setPlanet] = React.useState({});
 
   React.useEffect(() => {
-    fetchJson(`https://swapi.dev/api/planets/${planetId}`).then(setPlanet);
+    fetchJson(`/api/planets/${planetId}`).then(setPlanet);
   }, [planetId]);
 
   return (
@@ -36,7 +38,7 @@ const PlanetsPage = () => {
   const [items, setItems] = React.useState({ results: [] });
 
   React.useEffect(() => {
-    fetchJson('https://swapi.dev/api/planets').then(setItems);
+    fetchJson('/api/planets').then(setItems);
   }, []);
 
   return (

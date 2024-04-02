@@ -1,3 +1,5 @@
+/* global angular */
+
 const bootstrapApp = ({ useHistoryApi = true }) => {
   angular
     .module('planets', ['ui.router'])
@@ -36,7 +38,7 @@ const bootstrapApp = ({ useHistoryApi = true }) => {
               this.$onInit = () => {
                 $scope.loading = true;
 
-                $http.get('https://swapi.dev/api/planets').then((response) => {
+                $http.get('/api/planets').then((response) => {
                   $scope.loading = false;
                   $scope.planets = response.data.results;
                 });
@@ -71,12 +73,10 @@ const bootstrapApp = ({ useHistoryApi = true }) => {
               $scope.planet = null;
 
               this.$onInit = () => {
-                $http
-                  .get('https://swapi.dev/api/planets/' + planetId)
-                  .then((response) => {
-                    $scope.loading = false;
-                    $scope.planet = Object.entries(response.data);
-                  });
+                $http.get('/api/planets/' + planetId).then((response) => {
+                  $scope.loading = false;
+                  $scope.planet = Object.entries(response.data);
+                });
               };
 
               $scope.goBack = () => {

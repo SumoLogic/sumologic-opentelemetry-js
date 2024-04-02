@@ -16,7 +16,7 @@ const PlanetComponent = {
     const planetId = route.params.id;
 
     this.loading = true;
-    fetchJson(`https://swapi.dev/api/planets/${planetId}`).then((response) => {
+    fetchJson(`/api/planets/${planetId}`).then((response) => {
       this.loading = false;
       this.planet = Object.entries(response);
     });
@@ -55,7 +55,7 @@ const PlanetsComponent = {
   </div>`,
   mounted() {
     this.loading = true;
-    fetchJson('https://swapi.dev/api/planets').then((response) => {
+    fetchJson('/api/planets').then((response) => {
       this.loading = false;
       this.planets = response.results;
     });
