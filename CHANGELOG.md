@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.5.0
+
+- updated OT-JS to API 1.8.0 / Core 1.22.0 / Experimental 0.49.0
+
 ## 4.4.0
 
 - added support for [OpenTelemetry Baggage](https://opentelemetry.io/docs/concepts/signals/baggage/)
