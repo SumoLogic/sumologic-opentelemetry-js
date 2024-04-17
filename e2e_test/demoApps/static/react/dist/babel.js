@@ -62460,7 +62460,7 @@
 		},
 		{
 			name: "nodejs",
-			version: "4.5.0",
+			version: "4.5.1-0",
 			date: "2016-08-16",
 			lts: "Argon",
 			security: false
@@ -63587,7 +63587,7 @@
 		},
 		{
 			name: "nodejs",
-			version: "14.5.0",
+			version: "14.5.1-0",
 			date: "2020-06-30",
 			lts: false,
 			security: false
