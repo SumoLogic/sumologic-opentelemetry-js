@@ -1,9 +1,13 @@
-import { hrTime, hrTimeToNanoseconds } from '@opentelemetry/core';
+import { hrTime } from '@opentelemetry/core';
 import { Resource } from '@opentelemetry/resources';
 import * as api from '@opentelemetry/api';
 import type { Attributes } from '@opentelemetry/api';
-import { name, version } from '../../package.json';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
+import { ReadableLogRecord } from '@opentelemetry/sdk-logs';
+import { createExportLogsServiceRequest } from '@opentelemetry/otlp-transformer';
+import { SeverityNumber } from '@opentelemetry/api-logs';
+
+import { name, version } from '../../package.json';
 import { getTraceById } from '../sumologic-span-processor/trace-processor';
 import {
   HTTP_ACTION_TYPE,
@@ -48,96 +52,6 @@ export interface CustomError {
   attributes?: Record<string, any>;
 }
 
-type ProtoValue =
-  | { stringValue: string }
-  | { boolValue: boolean }
-  | { intValue: number }
-  | { doubleValue: number }
-  | { arrayValue: { values: ProtoValue[] } }
-  | { kvlistValue: { values: ProtoAttribute[] } };
-
-interface ProtoAttribute {
-  key: string;
-  value: ProtoValue;
-}
-
-interface ProtoLogRecord {
-  timeUnixNano: number;
-  severityNumber?: ProtoSeverityNumber;
-  severityText?: string;
-  name?: string;
-  body?: ProtoValue;
-  attributes?: ProtoAttribute[];
-  droppedAttributesCount: number;
-  traceId?: string;
-  spanId?: string;
-}
-
-enum ProtoSeverityNumber {
-  SEVERITY_NUMBER_UNSPECIFIED,
-  SEVERITY_NUMBER_TRACE,
-  SEVERITY_NUMBER_TRACE2,
-  SEVERITY_NUMBER_TRACE3,
-  SEVERITY_NUMBER_TRACE4,
-  SEVERITY_NUMBER_DEBUG,
-  SEVERITY_NUMBER_DEBUG2,
-  SEVERITY_NUMBER_DEBUG3,
-  SEVERITY_NUMBER_DEBUG4,
-  SEVERITY_NUMBER_INFO,
-  SEVERITY_NUMBER_INFO2,
-  SEVERITY_NUMBER_INFO3,
-  SEVERITY_NUMBER_INFO4,
-  SEVERITY_NUMBER_WARN,
-  SEVERITY_NUMBER_WARN2,
-  SEVERITY_NUMBER_WARN3,
-  SEVERITY_NUMBER_WARN4,
-  SEVERITY_NUMBER_ERROR,
-  SEVERITY_NUMBER_ERROR2,
-  SEVERITY_NUMBER_ERROR3,
-  SEVERITY_NUMBER_ERROR4,
-  SEVERITY_NUMBER_FATAL,
-  SEVERITY_NUMBER_FATAL2,
-  SEVERITY_NUMBER_FATAL3,
-  SEVERITY_NUMBER_FATAL4,
-}
-
-const protoValue = (value: unknown): ProtoValue => {
-  switch (typeof value) {
-    case 'number':
-      if (Number.isInteger(value)) {
-        return { intValue: value };
-      }
-      return { doubleValue: value };
-    case 'boolean':
-      return { boolValue: value };
-    case 'object':
-      if (Array.isArray(value)) {
-        return {
-          arrayValue: { values: value.map((item) => protoValue(item)) },
-        };
-      }
-      if (value != null) {
-        return {
-          kvlistValue: {
-            values: Object.entries(value).map(([key, keyValue]) =>
-              protoAttribute(key, keyValue),
-            ),
-          },
-        };
-      }
-    default:
-      return { stringValue: String(value) };
-  }
-};
-
-const protoAttribute = (key: string, value: unknown): ProtoAttribute => ({
-  key,
-  value: protoValue(value),
-});
-
-const protoAttributes = (object: Attributes): ProtoAttribute[] =>
-  Object.entries(object).map(([key, value]) => protoAttribute(key, value));
-
 const isReadableSpan = (span: object): span is ReadableSpan =>
   'name' in span && 'instrumentationLibrary' in span;
 
@@ -162,7 +76,7 @@ export class SumoLogicLogsExporter {
   private collectorUrl: string;
   private maxQueueSize: number;
   private scheduledDelayMillis: number;
-  private logs: ProtoLogRecord[];
+  private logs: ReadableLogRecord[];
   private timer: number | undefined;
 
   constructor({
@@ -214,60 +128,64 @@ export class SumoLogicLogsExporter {
   }
 
   recordLog(log: LogRecord) {
-    const attributes: ProtoLogRecord['attributes'] = [
-      ...protoAttributes(this.defaultAttributes),
-      protoAttribute('type', log.type),
-      protoAttribute('http.url', location.href),
-    ];
+    let attributes: ReadableLogRecord['attributes'] = {
+      ...this.defaultAttributes,
+      type: log.type,
+      'http.url': location.href,
+    };
 
     const span = api.trace.getSpan(api.context.active());
     if (span && isReadableSpan(span)) {
       const rootSpan = getTraceById(span.spanContext().traceId)?.rootSpan;
       if (rootSpan) {
-        attributes.push(protoAttribute(ROOT_SPAN_OPERATION, rootSpan.name));
+        attributes[ROOT_SPAN_OPERATION] = rootSpan.name;
         const httpUrl = getSpanHttpUrl(rootSpan);
         if (httpUrl) {
-          attributes.push(protoAttribute(ROOT_SPAN_HTTP_URL, httpUrl));
+          attributes[ROOT_SPAN_HTTP_URL] = httpUrl;
         }
         const actionType = getTraceHttpActionType(rootSpan);
         if (actionType) {
-          attributes.push(protoAttribute(HTTP_ACTION_TYPE, actionType));
+          attributes[HTTP_ACTION_TYPE] = actionType;
         }
       }
     }
 
     if (log.element) {
-      attributes.push(protoAttribute('element.xpath', log.element.xpath));
+      attributes['element.xpath'] = log.element.xpath;
     }
 
     if (log.error) {
-      attributes.push(protoAttribute('error.name', log.error.name));
-      attributes.push(protoAttribute('error.message', log.error.message));
+      attributes['error.name'] = log.error.name;
+      attributes['error.message'] = log.error.message;
       if (log.error.stack) {
-        attributes.push(protoAttribute('error.stack', log.error.stack));
+        attributes['error.stack'] = log.error.stack;
       }
     }
 
     if (log.arguments) {
-      attributes.push(protoAttribute('arguments', log.arguments));
+      attributes.arguments = log.arguments;
     }
 
     if (log.attributes) {
-      Object.entries(log.attributes).forEach(([key, value]) => {
-        attributes.push(protoAttribute(key, value));
-      });
+      attributes = {
+        ...attributes,
+        ...log.attributes,
+      };
     }
 
+    const ht = hrTime();
     this.logs.push({
-      timeUnixNano: hrTimeToNanoseconds(hrTime()),
-      severityNumber: ProtoSeverityNumber.SEVERITY_NUMBER_ERROR,
-      body: {
-        stringValue: log.message,
-      },
+      hrTime: ht,
+      hrTimeObserved: ht,
+      resource: this.resource,
+      severityNumber: SeverityNumber.ERROR,
       attributes,
+      body: log.message,
       droppedAttributesCount: 0,
-      traceId: span?.spanContext().traceId,
-      spanId: span?.spanContext().spanId,
+      instrumentationScope: {
+        name,
+        version,
+      },
     });
 
     this.exportWhenNeeded();
@@ -287,24 +205,7 @@ export class SumoLogicLogsExporter {
     const { logs } = this;
     if (!logs.length) return;
     this.logs = [];
-    const json = JSON.stringify({
-      resourceLogs: [
-        {
-          resource: {
-            attributes: protoAttributes(this.resource.attributes),
-          },
-          instrumentationLibraryLogs: [
-            {
-              instrumentationLibrary: {
-                name,
-                version,
-              },
-              logs,
-            },
-          ],
-        },
-      ],
-    });
+    const json = JSON.stringify(createExportLogsServiceRequest(logs));
     sendData(this.collectorUrl, json);
   }
 }
