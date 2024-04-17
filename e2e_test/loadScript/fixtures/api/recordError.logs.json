@@ -33,17 +33,19 @@
               "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
             }
           }
-        ]
+        ],
+        "droppedAttributesCount": 0
       },
-      "instrumentationLibraryLogs": [
+      "scopeLogs": [
         {
-          "instrumentationLibrary": {
+          "scope": {
             "name": "@sumologic/opentelemetry-rum",
             "version": "4.5.0"
           },
-          "logs": [
+          "logRecords": [
             {
-              "timeUnixNano": 1712069671456500000,
+              "timeUnixNano": "1713361675537299902",
+              "observedTimeUnixNano": "1713361675537299902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load data"
@@ -64,7 +66,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52472/api/recordError.html"
+                    "stringValue": "http://localhost:63820/api/recordError.html"
                   }
                 },
                 {
