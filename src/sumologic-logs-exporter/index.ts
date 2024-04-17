@@ -1,7 +1,7 @@
 import { hrTime } from '@opentelemetry/core';
 import { Resource } from '@opentelemetry/resources';
-import * as api from '@opentelemetry/api';
 import type { Attributes } from '@opentelemetry/api';
+import * as api from '@opentelemetry/api';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { ReadableLogRecord } from '@opentelemetry/sdk-logs';
 import { createExportLogsServiceRequest } from '@opentelemetry/otlp-transformer';
@@ -186,6 +186,13 @@ export class SumoLogicLogsExporter {
         name,
         version,
       },
+      spanContext: span
+        ? {
+            traceId: span.spanContext().traceId,
+            spanId: span.spanContext().spanId,
+            traceFlags: api.TraceFlags.NONE,
+          }
+        : undefined,
     });
 
     this.exportWhenNeeded();
@@ -205,7 +212,12 @@ export class SumoLogicLogsExporter {
     const { logs } = this;
     if (!logs.length) return;
     this.logs = [];
-    const json = JSON.stringify(createExportLogsServiceRequest(logs));
+    const json = JSON.stringify(
+      createExportLogsServiceRequest(logs, {
+        useHex: false,
+        useLongBits: false,
+      }),
+    );
     sendData(this.collectorUrl, json);
   }
 }
