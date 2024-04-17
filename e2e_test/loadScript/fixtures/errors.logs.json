@@ -33,17 +33,19 @@
               "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
             }
           }
-        ]
+        ],
+        "droppedAttributesCount": 0
       },
-      "instrumentationLibraryLogs": [
+      "scopeLogs": [
         {
-          "instrumentationLibrary": {
+          "scope": {
             "name": "@sumologic/opentelemetry-rum",
             "version": "4.5.0"
           },
-          "logs": [
+          "logRecords": [
             {
-              "timeUnixNano": 1712069669888800000,
+              "timeUnixNano": "1713361673976800098",
+              "observedTimeUnixNano": "1713361673976800098",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Custom error"
@@ -64,7 +66,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -77,7 +79,8 @@
               "droppedAttributesCount": 0
             },
             {
-              "timeUnixNano": 1712069669889800000,
+              "timeUnixNano": "1713361673977900098",
+              "observedTimeUnixNano": "1713361673977900098",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load user 123 from the API { reason: ... }"
@@ -98,7 +101,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -110,7 +113,7 @@
                 {
                   "key": "root_span.http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -160,11 +163,13 @@
                 }
               ],
               "droppedAttributesCount": 0,
-              "traceId": "6e7063f04cf92002d2567336ea090de1",
-              "spanId": "0fe5a5bb1d2cf376"
+              "flags": 0,
+              "traceId": "49bd56fed20f641c7d40b54fc0eace42",
+              "spanId": "5fe8ab88938e75d7"
             },
             {
-              "timeUnixNano": 1712069669890200000,
+              "timeUnixNano": "1713361673978200098",
+              "observedTimeUnixNano": "1713361673978200098",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught TypeError: uncaught exception"
@@ -185,7 +190,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -203,14 +208,15 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:52476/errors.html:40:11\n    at http://localhost:52476/rum.js:1:74931\n    at is.with (http://localhost:52476/rum.js:1:75905)\n    at r (http://localhost:52476/rum.js:1:74887)"
+                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:63824/errors.html:40:11\n    at http://localhost:63824/rum.js:1:74931\n    at is.with (http://localhost:63824/rum.js:1:75905)\n    at r (http://localhost:63824/rum.js:1:74887)"
                   }
                 }
               ],
               "droppedAttributesCount": 0
             },
             {
-              "timeUnixNano": 1712069669895500000,
+              "timeUnixNano": "1713361673983700098",
+              "observedTimeUnixNano": "1713361673983700098",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught error in element //html/body/img"
@@ -231,7 +237,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -244,7 +250,8 @@
               "droppedAttributesCount": 0
             },
             {
-              "timeUnixNano": 1712069669895800000,
+              "timeUnixNano": "1713361673984000098",
+              "observedTimeUnixNano": "1713361673984000098",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Unhandled rejection TypeError: unhandled rejection"
@@ -265,7 +272,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52476/errors.html"
+                    "stringValue": "http://localhost:63824/errors.html"
                   }
                 },
                 {
@@ -283,7 +290,7 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:52476/errors.html:44:11\n    at http://localhost:52476/rum.js:1:74931\n    at is.with (http://localhost:52476/rum.js:1:75905)\n    at r (http://localhost:52476/rum.js:1:74887)"
+                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:63824/errors.html:44:11\n    at http://localhost:63824/rum.js:1:74931\n    at is.with (http://localhost:63824/rum.js:1:75905)\n    at r (http://localhost:63824/rum.js:1:74887)"
                   }
                 }
               ],

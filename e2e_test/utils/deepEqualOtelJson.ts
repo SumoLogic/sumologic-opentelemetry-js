@@ -9,13 +9,14 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/new.location.href/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/root_span.http.url/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/rum.session_id/value/stringValue',
-  'resourceLogs/instrumentationLibraryLogs/logs/attributes/http.url/value/stringValue',
-  'resourceLogs/instrumentationLibraryLogs/logs/attributes/error.stack/value/stringValue',
-  'resourceLogs/instrumentationLibraryLogs/logs/attributes/root_span.http.url/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/http.url/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/error.stack/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/root_span.http.url/value/stringValue',
   'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
+  'observedTimeUnixNano',
   'startTimeUnixNano',
   'endTimeUnixNano',
 ]);

@@ -214,7 +214,7 @@ export class SumoLogicLogsExporter {
     this.logs = [];
     const json = JSON.stringify(
       createExportLogsServiceRequest(logs, {
-        useHex: false,
+        useHex: true,
         useLongBits: false,
       }),
     );
