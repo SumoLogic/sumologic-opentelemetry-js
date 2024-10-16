@@ -62467,7 +62467,7 @@
 		},
 		{
 			name: "nodejs",
-			version: "4.6.0",
+			version: "4.6.1-1",
 			date: "2016-09-27",
 			lts: "Argon",
 			security: true
