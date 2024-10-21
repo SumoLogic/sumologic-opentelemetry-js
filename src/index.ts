@@ -235,6 +235,23 @@ export const initialize = ({
     ignoreIncomingRequestHook: () => true,
   });
 
+  // Manually ensure all required properties are set, if necessary:
+  httpInstrumentation.instrumentationName = 'http';
+  httpInstrumentation.instrumentationVersion = '1.0.0';
+
+  // Check if the instrumentation provides required methods
+  if (typeof httpInstrumentation.disable !== 'function') {
+    httpInstrumentation.disable = function () {
+      // Add logic to disable the instrumentation
+    };
+  }
+
+  if (typeof httpInstrumentation.enable !== 'function') {
+    httpInstrumentation.enable = function () {
+      // Add logic to enable the instrumentation
+    };
+  }
+
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
