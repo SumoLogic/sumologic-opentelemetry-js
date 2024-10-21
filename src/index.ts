@@ -228,11 +228,11 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentation = new HttpInstrumentation({
-    enabled: true,
-    ignoreIncomingPaths: ['/youtube'],
-    ignoreIncomingRequestHook: () => true, // Ignore every incoming request
-  });
+  // const httpInstrumentation = new HttpInstrumentation({
+  //   enabled: true,
+  //   ignoreIncomingPaths: ['/youtube'],
+  //   ignoreIncomingRequestHook: () => true, // Ignore every incoming request
+  // });
 
   const registerInstrumentations = () => {
     disableInstrumentations();
@@ -271,7 +271,13 @@ export const initialize = ({
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
-          httpInstrumentation,
+          new HttpInstrumentation({
+            enabled: true,
+            ignoreIncomingRequestHook: () => true,
+
+            //         ignoreIncomingPaths: ['/youtube'],
+            // ignoreIncomingRequestHook: () => true, // Ignore every incoming request
+          }),
         ],
       });
   };
