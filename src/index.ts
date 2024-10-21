@@ -258,12 +258,12 @@ export const initialize = ({
             },
           }),
           new XMLHttpRequestInstrumentation({
-            enabled: false,
+            enabled: true,
             propagateTraceHeaderCorsUrls,
             ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
           }),
           new FetchInstrumentation({
-            enabled: false,
+            enabled: true,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
