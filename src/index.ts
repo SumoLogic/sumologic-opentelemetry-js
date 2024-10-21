@@ -268,9 +268,11 @@ export const initialize = ({
           new HttpInstrumentation({
             enabled: true,
             ignoreIncomingRequestHook: () => true,
-            instrumentationName: 'HttpInstrumentation', // Add this
-            instrumentationVersion: '1.0.0', // And this
-          } as any),
+            instrumentationName: 'HttpInstrumentation',
+            instrumentationVersion: '1.0.0',
+            disable: false,
+            enable: true,
+          }),
         ],
       });
   };
