@@ -16,7 +16,6 @@ import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { InstrumentationOption } from '@opentelemetry/instrumentation';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
@@ -235,10 +234,6 @@ export const initialize = ({
     enabled: true,
     ignoreIncomingRequestHook: () => true,
   });
-
-  // Manually setting required properties
-  httpInstrumentation.instrumentationName = 'http';
-  httpInstrumentation.instrumentationVersion = '1.0.0';
 
   const registerInstrumentations = () => {
     disableInstrumentations();
