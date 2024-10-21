@@ -1,8 +1,4 @@
-import {
-  W3CTraceContextPropagator,
-  CompositePropagator,
-  W3CBaggagePropagator,
-} from '@opentelemetry/core';
+import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import {
   Span,
   Tracer,
@@ -11,7 +7,6 @@ import {
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
@@ -44,6 +39,7 @@ import {
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
+import { CompositePropagator, W3CBaggagePropagator } from '@opentelemetry/core';
 
 type ReadyListener = () => void;
 
@@ -127,6 +123,7 @@ export const initialize = ({
   }
 
   const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
+
   const defaultServiceName = serviceName ?? UNKNOWN_SERVICE_NAME;
 
   const resourceAttributes: ResourceAttributes = {
@@ -230,28 +227,6 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentation = new HttpInstrumentation({
-    enabled: true,
-    ignoreIncomingRequestHook: () => true,
-  });
-
-  // Manually ensure all required properties are set, if necessary:
-  httpInstrumentation.instrumentationName = 'http';
-  httpInstrumentation.instrumentationVersion = '1.0.0';
-
-  // Check if the instrumentation provides required methods
-  if (typeof httpInstrumentation.disable !== 'function') {
-    httpInstrumentation.disable = function () {
-      // Add logic to disable the instrumentation
-    };
-  }
-
-  if (typeof httpInstrumentation.enable !== 'function') {
-    httpInstrumentation.enable = function () {
-      // Add logic to enable the instrumentation
-    };
-  }
-
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -260,8 +235,9 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          httpInstrumentation,
-          new LongTaskInstrumentation({ enabled: false }),
+          new LongTaskInstrumentation({
+            enabled: false,
+          }),
           new DocumentLoadInstrumentation({ enabled: false }),
           new UserInteractionInstrumentation({
             enabled: false,
@@ -279,12 +255,12 @@ export const initialize = ({
             },
           }),
           new XMLHttpRequestInstrumentation({
-            enabled: true,
+            enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
           }),
           new FetchInstrumentation({
-            enabled: true,
+            enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
