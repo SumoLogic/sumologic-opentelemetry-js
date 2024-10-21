@@ -267,12 +267,8 @@ export const initialize = ({
           }),
           new HttpInstrumentation({
             enabled: true,
-            propagateTraceHeaderCorsUrls,
-            ignoreIncomingPaths: ['/youtube'],
             // ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
-            ignoreIncomingRequestHook: () => {
-              return true; // Ignore every incoming request
-            },
+            ignoreIncomingRequestHook: () => true, // Ignore every incoming request
           }),
         ],
       });
