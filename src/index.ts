@@ -228,6 +228,12 @@ export const initialize = ({
     }
   };
 
+  const httpInstrumentation = new HttpInstrumentation({
+    enabled: true,
+    ignoreIncomingPaths: ['/youtube'],
+    ignoreIncomingRequestHook: () => true, // Ignore every incoming request
+  });
+
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -265,11 +271,7 @@ export const initialize = ({
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
-          new HttpInstrumentation({
-            enabled: true,
-            // ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
-            ignoreIncomingRequestHook: () => true, // Ignore every incoming request
-          }),
+          httpInstrumentation,
         ],
       });
   };
