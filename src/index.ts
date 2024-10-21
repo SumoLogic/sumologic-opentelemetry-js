@@ -269,10 +269,6 @@ export const initialize = ({
           new HttpInstrumentation({
             enabled: true,
             ignoreIncomingRequestHook: () => true,
-            instrumentationName: 'HttpInstrumentation',
-            instrumentationVersion: '1.0.0',
-            disable: false,
-            enable: true,
           } as unknown as InstrumentationOption),
         ],
       });
