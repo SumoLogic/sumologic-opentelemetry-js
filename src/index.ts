@@ -6,7 +6,10 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
-import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
+import {
+  FetchInstrumentation,
+  HttpInstrumentation,
+} from '@opentelemetry/instrumentation-fetch';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
@@ -263,6 +266,15 @@ export const initialize = ({
             enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
+          }),
+          new HttpInstrumentation({
+            enabled: true,
+            propagateTraceHeaderCorsUrls,
+            ignoreIncomingPaths: ['/youtube'],
+            // ignoreUrls: [collectionSourceUrl, ...ignoreUrls],
+            ignoreIncomingRequestHook: () => {
+              return true; // Ignore every incoming request
+            },
           }),
         ],
       });
