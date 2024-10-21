@@ -1,4 +1,8 @@
-import { W3CTraceContextPropagator } from '@opentelemetry/core';
+import {
+  W3CTraceContextPropagator,
+  CompositePropagator,
+  W3CBaggagePropagator,
+} from '@opentelemetry/core';
 import {
   Span,
   Tracer,
@@ -40,7 +44,6 @@ import {
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
-import { CompositePropagator, W3CBaggagePropagator } from '@opentelemetry/core';
 
 type ReadyListener = () => void;
 
@@ -124,7 +127,6 @@ export const initialize = ({
   }
 
   const samplingProbabilityMaybeNumber = tryNumber(samplingProbability) ?? 1;
-
   const defaultServiceName = serviceName ?? UNKNOWN_SERVICE_NAME;
 
   const resourceAttributes: ResourceAttributes = {
@@ -228,12 +230,6 @@ export const initialize = ({
     }
   };
 
-  // const httpInstrumentation = new HttpInstrumentation({
-  //   enabled: true,
-  //   ignoreIncomingPaths: ['/youtube'],
-  //   ignoreIncomingRequestHook: () => true, // Ignore every incoming request
-  // });
-
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -242,9 +238,7 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          new LongTaskInstrumentation({
-            enabled: false,
-          }),
+          new LongTaskInstrumentation({ enabled: false }),
           new DocumentLoadInstrumentation({ enabled: false }),
           new UserInteractionInstrumentation({
             enabled: false,
@@ -274,9 +268,6 @@ export const initialize = ({
           new HttpInstrumentation({
             enabled: true,
             ignoreIncomingRequestHook: () => true,
-
-            //         ignoreIncomingPaths: ['/youtube'],
-            // ignoreIncomingRequestHook: () => true, // Ignore every incoming request
           }),
         ],
       });
