@@ -16,7 +16,10 @@ import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-docu
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
-import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
+import {
+  registerInstrumentations as registerOpenTelemetryInstrumentations,
+  Instrumentation,
+} from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
 import { Resource, ResourceAttributes } from '@opentelemetry/resources';
 import {
@@ -231,6 +234,16 @@ export const initialize = ({
     }
   };
 
+  const httpInstrumentation = new HttpInstrumentation({
+    enabled: true,
+    ignoreIncomingRequestHook: () => true,
+  });
+
+  // Manually casting the instance to satisfy the Instrumentation type
+  const instrumentations: Instrumentation[] = [
+    httpInstrumentation as Instrumentation,
+  ];
+
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -239,6 +252,7 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
+          instrumentations,
           new LongTaskInstrumentation({
             enabled: false,
           }),
@@ -268,7 +282,6 @@ export const initialize = ({
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
-          new HttpInstrumentation({} as HttpInstrumentationConfig),
         ],
       });
   };
