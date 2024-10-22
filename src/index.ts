@@ -7,10 +7,7 @@ import {
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
-import {
-  HttpInstrumentation,
-  HttpInstrumentationConfig,
-} from '@opentelemetry/instrumentation-http';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
@@ -240,9 +237,7 @@ export const initialize = ({
   });
 
   // Manually casting the instance to satisfy the Instrumentation type
-  const instrumentations: Instrumentation[] = [
-    httpInstrumentation as unknown as Instrumentation,
-  ];
+  const instrumentations: Instrumentation[] = [httpInstrumentation];
 
   const registerInstrumentations = () => {
     disableInstrumentations();
