@@ -230,7 +230,7 @@ export const initialize = ({
   };
 
   const httpInstrumentationOptions: InstrumentationOption = {
-    enabled: true,
+    // enabled: true,
     ignoreIncomingRequestHook: () => true,
   };
 
