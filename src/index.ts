@@ -85,13 +85,25 @@ interface InitializeOptions {
 }
 
 class MyHttpInstrumentation extends HttpInstrumentation {
-  instrumentationName = 'my-custom-instrumentation';
+  instrumentationName = 'my-custom-http-instrumentation';
   instrumentationVersion = '1.0.0';
+
   enable() {
-    // custom enable logic
+    // No custom logic
   }
+
   disable() {
-    // custom disable logic
+    // No custom logic
+  }
+
+  setConfig(config: any) {
+    // Optionally, implement or call the parent method
+    super.setConfig(config);
+  }
+
+  getConfig() {
+    // Optionally, implement or call the parent method
+    return super.getConfig();
   }
 }
 
@@ -239,7 +251,7 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentation = new HttpInstrumentation();
+  const httpInstrumentation = new MyHttpInstrumentation();
   httpInstrumentation.setConfig({
     enabled: true,
     ignoreIncomingRequestHook: () => true,
