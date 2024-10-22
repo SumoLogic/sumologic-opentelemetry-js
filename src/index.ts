@@ -90,15 +90,32 @@ class MyHttpInstrumentation extends HttpInstrumentation {
 
   enable() {
     // No custom logic
+    super.enable(); // Call the parent enable if needed
   }
 
   disable() {
     // No custom logic
+    super.disable(); // Call the parent disable if needed
   }
 
   setConfig(config: any) {
-    // Optionally, implement or call the parent method
+    // Call the parent method
     super.setConfig(config);
+  }
+
+  getConfig() {
+    // Return an empty object or the parent's config
+    return super.getConfig ? super.getConfig() : {}; // Adjust based on your needs
+  }
+
+  setTracerProvider(tracerProvider: any) {
+    // Call the parent method if needed
+    super.setTracerProvider(tracerProvider);
+  }
+
+  setMeterProvider(meterProvider: any) {
+    // Call the parent method if needed
+    super.setMeterProvider(meterProvider);
   }
 }
 
