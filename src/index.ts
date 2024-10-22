@@ -252,7 +252,7 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          instrumentations,
+          ...instrumentations,
           new LongTaskInstrumentation({
             enabled: false,
           }),
