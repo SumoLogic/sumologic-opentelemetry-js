@@ -84,6 +84,17 @@ interface InitializeOptions {
   getOverriddenServiceName?: (span: Span) => string;
 }
 
+class MyHttpInstrumentation extends HttpInstrumentation {
+  instrumentationName = 'my-custom-instrumentation';
+  instrumentationVersion = '1.0.0';
+  enable() {
+    // custom enable logic
+  }
+  disable() {
+    // custom disable logic
+  }
+}
+
 const useWindow = typeof window === 'object' && window != null;
 
 let contextManager: SumoLogicContextManager | undefined;
@@ -228,6 +239,12 @@ export const initialize = ({
     }
   };
 
+  const httpInstrumentation = new HttpInstrumentation();
+  httpInstrumentation.setConfig({
+    enabled: true,
+    ignoreIncomingRequestHook: () => true,
+  });
+
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -236,6 +253,7 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
+          httpInstrumentation,
           new LongTaskInstrumentation({
             enabled: false,
           }),
@@ -265,10 +283,6 @@ export const initialize = ({
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
-          new HttpInstrumentation({
-            enabled: true,
-            ignoreIncomingRequestHook: () => true,
-          } as any),
         ],
       });
   };
