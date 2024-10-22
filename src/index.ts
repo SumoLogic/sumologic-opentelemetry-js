@@ -228,15 +228,6 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentationOptions: any = {
-    enabled: true,
-    ignoreIncomingRequestHook: () => true,
-  };
-
-  const httpInstrumentation = new HttpInstrumentation(
-    httpInstrumentationOptions,
-  );
-
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -245,7 +236,6 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          httpInstrumentation,
           new LongTaskInstrumentation({
             enabled: false,
           }),
@@ -275,6 +265,7 @@ export const initialize = ({
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
           }),
+          new HttpInstrumentation({}),
         ],
       });
   };
