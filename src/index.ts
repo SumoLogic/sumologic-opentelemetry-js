@@ -8,6 +8,7 @@ import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { InstrumentationOption } from '@opentelemetry/instrumentation';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
@@ -82,39 +83,6 @@ interface InitializeOptions {
   collectErrors?: boolean;
   userInteractionElementNameLimit?: number;
   getOverriddenServiceName?: (span: Span) => string;
-}
-
-class MyHttpInstrumentation extends HttpInstrumentation {
-  instrumentationName = 'my-custom-http-instrumentation';
-  instrumentationVersion = '1.0.0';
-
-  enable() {
-    // No custom logic
-  }
-
-  disable() {
-    // No custom logic
-  }
-
-  setConfig(config: any) {
-    // Call the parent method
-    super.setConfig(config);
-  }
-
-  getConfig() {
-    // Return an empty object or the parent's config
-    return super.getConfig ? super.getConfig() : {}; // Adjust based on your needs
-  }
-
-  setTracerProvider(tracerProvider: any) {
-    // Call the parent method if needed
-    super.setTracerProvider(tracerProvider);
-  }
-
-  setMeterProvider(meterProvider: any) {
-    // Call the parent method if needed
-    super.setMeterProvider(meterProvider);
-  }
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -261,11 +229,14 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentation = new MyHttpInstrumentation();
-  httpInstrumentation.setConfig({
+  const httpInstrumentationOptions: InstrumentationOption = {
     enabled: true,
     ignoreIncomingRequestHook: () => true,
-  });
+  };
+
+  const httpInstrumentation = new HttpInstrumentation(
+    httpInstrumentationOptions,
+  );
 
   const registerInstrumentations = () => {
     disableInstrumentations();
