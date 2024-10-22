@@ -237,7 +237,11 @@ export const initialize = ({
   });
 
   // Manually casting the instance to satisfy the Instrumentation type
-  const instrumentations: Instrumentation[] = [httpInstrumentation];
+  // const instrumentations: Instrumentation[] = [httpInstrumentation];
+
+  const instrumentations: Instrumentation[] = [
+    httpInstrumentation as unknown as Instrumentation,
+  ];
 
   const registerInstrumentations = () => {
     disableInstrumentations();
