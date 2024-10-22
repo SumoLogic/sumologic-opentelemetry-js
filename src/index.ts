@@ -8,7 +8,6 @@ import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
-import { InstrumentationConfig } from '@opentelemetry/instrumentation';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
@@ -229,7 +228,7 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentationOptions: InstrumentationConfig = {
+  const httpInstrumentationOptions: any = {
     enabled: true,
     ignoreIncomingRequestHook: () => true,
   };
