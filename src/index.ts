@@ -90,12 +90,10 @@ class MyHttpInstrumentation extends HttpInstrumentation {
 
   enable() {
     // No custom logic
-    super.enable(); // Call the parent enable if needed
   }
 
   disable() {
     // No custom logic
-    super.disable(); // Call the parent disable if needed
   }
 
   setConfig(config: any) {
