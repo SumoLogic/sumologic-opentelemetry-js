@@ -100,11 +100,6 @@ class MyHttpInstrumentation extends HttpInstrumentation {
     // Optionally, implement or call the parent method
     super.setConfig(config);
   }
-
-  getConfig() {
-    // Optionally, implement or call the parent method
-    return super.getConfig();
-  }
 }
 
 const useWindow = typeof window === 'object' && window != null;
