@@ -271,7 +271,7 @@ export const initialize = ({
 
           new HttpInstrumentation({
             enabled: true,
-            ignoreIncomingPaths: [collectionSourceUrl, ...ignoreUrls],
+            ignoreIncomingRequestHook: () => true,
           }),
         ],
       });
