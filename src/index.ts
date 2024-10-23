@@ -231,18 +231,6 @@ export const initialize = ({
     }
   };
 
-  const httpInstrumentation = new HttpInstrumentation({
-    enabled: true,
-    ignoreIncomingRequestHook: () => true,
-  });
-
-  // Manually casting the instance to satisfy the Instrumentation type
-  // const instrumentations: Instrumentation[] = [httpInstrumentation];
-
-  const instrumentations: Instrumentation[] = [
-    httpInstrumentation as unknown as Instrumentation,
-  ];
-
   const registerInstrumentations = () => {
     disableInstrumentations();
     logsExporter.enable();
@@ -251,7 +239,6 @@ export const initialize = ({
       registerOpenTelemetryInstrumentations({
         tracerProvider: provider,
         instrumentations: [
-          ...instrumentations,
           new LongTaskInstrumentation({
             enabled: false,
           }),
@@ -280,6 +267,11 @@ export const initialize = ({
             enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
+          }),
+
+          new HttpInstrumentation({
+            enabled: true,
+            ignoreIncomingPaths: [collectionSourceUrl, ...ignoreUrls],
           }),
         ],
       });
