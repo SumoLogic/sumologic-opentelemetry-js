@@ -34,7 +34,7 @@ export const patchObservers = (contextManager: ContextManager) => {
         });
         copyToStringFrom(ObserverWithContext, OriginalObserver);
 
-        return ObserverWithContext as (typeof globalThis)[typeof name];
+        return ObserverWithContext as typeof globalThis[typeof name];
       });
     }
   });
