@@ -12,17 +12,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout code
       - uses: actions/checkout@v2
         with:
           submodules: true
+
+      # Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - run: npm ci
-      - run: npm run build
-      - run: npm run types
-      - run: npm test
+
+      # Remove existing node_modules to ensure a clean install
+      - run: rm -rf node_modules
+
+      # Install dependencies using npm ci (clean install)
+      - name: Install dependencies
+        run: npm ci --verbose
+        env:
+          NODE_ENV: development
+
+      # Build the project
+      - name: Build the project
+        run: npm run build
+
+      # Check types (optional)
+      - name: Run type checking
+        run: npm run types
+
+      # Run tests
+      - name: Run tests
+        run: npm test
+
+      # Upload build artifacts
       - uses: actions/upload-artifact@v4
         with:
           path: |
