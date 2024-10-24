@@ -15,6 +15,9 @@
     "baseUrl": "./",
     "useUnknownInCatchVariables": false,
     "paths": {
+      "@opentelemetry/instrumentation-http": [
+        "./node_modules/@opentelemetry/instrumentation-http"
+      ],
       "@opentelemetry/api": ["./src/opentelemetry-js/api"],
       "@opentelemetry/*": [
         "./src/opentelemetry-js/packages/*",

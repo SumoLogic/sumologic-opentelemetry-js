@@ -7,12 +7,16 @@ import {
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
-import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
+import {
+  registerInstrumentations as registerOpenTelemetryInstrumentations,
+  Instrumentation,
+} from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
 import { Resource, ResourceAttributes } from '@opentelemetry/resources';
 import {
@@ -263,6 +267,11 @@ export const initialize = ({
             enabled: false,
             propagateTraceHeaderCorsUrls,
             ignoreUrls,
+          }),
+
+          new HttpInstrumentation({
+            enabled: true,
+            ignoreIncomingRequestHook: () => true,
           }),
         ],
       });
