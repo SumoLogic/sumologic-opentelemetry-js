@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - run: npm ci --verbose || npm install
+      - run: npm ci
       - run: npm run build
       - run: npm run types
       - run: npm test
