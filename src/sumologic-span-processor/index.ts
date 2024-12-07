@@ -20,6 +20,7 @@ export interface SumoLogicSpanProcessorConfig
   dropSingleUserInteractionTraces?: boolean;
   getOverriddenServiceName?: (span: SdkTraceSpan) => string;
   defaultServiceName: string;
+  ignoreUrls?: (string | RegExp)[]; // Allow both strings and RegExp
 }
 
 export class SumoLogicSpanProcessor extends BatchSpanProcessor {
@@ -31,6 +32,8 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   private traceProcessor: ReturnType<typeof createTraceProcessor>;
 
+  private static ignoreUrls: RegExp[] = [/youtube\.com/];
+
   constructor(exporter: SpanExporter, config: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
     this.shouldCollectSessionId = config.collectSessionId ?? true;
@@ -41,9 +44,31 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     this.defaultServiceName = config.defaultServiceName;
 
     this.traceProcessor = createTraceProcessor(this);
+    if (config.ignoreUrls) {
+      const normalizedUrls = config.ignoreUrls.map((url) =>
+        typeof url === 'string'
+          ? new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+          : url,
+      );
+      SumoLogicSpanProcessor.ignoreUrls.push(...normalizedUrls);
+    }
+  }
+
+  private shouldIgnoreSpan(span: SdkTraceSpan | ReadableSpan): boolean {
+    const url = span.attributes['http.url'] as string;
+    if (!url) return false;
+    return SumoLogicSpanProcessor.ignoreUrls.some((pattern) =>
+      pattern.test(url),
+    );
   }
 
   onStart(span: SdkTraceSpan, context: Context = ROOT_CONTEXT): void {
+    // Check if the span should be ignored
+    if (this.shouldIgnoreSpan(span)) {
+      // Skip processing this span
+      return;
+    }
+
     documentVisibilityState.onStart(span, context);
     rootToChildEnrichment.onStart(span, context);
     this.traceProcessor.onStart(span, context);
@@ -62,6 +87,12 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   }
 
   onEnd(span: ReadableSpan): void {
+    // Check if the span should be ignored
+    if (this.shouldIgnoreSpan(span)) {
+      // Skip processing this span
+      return;
+    }
+
     documentVisibilityState.onEnd(span);
 
     // we use callbacks instead of Promises, because even immediately resolved Promise won't be executed synchronously

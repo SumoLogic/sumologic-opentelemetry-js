@@ -195,6 +195,7 @@ export const initialize = ({
       dropSingleUserInteractionTraces,
       getOverriddenServiceName,
       defaultServiceName,
+      ignoreUrls,
     }),
   );
 
