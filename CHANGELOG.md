@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## 4.5.0
+## 4.6.1
+
+- added support to ignore URLs from being instrumented
+
+## 4.6.0
 
 - updated logs proto 0.9 -> 0.19
 
