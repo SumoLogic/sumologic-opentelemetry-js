@@ -1,12 +1,16 @@
 # CHANGELOG
 
+## 4.6.1
+
+- added support to ignore URLs from being instrumented
+
+## 4.6.0
+
+- updated OT-JS to API 1.8.0 / Core 1.22.0 / Experimental 0.49.0
+
 ## 4.5.0
 
 - updated logs proto 0.9 -> 0.19
-
-## 4.5.0
-
-- updated OT-JS to API 1.8.0 / Core 1.22.0 / Experimental 0.49.0
 
 ## 4.4.0
 
