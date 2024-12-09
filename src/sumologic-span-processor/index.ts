@@ -32,7 +32,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   private traceProcessor: ReturnType<typeof createTraceProcessor>;
 
-  private static ignoreUrls: RegExp[] = [/youtube\.com/];
+  private static ignoreUrls: RegExp[] = [];
 
   constructor(exporter: SpanExporter, config: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
