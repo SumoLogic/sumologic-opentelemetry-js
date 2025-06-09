@@ -5,8 +5,19 @@ import { XHR_IS_ROOT_SPAN } from '../constants';
 export const useWindow = typeof window === 'object' && window != null;
 export const useDocument = typeof document === 'object' && document != null;
 
+const METHOD_NAMES = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
+
+const isXhrInstrumentationSpan = (span: SdkTraceSpan) => {
+  return (
+    span.instrumentationLibrary.name ===
+      '@opentelemetry/instrumentation-xml-http-request' &&
+    METHOD_NAMES.includes(span.name)
+  );
+};
+
 export const isXhrSpan = (span: SdkTraceSpan): boolean =>
-  span.name.startsWith('HTTP ') && span.kind === SpanKind.CLIENT;
+  (span.name.startsWith('HTTP ') || isXhrInstrumentationSpan(span)) &&
+  span.kind === SpanKind.CLIENT;
 
 export const isDocumentLoadSpan = (span: SdkTraceSpan): boolean =>
   span.name === 'documentLoad' &&
