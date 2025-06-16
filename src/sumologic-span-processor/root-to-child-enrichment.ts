@@ -9,7 +9,7 @@ import {
   ROOT_SPAN_OPERATION,
   XHR_IS_ROOT_SPAN,
 } from '../constants';
-import { getSpanHttpUrl, getTraceHttpActionType } from './utils';
+import { getSpanHttpUrl, getTraceHttpActionType, isXhrSpan } from './utils';
 
 const INSTRUMENTATION_LONG_TASK = '@opentelemetry/instrumentation-long-task';
 const MAX_STORED_TRACE_IDS = 50;
@@ -20,9 +20,6 @@ const childSpansToEnrich = new WeakMap<SdkTraceSpan, SdkTraceSpan[]>();
 
 const getRootSpan = (span: SdkTraceSpan): SdkTraceSpan | undefined =>
   rootSpansByTraceId[span.spanContext().traceId];
-
-const isXhrSpan = (span: SdkTraceSpan): boolean =>
-  span.name.startsWith('HTTP ') && span.kind === SpanKind.CLIENT;
 
 const isLongtaskSpan = (span: SdkTraceSpan): boolean =>
   span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK;

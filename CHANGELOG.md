@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.6.2
+
+- fix xhr metrics issue for XMLHttpRequest
+
 ## 4.6.1
 
 - added support to ignore URLs from being instrumented
