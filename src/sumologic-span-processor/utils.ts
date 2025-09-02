@@ -7,7 +7,7 @@ export const useDocument = typeof document === 'object' && document != null;
 
 const METHOD_NAMES = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
 
-const isXhrInstrumentationSpan = (span: SdkTraceSpan) => {
+export const isXhrInstrumentationSpan = (span: SdkTraceSpan) => {
   return (
     span.instrumentationLibrary.name ===
       '@opentelemetry/instrumentation-xml-http-request' &&
