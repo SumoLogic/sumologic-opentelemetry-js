@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.6.3
+
+- make the method name same for both fetch and XHR
+
 ## 4.6.2
 
 - fix xhr metrics issue for XMLHttpRequest

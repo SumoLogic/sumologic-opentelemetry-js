@@ -8,6 +8,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as documentVisibilityState from './document-visibility-state';
 import * as overrideServiceName from './override-service-name';
+import * as overrideSpanName from './override-xhr-span-name';
 import * as findLongTaskContext from './find-longtask-context';
 import * as rootToChildEnrichment from './root-to-child-enrichment';
 import { createTraceProcessor } from './trace-processor';
@@ -79,6 +80,10 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
       getOverriddenServiceName: this.getOverriddenServiceName,
       defaultServiceName: this.defaultServiceName,
     });
+
+    // update the span name to append HTTP for XHR request
+
+    overrideSpanName.onStart(span);
 
     // add attributes to all spans
     span.setAttribute('location.href', location.href);
