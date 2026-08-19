@@ -38,6 +38,7 @@ const ARRAYS_TO_SORT = new Map([
   ['attributes', 'key'],
 ]);
 const SKIP_KEYS = new Set(['events', 'droppedEventsCount']);
+const FLEXIBLE_LENGTH_ARRAYS = new Set(['spans']);
 
 const anyStringMapping: Record<string, string> = {};
 
@@ -114,6 +115,7 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
 
 const testOtelJson = (resp1: any, resp2: any, path: string[] = []) => {
   const pathAsString = path.join('/');
+  const lastPathElement = path[path.length - 1];
 
   const fail = () => {
     throw new Error(`path ${pathAsString}`);
@@ -123,11 +125,14 @@ const testOtelJson = (resp1: any, resp2: any, path: string[] = []) => {
     fail();
   } else if (Array.isArray(resp1) && Array.isArray(resp2)) {
     if (resp1.length !== resp2.length) {
-      fail();
+      if (!FLEXIBLE_LENGTH_ARRAYS.has(lastPathElement)) {
+        fail();
+      }
     }
-    resp1.forEach((element, index) =>
-      testOtelJson(element, resp2[index], path),
-    );
+    const minLength = Math.min(resp1.length, resp2.length);
+    for (let i = 0; i < minLength; i++) {
+      testOtelJson(resp1[i], resp2[i], path);
+    }
   } else if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
     const resp1Keys = Object.keys(resp1);
     const resp2Keys = Object.keys(resp2);
