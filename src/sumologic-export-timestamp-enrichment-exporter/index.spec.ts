@@ -10,7 +10,7 @@ const nativePerformance = performance;
 
 beforeAll(() => {
   const ms = new Date('2020-10-01').getTime();
-  jest.useFakeTimers('modern').setSystemTime(ms);
+  jest.useFakeTimers({ now: ms });
   Object.defineProperty(nativePerformance, 'timeOrigin', {
     configurable: true,
     get: () => ms,

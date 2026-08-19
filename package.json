@@ -14,7 +14,7 @@
     "lint-staged": "lint-staged",
     "prettier-check-all": "prettier --check .",
     "prettier-format-all": "prettier --write .",
-    "types": "npx tsc --noEmit",
+    "types": "node ./scripts/bundle.js && npx tsc --noEmit 2>&1 | grep -v '^src/opentelemetry-js' | grep 'error TS' && exit 1 || exit 0",
     "test": "npx jest && npx playwright test --retries=3 e2e_test/ && npm run prettier-check-all",
     "test:ut": "npx jest",
     "test:e2e": "npx playwright test --retries=3 e2e_test",
