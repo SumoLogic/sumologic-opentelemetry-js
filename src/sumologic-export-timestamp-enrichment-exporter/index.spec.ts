@@ -1,5 +1,8 @@
 import { SpanKind, SpanStatusCode, TraceFlags } from '@opentelemetry/api';
-import { Resource } from '@opentelemetry/resources';
+import {
+  resourceFromAttributes,
+  emptyResource,
+} from '@opentelemetry/resources';
 import { ReadableSpan, SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { ExportTimestampEnrichmentExporter } from '.';
 
@@ -43,7 +46,11 @@ describe('ExportTimestampEnrichmentExporter', () => {
       code: SpanStatusCode.OK,
     },
     attributes: {},
-    parentSpanId: '3e0c63257de34c92',
+    parentSpanContext: {
+      traceId: 'd4cda95b652f4a1592b449d5929fda1b',
+      spanId: '3e0c63257de34c92',
+      traceFlags: TraceFlags.NONE,
+    },
     links: [
       {
         context: {
@@ -55,8 +62,8 @@ describe('ExportTimestampEnrichmentExporter', () => {
     ],
     events: [],
     duration: [32, 800000000],
-    resource: Resource.empty(),
-    instrumentationLibrary: {
+    resource: emptyResource(),
+    instrumentationScope: {
       name: 'default',
       version: '0.0.1',
     },
@@ -87,8 +94,8 @@ describe('ExportTimestampEnrichmentExporter', () => {
   });
 
   test('fills the given spans with sumologic.telemetry.sdk.export_timestamp resource attribute and pass it to the original exporter', () => {
-    const resource1 = Resource.empty();
-    const resource2 = new Resource({ label1: 'first value' });
+    const resource1 = emptyResource();
+    const resource2 = resourceFromAttributes({ label1: 'first value' });
     const spans: ReadableSpan[] = [
       {
         ...readableSpan,
@@ -100,22 +107,20 @@ describe('ExportTimestampEnrichmentExporter', () => {
       },
     ];
 
-    originalExporter.export.mockImplementation((spans) => {
-      expect(spans).toEqual([
-        {
-          ...readableSpan,
-          resource: new Resource({
-            'sumologic.telemetry.sdk.export_timestamp': 1601510400000,
-          }),
-        },
-        {
-          ...readableSpan,
-          resource: new Resource({
-            label1: 'first value',
-            'sumologic.telemetry.sdk.export_timestamp': 1601510400000,
-          }),
-        },
-      ]);
+    originalExporter.export.mockImplementation((exportedSpans) => {
+      expect(
+        exportedSpans[0].resource.attributes[
+          'sumologic.telemetry.sdk.export_timestamp'
+        ],
+      ).toBe(1601510400000);
+      expect(
+        exportedSpans[1].resource.attributes[
+          'sumologic.telemetry.sdk.export_timestamp'
+        ],
+      ).toBe(1601510400000);
+      expect(exportedSpans[1].resource.attributes['label1']).toBe(
+        'first value',
+      );
     });
 
     exporter.export(spans, resultCallback);

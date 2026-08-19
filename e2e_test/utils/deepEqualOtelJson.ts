@@ -5,6 +5,9 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.user_agent/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/http.host/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/http.url/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/url.full/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/server.address/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/user_agent.original/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/location.href/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/new.location.href/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/root_span.http.url/value/stringValue',
@@ -13,6 +16,7 @@ const ANY_STRING_PATHS = new Set([
   'resourceLogs/scopeLogs/logRecords/attributes/error.stack/value/stringValue',
   'resourceLogs/scopeLogs/logRecords/attributes/root_span.http.url/value/stringValue',
   'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
+  'resourceLogs/resource/attributes/user_agent.original/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -27,6 +31,7 @@ const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_last_xhr/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/server.port/value/doubleValue',
 ]);
 const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],

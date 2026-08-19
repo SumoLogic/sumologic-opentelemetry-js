@@ -1,4 +1,4 @@
-import { Context, SpanKind } from '@opentelemetry/api';
+import { Context } from '@opentelemetry/api';
 import {
   Span as SdkTraceSpan,
   ReadableSpan,
@@ -22,7 +22,7 @@ const getRootSpan = (span: SdkTraceSpan): SdkTraceSpan | undefined =>
   rootSpansByTraceId[span.spanContext().traceId];
 
 const isLongtaskSpan = (span: SdkTraceSpan): boolean =>
-  span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK;
+  span.instrumentationScope.name === INSTRUMENTATION_LONG_TASK;
 
 const enrichChildSpan = (span: SdkTraceSpan, rootSpan: SdkTraceSpan) => {
   const rootSpanHttpUrl = getSpanHttpUrl(rootSpan);
@@ -43,15 +43,15 @@ const enrichChildSpan = (span: SdkTraceSpan, rootSpan: SdkTraceSpan) => {
 };
 
 export const onStart = (span: SdkTraceSpan, context?: Context): void => {
-  const { parentSpanId } = span;
-  if (isXhrSpan(span) && parentSpanId) {
+  const hasParent = !!span.parentSpanContext;
+  if (isXhrSpan(span) && hasParent) {
     const rootSpan = getRootSpan(span);
     if (rootSpan) {
       // root span of a xhr span gets this special attribute to indicate that it contains xhr spans
       rootSpan.attributes[XHR_IS_ROOT_SPAN] = true;
     }
   }
-  if (!parentSpanId) {
+  if (!hasParent) {
     // save root spans for later use
     const { traceId } = span.spanContext();
     rootSpansByTraceId[traceId] = span;
@@ -73,7 +73,7 @@ export const onEnd = (span: ReadableSpan): void => {
 
   const isXhr = isXhrSpan(sdkSpan);
   const isLongtask = isLongtaskSpan(sdkSpan);
-  if (span.parentSpanId && (isXhr || isLongtask)) {
+  if (span.parentSpanContext && (isXhr || isLongtask)) {
     const rootSpan = getRootSpan(sdkSpan);
     if (rootSpan) {
       enrichChildSpan(sdkSpan, rootSpan);

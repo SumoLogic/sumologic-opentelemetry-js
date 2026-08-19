@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs').promises;
 const path = require('path');
 const { spawnSync } = require('child_process');
@@ -8,7 +9,12 @@ const TSCONFIG_JSON = './tsconfig.json';
 const preparePackage = async (fullDir) => {
   // read package.json
   const packagePath = path.join(fullDir, PACKAGE_JSON);
-  const package = JSON.parse(await fs.readFile(packagePath, 'utf-8'));
+  let package;
+  try {
+    package = JSON.parse(await fs.readFile(packagePath, 'utf-8'));
+  } catch (error) {
+    return;
+  }
 
   // delete types field
   delete package.types;
@@ -64,9 +70,10 @@ const main = async () => {
     force: true,
   });
   await preparePackage('./src/opentelemetry-js/api');
+  await preparePackage('./src/opentelemetry-js/semantic-conventions');
   await scanDir('./src/opentelemetry-js/packages');
   await scanDir('./src/opentelemetry-js/experimental/packages');
-  await scanDir('./src/opentelemetry-js-contrib/plugins/web');
+  await scanDir('./src/opentelemetry-js-contrib/packages');
 };
 
 main().catch((error) => {

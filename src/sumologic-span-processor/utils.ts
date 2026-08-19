@@ -7,26 +7,25 @@ export const useDocument = typeof document === 'object' && document != null;
 
 const METHOD_NAMES = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
 
-export const isXhrInstrumentationSpan = (span: SdkTraceSpan) => {
+export const isXhrFetchSpan = (span: SdkTraceSpan) => {
   return (
-    span.instrumentationLibrary.name ===
-      '@opentelemetry/instrumentation-xml-http-request' &&
+    span.instrumentationScope.name === '@opentelemetry/instrumentation-fetch' &&
     METHOD_NAMES.includes(span.name)
   );
 };
 
 export const isXhrSpan = (span: SdkTraceSpan): boolean =>
-  (span.name.startsWith('HTTP ') || isXhrInstrumentationSpan(span)) &&
+  (span.name.startsWith('HTTP ') || isXhrFetchSpan(span)) &&
   span.kind === SpanKind.CLIENT;
 
 export const isDocumentLoadSpan = (span: SdkTraceSpan): boolean =>
   span.name === 'documentLoad' &&
-  span.instrumentationLibrary.name ===
+  span.instrumentationScope.name ===
     '@opentelemetry/instrumentation-document-load';
 
 export const isNavigationSpan = (span: SdkTraceSpan): boolean =>
   span.name.startsWith('Navigation: ') &&
-  span.instrumentationLibrary.name ===
+  span.instrumentationScope.name ===
     '@opentelemetry/instrumentation-user-interaction';
 
 /**

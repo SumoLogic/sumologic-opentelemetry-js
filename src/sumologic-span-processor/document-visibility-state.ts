@@ -91,7 +91,7 @@ export const onEnd = (readableSpan: ReadableSpan): void => {
   // In almost all cases, span is ended without custom time (the endTime is equal current time).
   // Rarely (e.g. in document-load auto-instrumentation) the root span ends when the whole trace ends.
   // Because there could be no child span to put the 'pagehide' event, we're extending root spans.
-  const endTimeInNanoseconds = readableSpan.parentSpanId
+  const endTimeInNanoseconds = readableSpan.parentSpanContext
     ? hrTimeToNanoseconds(span.endTime)
     : Infinity;
 

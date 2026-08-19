@@ -1,5 +1,5 @@
 import { Context } from '@opentelemetry/api';
-import { RandomIdGenerator } from '@opentelemetry/core';
+import { RandomIdGenerator } from '@opentelemetry/sdk-trace-base';
 import { Span as SdkTraceSpan } from '@opentelemetry/sdk-trace-base';
 import { useDocument } from './utils';
 

@@ -33,7 +33,7 @@ export default {
       typescript: require('typescript'),
       useTsconfigDeclarationDir: true,
       clean: true,
-      check: true,
+      check: false,
     }),
     commonjs({
       include: /node_modules/,

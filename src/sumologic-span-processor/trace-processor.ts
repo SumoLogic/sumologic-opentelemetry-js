@@ -111,7 +111,7 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
         traceRecord = { traceId, timeout: -1, spans: [] };
         traces[traceId] = traceRecord;
       }
-      if (!span.parentSpanId && !traceRecord.rootSpan) {
+      if (!span.parentSpanContext && !traceRecord.rootSpan) {
         traceRecord.rootSpan = span;
       }
       processTraceRecordLater(traceRecord);
