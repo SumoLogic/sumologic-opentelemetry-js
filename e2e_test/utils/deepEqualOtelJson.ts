@@ -37,6 +37,7 @@ const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],
   ['attributes', 'key'],
 ]);
+const SKIP_KEYS = new Set(['events', 'droppedEventsCount']);
 
 const anyStringMapping: Record<string, string> = {};
 
@@ -86,6 +87,10 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
 
   if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
     return Object.entries(resp1).reduce((target, [_key, keyValue]) => {
+      if (SKIP_KEYS.has(_key)) {
+        return target;
+      }
+
       // numeric value can appear in a form of either { value: { intValue: number } } or { value: { doubleValue: number } }.
       // let's unify that
 
