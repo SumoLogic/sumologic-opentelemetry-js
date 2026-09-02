@@ -6,7 +6,7 @@ export const LONGTASKS_SUM = 'http.longtasks_sum';
 export const longtasksTraceProcessor: TraceProcessor = (rootSpan, spans) => {
   const longtasks = spans.filter(
     (span) =>
-      span.instrumentationLibrary.name ===
+      span.instrumentationScope.name ===
         '@opentelemetry/instrumentation-long-task' && span.name === 'longtask',
   );
   if (longtasks.length > 0) {

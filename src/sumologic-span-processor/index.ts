@@ -56,7 +56,8 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   }
 
   private shouldIgnoreSpan(span: SdkTraceSpan | ReadableSpan): boolean {
-    const url = span.attributes['http.url'] as string;
+    const url = (span.attributes['url.full'] ||
+      span.attributes['http.url']) as string;
     if (!url) return false;
     return SumoLogicSpanProcessor.ignoreUrls.some((pattern) =>
       pattern.test(url),

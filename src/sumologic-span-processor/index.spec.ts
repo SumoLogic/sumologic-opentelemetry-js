@@ -2,17 +2,20 @@ import {
   BasicTracerProvider,
   Span,
   SpanExporter,
-  Tracer,
 } from '@opentelemetry/sdk-trace-base';
-import { HrTime, ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
-import { hrTime, InstrumentationLibrary } from '@opentelemetry/core';
+import {
+  HrTime,
+  ROOT_CONTEXT,
+  SpanKind,
+  trace,
+  context as apiContext,
+} from '@opentelemetry/api';
+import { hrTime } from '@opentelemetry/core';
 import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
 import { resetSavedSpans } from './find-longtask-context';
 import { resetDocumentVisibilityStateChanges } from './document-visibility-state';
-
-delete (window as any).location;
-window.location = new URL('https://www.unit-test-example.com') as any;
+import type { InstrumentationScope } from '@opentelemetry/core';
 
 const nativePerformance = performance;
 jest.useFakeTimers();
@@ -40,48 +43,58 @@ const setDocumentVisibilityState = (value: string) => {
   });
 };
 
-let lastUID = 0;
-const nextUID = () => String(lastUID++);
-
 describe('SumoLogicSpanProcessor', () => {
-  let tracer: Tracer;
+  let provider: BasicTracerProvider;
   let exporter: SpanExporter;
   let span: Span;
   let spanProcessor: SumoLogicSpanProcessor;
   let superOnEnd: jest.Mock;
 
-  const setInstrumentationLibrary = (
+  const setInstrumentationScope = (
     span: Span,
-    instrumentationLibrary: InstrumentationLibrary,
+    instrumentationScope: InstrumentationScope,
   ): void => {
-    (span as any).instrumentationLibrary = instrumentationLibrary;
+    (span as any).instrumentationScope = instrumentationScope;
   };
 
-  const createSpan = (name = 'test', parentSpan?: Span, startTime?: HrTime) =>
-    new Span(
-      tracer,
-      ROOT_CONTEXT,
+  const createSpan = (
+    name = 'test',
+    parentSpan?: Span,
+    startTime?: HrTime,
+  ): Span => {
+    const tracer = provider.getTracer('default');
+    let ctx = ROOT_CONTEXT;
+    if (parentSpan) {
+      ctx = trace.setSpan(apiContext.active(), parentSpan);
+    }
+    const newSpan = tracer.startSpan(
       name,
       {
-        spanId: nextUID(),
-        traceId: parentSpan?.spanContext().traceId ?? nextUID(),
-        traceFlags: TraceFlags.SAMPLED,
+        kind: SpanKind.INTERNAL,
+        startTime,
       },
-      SpanKind.INTERNAL,
-      parentSpan?.spanContext().spanId,
-      [],
-      startTime,
-    );
+      ctx,
+    ) as Span;
+    return newSpan;
+  };
 
   const createXhrSpan = (name: string, parentSpan?: Span): Span => {
-    const span = createSpan(name, parentSpan);
-    (span as any).kind = SpanKind.CLIENT;
-    return span;
+    const tracer = provider.getTracer('default');
+    let ctx = ROOT_CONTEXT;
+    if (parentSpan) {
+      ctx = trace.setSpan(apiContext.active(), parentSpan);
+    }
+    const newSpan = tracer.startSpan(
+      name,
+      { kind: SpanKind.CLIENT },
+      ctx,
+    ) as Span;
+    return newSpan;
   };
 
   const createLongtaskSpan = (): Span => {
     const span = createSpan('longtask');
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
     });
@@ -96,12 +109,13 @@ describe('SumoLogicSpanProcessor', () => {
     resetDocumentVisibilityStateChanges();
 
     exporter = {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       export() {},
       shutdown() {
         return Promise.resolve();
       },
     };
-    tracer = new BasicTracerProvider().getTracer('default');
+    provider = new BasicTracerProvider();
     span = createSpan();
 
     createSpanProcessor({});
@@ -152,7 +166,6 @@ describe('SumoLogicSpanProcessor', () => {
     test('when page was initially open hidden', () => {
       setDocumentVisibilityState('hidden');
       resetDocumentVisibilityStateChanges();
-      // span can be created with a timestamp before RUM script run, e.g. in document-load
       setSystemTime('2022-01-01 09:00');
       span = createSpan();
       spanProcessor.onStart(span);
@@ -197,7 +210,7 @@ describe('SumoLogicSpanProcessor', () => {
       document.dispatchEvent(new Event('visibilitychange'));
       span.end();
       spanProcessor.onEnd(span);
-      childSpan.end(endTime); // end time is before page was hidden
+      childSpan.end(endTime);
       spanProcessor.onEnd(childSpan);
       jest.runAllTimers();
       expect(span.attributes['document.visibilityState']).toBe('hidden');
@@ -212,28 +225,22 @@ describe('SumoLogicSpanProcessor', () => {
       setSystemTime('2022-01-01 10:02');
       setDocumentVisibilityState('hidden');
       document.dispatchEvent(new Event('visibilitychange'));
-      span.end(endTime); // end time is before page was hidden
+      span.end(endTime);
       spanProcessor.onEnd(span);
       jest.runAllTimers();
-
-      // Although page was hidden after span end time, we still marked it as 'hidden'.
-      // It's a special case that only applies for root spans.
-      // It was introduced to support `documentLoad` page visibility.
-      // Because `documentLoad` span ends when page was loaded, there are may be gaps in spans, so there would be no span
-      // where we may put the 'pagehide' event.
       expect(span.attributes['document.visibilityState']).toBe('hidden');
     });
 
     test('for span started with custom time', () => {
       setSystemTime('2022-01-01 10:00');
-      setDocumentVisibilityState('hidden'); // page is initially hidden
+      setDocumentVisibilityState('hidden');
       document.dispatchEvent(new Event('visibilitychange'));
 
       setSystemTime('2022-01-01 10:01');
-      const startTime = hrTime(); // our root span will start at this point
+      const startTime = hrTime();
 
       setSystemTime('2022-01-01 10:02');
-      setDocumentVisibilityState('visible'); // page is visible when span is creating
+      setDocumentVisibilityState('visible');
       document.dispatchEvent(new Event('visibilitychange'));
       span = createSpan('root', undefined, startTime);
       spanProcessor.onStart(span);
@@ -301,7 +308,7 @@ describe('SumoLogicSpanProcessor', () => {
       document.dispatchEvent(new Event('visibilitychange'));
       span.end();
       spanProcessor.onEnd(span);
-      childSpan.end(endTime); // end time is before page was hidden
+      childSpan.end(endTime);
       spanProcessor.onEnd(childSpan);
       jest.runAllTimers();
       expect(childSpan.events.length).toBe(0);
@@ -315,7 +322,7 @@ describe('SumoLogicSpanProcessor', () => {
       setSystemTime('2022-01-06 10:02');
       setDocumentVisibilityState('hidden');
       document.dispatchEvent(new Event('visibilitychange'));
-      span.end(endTime); // end time is before page was hidden
+      span.end(endTime);
       spanProcessor.onEnd(span);
       jest.runAllTimers();
       expect(span.events.length).toBe(1);
@@ -325,7 +332,7 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('drops root spans from instrumentation-user-interaction when there is no children', () => {
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
       version: undefined,
     });
@@ -338,7 +345,7 @@ describe('SumoLogicSpanProcessor', () => {
 
   test('does not drop root spans from instrumentation-user-interaction when dropSingleUserInteractionTraces option is disabled', () => {
     createSpanProcessor({ dropSingleUserInteractionTraces: false });
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
       version: undefined,
     });
@@ -350,17 +357,11 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('finds context for longtask spans', () => {
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
     });
-    const parent = new Span(
-      tracer,
-      ROOT_CONTEXT,
-      'parent test span',
-      { spanId: nextUID(), traceId: nextUID(), traceFlags: TraceFlags.SAMPLED },
-      SpanKind.INTERNAL,
-    );
+    const parent = createSpan('parent test span');
 
     spanProcessor.onStart(span);
     spanProcessor.onStart(parent);
@@ -372,12 +373,14 @@ describe('SumoLogicSpanProcessor', () => {
     jest.runAllTimers();
     expect(superOnEnd.mock.calls).toEqual([[span], [parent]]);
 
-    expect(span.parentSpanId).toBe(parent.spanContext().spanId);
+    expect((span as any).parentSpanContext?.spanId).toBe(
+      parent.spanContext().spanId,
+    );
     expect(span.spanContext().traceId).toBe(parent.spanContext().traceId);
   });
 
   test('finds context for longtask spans on spans ended after the longtask', () => {
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
     });
@@ -393,18 +396,19 @@ describe('SumoLogicSpanProcessor', () => {
     jest.runAllTimers();
     expect(superOnEnd.mock.calls).toEqual([[span], [parent]]);
 
-    expect(span.parentSpanId).toBe(parent.spanContext().spanId);
+    expect((span as any).parentSpanContext?.spanId).toBe(
+      parent.spanContext().spanId,
+    );
     expect(span.spanContext().traceId).toBe(parent.spanContext().traceId);
   });
 
   test('longtask spans without context are dropped', () => {
-    setInstrumentationLibrary(span, {
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-long-task',
       version: undefined,
     });
     const parent = createSpan('parent test span');
 
-    // in this case the parent span is not ended so longtask should not be attached
     spanProcessor.onStart(parent);
     spanProcessor.onStart(span);
     spanProcessor.onEnd(span);
@@ -470,8 +474,8 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('enrich longtask span in documentLoad trace', () => {
-    span.name = 'documentLoad';
-    setInstrumentationLibrary(span, {
+    (span as any).name = 'documentLoad';
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-document-load',
     });
 
@@ -512,8 +516,8 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('enrich longtask span in navigation trace', () => {
-    span.name = 'Navigation: /hello';
-    setInstrumentationLibrary(span, {
+    (span as any).name = 'Navigation: /hello';
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
     });
 
@@ -536,8 +540,8 @@ describe('SumoLogicSpanProcessor', () => {
   });
 
   test('enrich longtask span in trace, that was updated as navigation trace', () => {
-    span.name = `click on 'This is DIV'`;
-    setInstrumentationLibrary(span, {
+    (span as any).name = `click on 'This is DIV'`;
+    setInstrumentationScope(span, {
       name: '@opentelemetry/instrumentation-user-interaction',
     });
 
@@ -556,7 +560,7 @@ describe('SumoLogicSpanProcessor', () => {
 
     expect(longtaskSpan.attributes['http.action_type']).toBe('xhr_requests');
 
-    span.name = 'Navigation: /hello';
+    (span as any).name = 'Navigation: /hello';
 
     span.end();
     spanProcessor.onEnd(span);
@@ -648,11 +652,10 @@ describe('SumoLogicSpanProcessor', () => {
 
     jest.runAllTimers();
 
-    // the root span (span) is ended at last even though originally it was called after longtask1
     expect(superOnEnd.mock.calls).toEqual([[longtask1], [longtask2], [span]]);
 
     expect(span.attributes['http.longtasks_sum']).toBe(
-      (10 + 5) * 60 * 1000_000_000, // 10 seconds of longtask1, 5 seconds of longtask2 in nanoseconds
+      (10 + 5) * 60 * 1000_000_000,
     );
   });
 });

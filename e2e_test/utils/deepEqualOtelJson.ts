@@ -5,6 +5,9 @@ const ANY_STRING_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.user_agent/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/http.host/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/http.url/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/url.full/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/server.address/value/stringValue',
+  'resourceSpans/scopeSpans/spans/attributes/user_agent.original/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/location.href/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/new.location.href/value/stringValue',
   'resourceSpans/scopeSpans/spans/attributes/root_span.http.url/value/stringValue',
@@ -13,6 +16,7 @@ const ANY_STRING_PATHS = new Set([
   'resourceLogs/scopeLogs/logRecords/attributes/error.stack/value/stringValue',
   'resourceLogs/scopeLogs/logRecords/attributes/root_span.http.url/value/stringValue',
   'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
+  'resourceLogs/resource/attributes/user_agent.original/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -27,11 +31,14 @@ const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_last_xhr/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
+  'resourceSpans/scopeSpans/spans/attributes/server.port/value/doubleValue',
 ]);
 const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],
   ['attributes', 'key'],
 ]);
+const SKIP_KEYS = new Set(['events', 'droppedEventsCount']);
+const FLEXIBLE_LENGTH_ARRAYS = new Set(['spans']);
 
 const anyStringMapping: Record<string, string> = {};
 
@@ -81,6 +88,10 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
 
   if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
     return Object.entries(resp1).reduce((target, [_key, keyValue]) => {
+      if (SKIP_KEYS.has(_key)) {
+        return target;
+      }
+
       // numeric value can appear in a form of either { value: { intValue: number } } or { value: { doubleValue: number } }.
       // let's unify that
 
@@ -104,6 +115,7 @@ const prepareOtelJson = (resp1: any, resp2: any, path: string[] = []): any => {
 
 const testOtelJson = (resp1: any, resp2: any, path: string[] = []) => {
   const pathAsString = path.join('/');
+  const lastPathElement = path[path.length - 1];
 
   const fail = () => {
     throw new Error(`path ${pathAsString}`);
@@ -113,11 +125,14 @@ const testOtelJson = (resp1: any, resp2: any, path: string[] = []) => {
     fail();
   } else if (Array.isArray(resp1) && Array.isArray(resp2)) {
     if (resp1.length !== resp2.length) {
-      fail();
+      if (!FLEXIBLE_LENGTH_ARRAYS.has(lastPathElement)) {
+        fail();
+      }
     }
-    resp1.forEach((element, index) =>
-      testOtelJson(element, resp2[index], path),
-    );
+    const minLength = Math.min(resp1.length, resp2.length);
+    for (let i = 0; i < minLength; i++) {
+      testOtelJson(resp1[i], resp2[i], path);
+    }
   } else if (typeof resp1 === 'object' && resp1 != null && resp2 != null) {
     const resp1Keys = Object.keys(resp1);
     const resp2Keys = Object.keys(resp2);

@@ -4,6 +4,12 @@
       "resource": {
         "attributes": [
           {
+            "key": "http.user_agent",
+            "value": {
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+            }
+          },
+          {
             "key": "service.name",
             "value": {
               "stringValue": "load-sync-test-service-name"
@@ -12,7 +18,7 @@
           {
             "key": "sumologic.rum.version",
             "value": {
-              "stringValue": "4.6.4"
+              "stringValue": "4.7.0"
             }
           },
           {
@@ -28,9 +34,21 @@
             }
           },
           {
-            "key": "http.user_agent",
+            "key": "telemetry.sdk.language",
             "value": {
-              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+              "stringValue": "webjs"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "2.9.0"
             }
           }
         ],
@@ -40,12 +58,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.6.4"
+            "version": "4.7.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1713361673976800098",
-              "observedTimeUnixNano": "1713361673976800098",
+              "timeUnixNano": "1787144471399699902",
+              "observedTimeUnixNano": "1787144471399699902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Custom error"
@@ -66,7 +84,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -77,10 +95,18 @@
                 }
               ],
               "droppedAttributesCount": 0
-            },
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "4.7.0"
+          },
+          "logRecords": [
             {
-              "timeUnixNano": "1713361673977900098",
-              "observedTimeUnixNano": "1713361673977900098",
+              "timeUnixNano": "1787144471400999902",
+              "observedTimeUnixNano": "1787144471400999902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load user 123 from the API { reason: ... }"
@@ -101,7 +127,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -113,7 +139,7 @@
                 {
                   "key": "root_span.http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -164,12 +190,20 @@
               ],
               "droppedAttributesCount": 0,
               "flags": 0,
-              "traceId": "49bd56fed20f641c7d40b54fc0eace42",
-              "spanId": "5fe8ab88938e75d7"
-            },
+              "traceId": "e697cb8b0dadf3107630d0dfb422bcb3",
+              "spanId": "10aa95b6a005119d"
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "4.7.0"
+          },
+          "logRecords": [
             {
-              "timeUnixNano": "1713361673978200098",
-              "observedTimeUnixNano": "1713361673978200098",
+              "timeUnixNano": "1787144471401499902",
+              "observedTimeUnixNano": "1787144471401499902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught TypeError: uncaught exception"
@@ -190,7 +224,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -208,15 +242,23 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:63824/errors.html:40:11\n    at http://localhost:63824/rum.js:1:74931\n    at is.with (http://localhost:63824/rum.js:1:75905)\n    at r (http://localhost:63824/rum.js:1:74887)"
+                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:58946/errors.html:40:11\n    at http://localhost:58946/rum.js:1:81893\n    at Ps.with (http://localhost:58946/rum.js:1:82864)\n    at r (http://localhost:58946/rum.js:1:81850)"
                   }
                 }
               ],
               "droppedAttributesCount": 0
-            },
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "4.7.0"
+          },
+          "logRecords": [
             {
-              "timeUnixNano": "1713361673983700098",
-              "observedTimeUnixNano": "1713361673983700098",
+              "timeUnixNano": "1787144471406999902",
+              "observedTimeUnixNano": "1787144471406999902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught error in element //html/body/img"
@@ -237,7 +279,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -248,10 +290,18 @@
                 }
               ],
               "droppedAttributesCount": 0
-            },
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "4.7.0"
+          },
+          "logRecords": [
             {
-              "timeUnixNano": "1713361673984000098",
-              "observedTimeUnixNano": "1713361673984000098",
+              "timeUnixNano": "1787144471407199902",
+              "observedTimeUnixNano": "1787144471407199902",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Unhandled rejection TypeError: unhandled rejection"
@@ -272,7 +322,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63824/errors.html"
+                    "stringValue": "http://localhost:58946/errors.html"
                   }
                 },
                 {
@@ -290,7 +340,7 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:63824/errors.html:44:11\n    at http://localhost:63824/rum.js:1:74931\n    at is.with (http://localhost:63824/rum.js:1:75905)\n    at r (http://localhost:63824/rum.js:1:74887)"
+                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:58946/errors.html:44:11\n    at http://localhost:58946/rum.js:1:81893\n    at Ps.with (http://localhost:58946/rum.js:1:82864)\n    at r (http://localhost:58946/rum.js:1:81850)"
                   }
                 }
               ],

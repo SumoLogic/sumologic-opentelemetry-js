@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 4.7.0
+
+- updated OT-JS to API 1.9.1 / SDK-Trace-Base 2.9.0 (SDK 2.x upgrade)
+- updated OT-JS-Contrib to latest upstream with Sumo custom patches preserved
+- span attributes updated to stable OpenTelemetry semantic conventions:
+  - `http.url` → `url.full`
+  - `http.method` → `http.request.method`
+  - `http.status_code` → `http.response.status_code`
+  - `http.host` → `server.address` + `server.port`
+  - `http.user_agent` removed from spans (now resource-level only)
+  - `http.scheme` removed
+- `telemetry.sdk.*` resource attributes now included in traces
+- `ignoreUrls` now supports both `url.full` (new) and `http.url` (deprecated)
+- upgraded TypeScript to 5.x, Jest to 29, Node 20 in CI
+
 ## 4.6.3
 
 - make the method name same for both fetch and XHR

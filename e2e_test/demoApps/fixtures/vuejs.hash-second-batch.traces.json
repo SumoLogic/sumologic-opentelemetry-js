@@ -4,9 +4,33 @@
       "resource": {
         "attributes": [
           {
+            "key": "routing.mechanism",
+            "value": {
+              "stringValue": "hash.based"
+            }
+          },
+          {
+            "key": "sampling.probability",
+            "value": {
+              "intValue": 1
+            }
+          },
+          {
             "key": "service.name",
             "value": {
               "stringValue": "vuejs-service-name"
+            }
+          },
+          {
+            "key": "sumologic.rum.version",
+            "value": {
+              "stringValue": "4.7.0"
+            }
+          },
+          {
+            "key": "application",
+            "value": {
+              "stringValue": "vuejs-application-name"
             }
           },
           {
@@ -24,37 +48,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "1.22.0"
-            }
-          },
-          {
-            "key": "sumologic.rum.version",
-            "value": {
-              "stringValue": "4.6.4"
-            }
-          },
-          {
-            "key": "application",
-            "value": {
-              "stringValue": "vuejs-application-name"
-            }
-          },
-          {
-            "key": "routing.mechanism",
-            "value": {
-              "stringValue": "hash.based"
-            }
-          },
-          {
-            "key": "sampling.probability",
-            "value": {
-              "intValue": 1
+              "stringValue": "2.9.0"
             }
           },
           {
             "key": "sumologic.telemetry.sdk.export_timestamp",
             "value": {
-              "doubleValue": 1712069671476.7
+              "doubleValue": 1787144471313.1
             }
           }
         ],
@@ -64,34 +64,28 @@
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-fetch",
-            "version": "0.49.1"
+            "version": "0.220.0"
           },
           "spans": [
             {
-              "traceId": "10cf28f98a9ead5e587a4aaff33cc829",
-              "spanId": "b965fb7dbd05c5ea",
-              "parentSpanId": "44aa4d4bd561aca5",
+              "traceId": "83b4fb44d437ba1adeec02204b46c4ab",
+              "spanId": "205d70807115f3d8",
+              "parentSpanId": "02e6a3c641768dd0",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": "1712069667141000000",
-              "endTimeUnixNano": "1712069667167000000",
+              "startTimeUnixNano": "1787144466999000000",
+              "endTimeUnixNano": "1787144467004000000",
               "attributes": [
                 {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "fetch"
-                  }
-                },
-                {
-                  "key": "http.method",
+                  "key": "http.request.method",
                   "value": {
                     "stringValue": "GET"
                   }
                 },
                 {
-                  "key": "http.url",
+                  "key": "url.full",
                   "value": {
-                    "stringValue": "http://localhost:52419/api/planets/3"
+                    "stringValue": "http://localhost:58859/api/planets/3"
                   }
                 },
                 {
@@ -103,49 +97,31 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "1e32727d5670882cdce38f135b30eed0"
+                    "stringValue": "edf898c98096479a42525bf70f1906f8"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/planets/3"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/planets/3"
                   }
                 },
                 {
-                  "key": "http.status_code",
+                  "key": "http.response.status_code",
                   "value": {
                     "intValue": 200
                   }
                 },
                 {
-                  "key": "http.status_text",
+                  "key": "server.address",
                   "value": {
-                    "stringValue": "OK"
+                    "stringValue": "localhost"
                   }
                 },
                 {
-                  "key": "http.host",
+                  "key": "server.port",
                   "value": {
-                    "stringValue": "localhost:52419"
-                  }
-                },
-                {
-                  "key": "http.scheme",
-                  "value": {
-                    "stringValue": "http"
-                  }
-                },
-                {
-                  "key": "http.user_agent",
-                  "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
-                  }
-                },
-                {
-                  "key": "http.response_content_length",
-                  "value": {
-                    "intValue": 448
+                    "intValue": 58859
                   }
                 },
                 {
@@ -157,7 +133,7 @@
                 {
                   "key": "root_span.http.url",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/planets/3"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/planets/3"
                   }
                 }
               ],
@@ -166,49 +142,49 @@
                 {
                   "attributes": [],
                   "name": "fetchStart",
-                  "timeUnixNano": "1712069667141300097",
+                  "timeUnixNano": "1787144466999400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domainLookupStart",
-                  "timeUnixNano": "1712069667141300097",
+                  "timeUnixNano": "1787144466999400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domainLookupEnd",
-                  "timeUnixNano": "1712069667141300097",
+                  "timeUnixNano": "1787144466999400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "connectStart",
-                  "timeUnixNano": "1712069667141300097",
+                  "timeUnixNano": "1787144466999400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "connectEnd",
-                  "timeUnixNano": "1712069667141300097",
+                  "timeUnixNano": "1787144466999400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "requestStart",
-                  "timeUnixNano": "1712069667149700098",
+                  "timeUnixNano": "1787144467002100049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "responseStart",
-                  "timeUnixNano": "1712069667151100097",
+                  "timeUnixNano": "1787144467003600049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "responseEnd",
-                  "timeUnixNano": "1712069667151500097",
+                  "timeUnixNano": "1787144467003800049",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -217,32 +193,27 @@
                 "code": 0
               },
               "links": [],
-              "droppedLinksCount": 0
+              "droppedLinksCount": 0,
+              "flags": 257
             },
             {
-              "traceId": "bca7c83abe2b7e1b0c2ec030eb480ef7",
-              "spanId": "17b77e90e1f0fe8d",
+              "traceId": "0bb72eca62b6441d2cb4f7320c17d3ea",
+              "spanId": "49d9a4bbad775707",
               "name": "HTTP GET",
               "kind": 3,
-              "startTimeUnixNano": "1712069663075000000",
-              "endTimeUnixNano": "1712069663088000000",
+              "startTimeUnixNano": "1787144462939000000",
+              "endTimeUnixNano": "1787144462954000000",
               "attributes": [
                 {
-                  "key": "component",
-                  "value": {
-                    "stringValue": "fetch"
-                  }
-                },
-                {
-                  "key": "http.method",
+                  "key": "http.request.method",
                   "value": {
                     "stringValue": "GET"
                   }
                 },
                 {
-                  "key": "http.url",
+                  "key": "url.full",
                   "value": {
-                    "stringValue": "http://localhost:52419/api/planets"
+                    "stringValue": "http://localhost:58859/api/planets"
                   }
                 },
                 {
@@ -254,49 +225,31 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "1e32727d5670882cdce38f135b30eed0"
+                    "stringValue": "edf898c98096479a42525bf70f1906f8"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/"
                   }
                 },
                 {
-                  "key": "http.status_code",
+                  "key": "http.response.status_code",
                   "value": {
                     "intValue": 200
                   }
                 },
                 {
-                  "key": "http.status_text",
+                  "key": "server.address",
                   "value": {
-                    "stringValue": "OK"
+                    "stringValue": "localhost"
                   }
                 },
                 {
-                  "key": "http.host",
+                  "key": "server.port",
                   "value": {
-                    "stringValue": "localhost:52419"
-                  }
-                },
-                {
-                  "key": "http.scheme",
-                  "value": {
-                    "stringValue": "http"
-                  }
-                },
-                {
-                  "key": "http.user_agent",
-                  "value": {
-                    "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
-                  }
-                },
-                {
-                  "key": "http.response_content_length",
-                  "value": {
-                    "intValue": 7232
+                    "intValue": 58859
                   }
                 },
                 {
@@ -308,19 +261,19 @@
                 {
                   "key": "http.time_to_last_xhr",
                   "value": {
-                    "intValue": 12999936
+                    "intValue": 14999808
                   }
                 },
                 {
                   "key": "http.time_to_xhr_processing_end",
                   "value": {
-                    "intValue": 12999936
+                    "intValue": 14999808
                   }
                 },
                 {
                   "key": "http.time_in_xhr_calls",
                   "value": {
-                    "intValue": 12999936
+                    "intValue": 14999808
                   }
                 }
               ],
@@ -329,49 +282,49 @@
                 {
                   "attributes": [],
                   "name": "fetchStart",
-                  "timeUnixNano": "1712069663076100049",
+                  "timeUnixNano": "1787144462940400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domainLookupStart",
-                  "timeUnixNano": "1712069663076100049",
+                  "timeUnixNano": "1787144462940400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domainLookupEnd",
-                  "timeUnixNano": "1712069663076100049",
+                  "timeUnixNano": "1787144462940400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "connectStart",
-                  "timeUnixNano": "1712069663076100049",
+                  "timeUnixNano": "1787144462940400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "connectEnd",
-                  "timeUnixNano": "1712069663076100049",
+                  "timeUnixNano": "1787144462940400049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "requestStart",
-                  "timeUnixNano": "1712069663077600049",
+                  "timeUnixNano": "1787144462942900049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "responseStart",
-                  "timeUnixNano": "1712069663081000049",
+                  "timeUnixNano": "1787144462947200049",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "responseEnd",
-                  "timeUnixNano": "1712069663081500049",
+                  "timeUnixNano": "1787144462947800049",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -380,23 +333,24 @@
                 "code": 0
               },
               "links": [],
-              "droppedLinksCount": 0
+              "droppedLinksCount": 0,
+              "flags": 257
             }
           ]
         },
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-document-load",
-            "version": "0.36.0"
+            "version": "0.65.0"
           },
           "spans": [
             {
-              "traceId": "1193a68223e1452ded637a11bb0b2193",
-              "spanId": "7f2b9173d9561795",
+              "traceId": "a7b84fce1bccb93eaad1293feb703476",
+              "spanId": "8b7a7ef41be87f6d",
               "name": "documentLoad",
               "kind": 1,
-              "startTimeUnixNano": "1712069663026600000",
-              "endTimeUnixNano": "1712069663077100000",
+              "startTimeUnixNano": "1787144462858499903",
+              "endTimeUnixNano": "1787144462940999903",
               "attributes": [
                 {
                   "key": "document.visibilityState",
@@ -407,23 +361,23 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "1e32727d5670882cdce38f135b30eed0"
+                    "stringValue": "edf898c98096479a42525bf70f1906f8"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/"
                   }
                 },
                 {
-                  "key": "http.url",
+                  "key": "url.full",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/"
                   }
                 },
                 {
-                  "key": "http.user_agent",
+                  "key": "user_agent.original",
                   "value": {
                     "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
                   }
@@ -440,85 +394,67 @@
                 {
                   "attributes": [],
                   "name": "fetchStart",
-                  "timeUnixNano": "1712069663026600000",
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "attributes": [],
-                  "name": "unloadEventStart",
-                  "timeUnixNano": "1712069663026500000",
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "attributes": [],
-                  "name": "unloadEventEnd",
-                  "timeUnixNano": "1712069663026500000",
+                  "timeUnixNano": "1787144462858499903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domInteractive",
-                  "timeUnixNano": "1712069663076600000",
+                  "timeUnixNano": "1787144462940499903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domContentLoadedEventStart",
-                  "timeUnixNano": "1712069663076600000",
+                  "timeUnixNano": "1787144462940499903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domContentLoadedEventEnd",
-                  "timeUnixNano": "1712069663076600000",
+                  "timeUnixNano": "1787144462940499903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "domComplete",
-                  "timeUnixNano": "1712069663077000000",
+                  "timeUnixNano": "1787144462940999903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "loadEventStart",
-                  "timeUnixNano": "1712069663077000000",
+                  "timeUnixNano": "1787144462940999903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "loadEventEnd",
-                  "timeUnixNano": "1712069663077100000",
+                  "timeUnixNano": "1787144462940999903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "timeToFirstByte",
-                  "timeUnixNano": "1712069663033100000",
+                  "timeUnixNano": "1787144462868099903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "firstContentfulPaint",
-                  "timeUnixNano": "1712069663086800000",
-                  "droppedAttributesCount": 0
-                },
-                {
-                  "attributes": [],
-                  "name": "largestContentfulPaint",
-                  "timeUnixNano": "1712069663086800000",
+                  "timeUnixNano": "1787144462951599903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "firstInputDelay",
-                  "timeUnixNano": "1712069663026800000",
+                  "timeUnixNano": "1787144462858699903",
                   "droppedAttributesCount": 0
                 },
                 {
                   "attributes": [],
                   "name": "firstPaint",
-                  "timeUnixNano": "1712069663086800000",
+                  "timeUnixNano": "1787144462951599903",
                   "droppedAttributesCount": 0
                 }
               ],
@@ -527,23 +463,24 @@
                 "code": 0
               },
               "links": [],
-              "droppedLinksCount": 0
+              "droppedLinksCount": 0,
+              "flags": 257
             }
           ]
         },
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-user-interaction",
-            "version": "0.36.0"
+            "version": "0.64.0"
           },
           "spans": [
             {
-              "traceId": "10cf28f98a9ead5e587a4aaff33cc829",
-              "spanId": "44aa4d4bd561aca5",
+              "traceId": "83b4fb44d437ba1adeec02204b46c4ab",
+              "spanId": "02e6a3c641768dd0",
               "name": "Navigation: /vuejs/index_hash.html#/planets/3",
               "kind": 1,
-              "startTimeUnixNano": "1712069667136000000",
-              "endTimeUnixNano": "1712069667137799951",
+              "startTimeUnixNano": "1787144466995000000",
+              "endTimeUnixNano": "1787144466996200098",
               "attributes": [
                 {
                   "key": "event_type",
@@ -560,13 +497,13 @@
                 {
                   "key": "target_xpath",
                   "value": {
-                    "stringValue": "//html/body/div/div/ul/li[3]/a"
+                    "stringValue": "//*[@id=\"app\"]/div/ul/li[3]/a"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/"
                   }
                 },
                 {
@@ -578,13 +515,13 @@
                 {
                   "key": "rum.session_id",
                   "value": {
-                    "stringValue": "1e32727d5670882cdce38f135b30eed0"
+                    "stringValue": "edf898c98096479a42525bf70f1906f8"
                   }
                 },
                 {
                   "key": "location.href",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/"
                   }
                 },
                 {
@@ -596,31 +533,31 @@
                 {
                   "key": "new.location.href",
                   "value": {
-                    "stringValue": "http://localhost:52419/vuejs/index_hash.html#/planets/3"
+                    "stringValue": "http://localhost:58859/vuejs/index_hash.html#/planets/3"
                   }
                 },
                 {
                   "key": "http.time_to_first_xhr",
                   "value": {
-                    "intValue": 4999936
+                    "intValue": 4000000
                   }
                 },
                 {
                   "key": "http.time_to_last_xhr",
                   "value": {
-                    "intValue": 31000064
+                    "intValue": 8999936
                   }
                 },
                 {
                   "key": "http.time_to_xhr_processing_end",
                   "value": {
-                    "intValue": 31000064
+                    "intValue": 8999936
                   }
                 },
                 {
                   "key": "http.time_in_xhr_calls",
                   "value": {
-                    "intValue": 26000128
+                    "intValue": 4999936
                   }
                 }
               ],
@@ -631,7 +568,8 @@
                 "code": 0
               },
               "links": [],
-              "droppedLinksCount": 0
+              "droppedLinksCount": 0,
+              "flags": 257
             }
           ]
         }

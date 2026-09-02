@@ -4,6 +4,12 @@
       "resource": {
         "attributes": [
           {
+            "key": "http.user_agent",
+            "value": {
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+            }
+          },
+          {
             "key": "service.name",
             "value": {
               "stringValue": "load-sync-test-service-name"
@@ -12,7 +18,7 @@
           {
             "key": "sumologic.rum.version",
             "value": {
-              "stringValue": "4.6.4"
+              "stringValue": "4.7.0"
             }
           },
           {
@@ -28,9 +34,21 @@
             }
           },
           {
-            "key": "http.user_agent",
+            "key": "telemetry.sdk.language",
             "value": {
-              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+              "stringValue": "webjs"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "2.9.0"
             }
           }
         ],
@@ -40,12 +58,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.6.4"
+            "version": "4.7.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1713361675537299902",
-              "observedTimeUnixNano": "1713361675537299902",
+              "timeUnixNano": "1787144473482499951",
+              "observedTimeUnixNano": "1787144473482499951",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load data"
@@ -66,7 +84,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:63820/api/recordError.html"
+                    "stringValue": "http://localhost:58945/api/recordError.html"
                   }
                 },
                 {

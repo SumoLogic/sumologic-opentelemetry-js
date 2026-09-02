@@ -10,7 +10,7 @@ export const dropSingleSpanTracesTraceProcessor: TraceProcessor = (
 ) => {
   if (
     spanProcessor.shouldDropSingleUserInteractionTraces &&
-    rootSpan.instrumentationLibrary.name === INSTRUMENTATION_USER_INTERACTION &&
+    rootSpan.instrumentationScope.name === INSTRUMENTATION_USER_INTERACTION &&
     spans.length === 1
   ) {
     return TraceProcessorResult.DROP_ROOT_SPAN;

@@ -1,10 +1,10 @@
 import { hrTime } from '@opentelemetry/core';
-import { Resource } from '@opentelemetry/resources';
+import type { Resource } from '@opentelemetry/resources';
 import type { Attributes } from '@opentelemetry/api';
 import * as api from '@opentelemetry/api';
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { ReadableLogRecord } from '@opentelemetry/sdk-logs';
-import { createExportLogsServiceRequest } from '@opentelemetry/otlp-transformer';
+import { JsonLogsSerializer } from '@opentelemetry/otlp-transformer';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 
 import { name, version } from '../../package.json';
@@ -53,7 +53,7 @@ export interface CustomError {
 }
 
 const isReadableSpan = (span: object): span is ReadableSpan =>
-  'name' in span && 'instrumentationLibrary' in span;
+  'name' in span && 'instrumentationScope' in span;
 
 let maxBeaconDataSize = Infinity;
 const sendData = (url: string, json: string) => {
@@ -212,12 +212,8 @@ export class SumoLogicLogsExporter {
     const { logs } = this;
     if (!logs.length) return;
     this.logs = [];
-    const json = JSON.stringify(
-      createExportLogsServiceRequest(logs, {
-        useHex: true,
-        useLongBits: false,
-      }),
-    );
+    const bytes = JsonLogsSerializer.serializeRequest(logs);
+    const json = new TextDecoder().decode(bytes);
     sendData(this.collectorUrl, json);
   }
 }

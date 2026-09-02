@@ -70,8 +70,8 @@ const attachLongTaskToSpan = (
   longTask: ReadableSpan,
   parentSpan: ReadableSpan,
 ): void => {
-  // span.parentSpanId is readonly so we need to cast to 'any'
-  (longTask as any).parentSpanId = parentSpan.spanContext().spanId;
+  // parentSpanContext is readonly so we need to cast to 'any'
+  (longTask as any).parentSpanContext = parentSpan.spanContext();
   longTask.spanContext().traceId = parentSpan.spanContext().traceId;
 };
 
@@ -79,8 +79,8 @@ export const onEnd = (
   span: ReadableSpan,
   superOnEnd: (span: ReadableSpan) => void,
 ): void => {
-  if (span.instrumentationLibrary.name === INSTRUMENTATION_LONG_TASK) {
-    if (!span.parentSpanId) {
+  if (span.instrumentationScope.name === INSTRUMENTATION_LONG_TASK) {
+    if (!span.parentSpanContext) {
       const bestParentSpan = findBestSpanInTime(span.startTime);
       if (bestParentSpan) {
         attachLongTaskToSpan(span, bestParentSpan);

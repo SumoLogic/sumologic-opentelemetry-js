@@ -1,9 +1,9 @@
-import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import {
-  Span,
-  Tracer,
-  TraceIdRatioBasedSampler,
-} from '@opentelemetry/sdk-trace-base';
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
+import { Span, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -14,7 +14,10 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
 import { registerInstrumentations as registerOpenTelemetryInstrumentations } from '@opentelemetry/instrumentation';
 import * as api from '@opentelemetry/api';
-import { Resource, ResourceAttributes } from '@opentelemetry/resources';
+import {
+  resourceFromAttributes,
+  defaultResource,
+} from '@opentelemetry/resources';
 import {
   SemanticAttributes,
   SemanticResourceAttributes,
@@ -39,7 +42,6 @@ import {
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
-import { CompositePropagator, W3CBaggagePropagator } from '@opentelemetry/core';
 
 type ReadyListener = () => void;
 
@@ -50,7 +52,7 @@ declare global {
       readyListeners: ReadyListener[];
       onReady: (callback: ReadyListener) => void;
       api: typeof api;
-      tracer: Tracer;
+      tracer: api.Tracer;
       registerInstrumentations: () => void;
       disableInstrumentations: () => void;
       setDefaultAttribute: (
@@ -126,7 +128,7 @@ export const initialize = ({
 
   const defaultServiceName = serviceName ?? UNKNOWN_SERVICE_NAME;
 
-  const resourceAttributes: ResourceAttributes = {
+  const resourceAttributes: Attributes = {
     [SemanticResourceAttributes.SERVICE_NAME]: defaultServiceName,
     ['sumologic.rum.version']: version,
   };
@@ -139,38 +141,22 @@ export const initialize = ({
       deploymentEnvironment;
   }
 
-  const resource = new Resource(resourceAttributes);
+  const resource = defaultResource().merge(
+    resourceFromAttributes(resourceAttributes),
+  );
 
   const tracesResource = resource.merge(
-    new Resource({
+    resourceFromAttributes({
       ...defaultAttributes,
-
-      // This is a temporary solution not covered by the specification.
-      // Was requested in https://github.com/open-telemetry/opentelemetry-specification/pull/570 .
       ['sampling.probability']: samplingProbabilityMaybeNumber,
     }),
   );
-  const provider = new WebTracerProvider({
-    resource: tracesResource,
-    sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
-  });
-
-  const compositePropagator = new CompositePropagator({
-    propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
-  });
-
-  provider.register({
-    contextManager,
-    propagator: compositePropagator,
-  });
-
   const runtimeDefaultAttributes: Attributes = { ...defaultAttributes };
 
   const setDefaultAttribute = (
     key: string,
     value: api.AttributeValue | undefined,
   ) => {
-    provider.resource.attributes[key] = value;
     runtimeDefaultAttributes[key] = value;
   };
 
@@ -186,21 +172,34 @@ export const initialize = ({
     collectorExporter,
   );
 
-  provider.addSpanProcessor(
-    new SumoLogicSpanProcessor(tracesExporter, {
-      maxQueueSize: bufferMaxSpans,
-      maxExportBatchSize,
-      scheduledDelayMillis: bufferTimeout,
-      collectSessionId,
-      dropSingleUserInteractionTraces,
-      getOverriddenServiceName,
-      defaultServiceName,
-      ignoreUrls,
-    }),
-  );
+  const spanProcessor = new SumoLogicSpanProcessor(tracesExporter, {
+    maxQueueSize: bufferMaxSpans,
+    maxExportBatchSize,
+    scheduledDelayMillis: bufferTimeout,
+    collectSessionId,
+    dropSingleUserInteractionTraces,
+    getOverriddenServiceName,
+    defaultServiceName,
+    ignoreUrls,
+  });
+
+  const provider = new WebTracerProvider({
+    resource: tracesResource,
+    sampler: new TraceIdRatioBasedSampler(samplingProbabilityMaybeNumber),
+    spanProcessors: [spanProcessor],
+  });
+
+  const compositePropagator = new CompositePropagator({
+    propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+  });
+
+  provider.register({
+    contextManager,
+    propagator: compositePropagator,
+  });
 
   const logsResource = resource.merge(
-    new Resource({
+    resourceFromAttributes({
       [SemanticAttributes.HTTP_USER_AGENT]: navigator.userAgent,
     }),
   );
