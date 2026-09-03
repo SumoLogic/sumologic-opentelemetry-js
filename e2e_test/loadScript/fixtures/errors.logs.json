@@ -18,7 +18,7 @@
           {
             "key": "sumologic.rum.version",
             "value": {
-              "stringValue": "4.7.0"
+              "stringValue": "4.7.1"
             }
           },
           {
@@ -58,12 +58,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.0"
+            "version": "4.7.1"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1787144471399699902",
-              "observedTimeUnixNano": "1787144471399699902",
+              "timeUnixNano": "1788438452709900000",
+              "observedTimeUnixNano": "1788438452709900000",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Custom error"
@@ -84,7 +84,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -101,12 +101,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.0"
+            "version": "4.7.1"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1787144471400999902",
-              "observedTimeUnixNano": "1787144471400999902",
+              "timeUnixNano": "1788438452711000000",
+              "observedTimeUnixNano": "1788438452711000000",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load user 123 from the API { reason: ... }"
@@ -127,7 +127,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -139,7 +139,7 @@
                 {
                   "key": "root_span.http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -190,20 +190,20 @@
               ],
               "droppedAttributesCount": 0,
               "flags": 0,
-              "traceId": "e697cb8b0dadf3107630d0dfb422bcb3",
-              "spanId": "10aa95b6a005119d"
+              "traceId": "9a8bd10f50b84c3c2c8db5d6be55623c",
+              "spanId": "13b0a772b0458999"
             }
           ]
         },
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.0"
+            "version": "4.7.1"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1787144471401499902",
-              "observedTimeUnixNano": "1787144471401499902",
+              "timeUnixNano": "1788438452711500000",
+              "observedTimeUnixNano": "1788438452711500000",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught TypeError: uncaught exception"
@@ -224,7 +224,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -242,7 +242,7 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:58946/errors.html:40:11\n    at http://localhost:58946/rum.js:1:81893\n    at Ps.with (http://localhost:58946/rum.js:1:82864)\n    at r (http://localhost:58946/rum.js:1:81850)"
+                    "stringValue": "TypeError: uncaught exception\n    at http://localhost:59213/errors.html:40:11\n    at http://localhost:59213/rum.js:1:81071\n    at Ps.with (http://localhost:59213/rum.js:1:82042)\n    at r (http://localhost:59213/rum.js:1:81028)"
                   }
                 }
               ],
@@ -253,12 +253,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.0"
+            "version": "4.7.1"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1787144471406999902",
-              "observedTimeUnixNano": "1787144471406999902",
+              "timeUnixNano": "1788438452717600000",
+              "observedTimeUnixNano": "1788438452717600000",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Uncaught error in element //html/body/img"
@@ -279,7 +279,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -296,12 +296,12 @@
         {
           "scope": {
             "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.0"
+            "version": "4.7.1"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1787144471407199902",
-              "observedTimeUnixNano": "1787144471407199902",
+              "timeUnixNano": "1788438452718000000",
+              "observedTimeUnixNano": "1788438452718000000",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Unhandled rejection TypeError: unhandled rejection"
@@ -322,7 +322,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:58946/errors.html"
+                    "stringValue": "http://localhost:59213/errors.html"
                   }
                 },
                 {
@@ -340,7 +340,7 @@
                 {
                   "key": "error.stack",
                   "value": {
-                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:58946/errors.html:44:11\n    at http://localhost:58946/rum.js:1:81893\n    at Ps.with (http://localhost:58946/rum.js:1:82864)\n    at r (http://localhost:58946/rum.js:1:81850)"
+                    "stringValue": "TypeError: unhandled rejection\n    at http://localhost:59213/errors.html:44:11\n    at http://localhost:59213/rum.js:1:81071\n    at Ps.with (http://localhost:59213/rum.js:1:82042)\n    at r (http://localhost:59213/rum.js:1:81028)"
                   }
                 }
               ],

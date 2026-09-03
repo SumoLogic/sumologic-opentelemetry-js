@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.7.1
+
+- fixed XHR span name and enrichment for `instrumentation-xml-http-request` spans to match `instrumentation-fetch` behavior
+
 ## 4.7.0
 
 - updated OT-JS to API 1.9.1 / SDK-Trace-Base 2.9.0 (SDK 2.x upgrade)

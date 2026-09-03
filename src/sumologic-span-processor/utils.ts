@@ -7,15 +7,18 @@ export const useDocument = typeof document === 'object' && document != null;
 
 const METHOD_NAMES = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
 
-export const isXhrFetchSpan = (span: SdkTraceSpan) => {
+export const isXhrFetchOrXHRSpan = (span: SdkTraceSpan) => {
   return (
-    span.instrumentationScope.name === '@opentelemetry/instrumentation-fetch' &&
+    (span.instrumentationScope.name ===
+      '@opentelemetry/instrumentation-fetch' ||
+      span.instrumentationScope.name ===
+        '@opentelemetry/instrumentation-xml-http-request') &&
     METHOD_NAMES.includes(span.name)
   );
 };
 
 export const isXhrSpan = (span: SdkTraceSpan): boolean =>
-  (span.name.startsWith('HTTP ') || isXhrFetchSpan(span)) &&
+  (span.name.startsWith('HTTP ') || isXhrFetchOrXHRSpan(span)) &&
   span.kind === SpanKind.CLIENT;
 
 export const isDocumentLoadSpan = (span: SdkTraceSpan): boolean =>
