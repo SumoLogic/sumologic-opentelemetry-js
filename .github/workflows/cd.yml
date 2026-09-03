@@ -18,14 +18,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       # TODO: don't change 'latest' dist-tag for beta versions;
       # currently when publishing version with a suffix,
       # the latest tag needs to be manually restored with
       # 'npm dist-tag add @sumologic/opentelemetry-rum@{version} latest'
-      - run: npm publish --access public --provenance
+      - run: npm publish --access public
       - run: npm i aws-sdk@^2.977.0
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
