@@ -25,11 +25,7 @@ jobs:
       # currently when publishing version with a suffix,
       # the latest tag needs to be manually restored with
       # 'npm dist-tag add @sumologic/opentelemetry-rum@{version} latest'
-      - run: |
-          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          npm publish --access public
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public --provenance
       - run: npm i aws-sdk@^2.977.0
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
