@@ -69,12 +69,9 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
     flush();
   });
 
-  const processTraceRecord = ({
-    traceId,
-    rootSpan,
-    send,
-    spans,
-  }: InternalTraceRecord) => {
+  const processTraceRecord = (record: InternalTraceRecord) => {
+    const { traceId, rootSpan, send, spans } = record;
+    clearTimeout(record.timeout);
     delete traces[traceId];
 
     if (!rootSpan || !send) {
@@ -131,6 +128,12 @@ export const createTraceProcessor = (spanProcessor: SumoLogicSpanProcessor) => {
           traceRecord.send = () => {
             superOnEnd(readableSpan);
           };
+          // If no children arrived by the time root ends, flush immediately —
+          // avoids 30s wait for standalone single-span traces (e.g. webVitals)
+          if (traceRecord.spans.length === 1) {
+            processTraceRecord(traceRecord);
+            return;
+          }
         }
         processTraceRecordLater(traceRecord);
       }

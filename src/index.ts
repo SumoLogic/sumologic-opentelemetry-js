@@ -9,6 +9,7 @@ import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xm
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
+import { WebVitalsInstrumentation } from './sumologic-web-vitals-instrumentation';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
@@ -239,6 +240,7 @@ export const initialize = ({
             enabled: false,
           }),
           new DocumentLoadInstrumentation({ enabled: false }),
+          new WebVitalsInstrumentation({ enabled: false }),
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,
