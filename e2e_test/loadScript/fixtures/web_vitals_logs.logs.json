@@ -1,0 +1,232 @@
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "http.user_agent",
+            "value": {
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "web-vitals-logs-test-service"
+            }
+          },
+          {
+            "key": "sumologic.rum.version",
+            "value": {
+              "stringValue": "4.7.1"
+            }
+          },
+          {
+            "key": "application",
+            "value": {
+              "stringValue": "web-vitals-logs-test-app"
+            }
+          },
+          {
+            "key": "deployment.environment",
+            "value": {
+              "stringValue": "test"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "webjs"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "2.9.0"
+            }
+          }
+        ],
+        "droppedAttributesCount": 0
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-rum",
+            "version": "4.7.1"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790339016050300098",
+              "observedTimeUnixNano": "1790339016050300098",
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "Uncaught error in element //html/body/img"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "documentError"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:53172/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "element.xpath",
+                  "value": {
+                    "stringValue": "//html/body/img"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-web-vitals-logs",
+            "version": "0.1.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790339016053400098",
+              "observedTimeUnixNano": "1790339016053400098",
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "webVital: ttfb"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "webVital"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:53172/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.name",
+                  "value": {
+                    "stringValue": "ttfb"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.value",
+                  "value": {
+                    "doubleValue": 6.5
+                  }
+                },
+                {
+                  "key": "browser.web_vital.rating",
+                  "value": {
+                    "stringValue": "good"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.delta",
+                  "value": {
+                    "doubleValue": 6.5
+                  }
+                },
+                {
+                  "key": "browser.web_vital.id",
+                  "value": {
+                    "stringValue": "v6-1790339016042-2938859897485"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.navigation_type",
+                  "value": {
+                    "stringValue": "navigate"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-web-vitals-logs",
+            "version": "0.1.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790339016066700098",
+              "observedTimeUnixNano": "1790339016066700098",
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "webVital: fcp"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "webVital"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:53172/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.name",
+                  "value": {
+                    "stringValue": "fcp"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.value",
+                  "value": {
+                    "doubleValue": 34.599999994039536
+                  }
+                },
+                {
+                  "key": "browser.web_vital.rating",
+                  "value": {
+                    "stringValue": "good"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.delta",
+                  "value": {
+                    "doubleValue": 34.599999994039536
+                  }
+                },
+                {
+                  "key": "browser.web_vital.id",
+                  "value": {
+                    "stringValue": "v6-1790339016042-6484507303952"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.navigation_type",
+                  "value": {
+                    "stringValue": "navigate"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

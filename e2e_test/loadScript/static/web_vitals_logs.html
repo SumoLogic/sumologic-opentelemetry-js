@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>Web Vitals Logs test</title>
+
+<script src="rum.js" type="text/javascript"></script>
+<script>
+  window.sumoLogicOpenTelemetryRum.initialize({
+    collectionSourceUrl: 'http://localhost:{{port}}/rum',
+    serviceName: 'web-vitals-logs-test-service',
+    applicationName: 'web-vitals-logs-test-app',
+    deploymentEnvironment: 'test',
+  });
+</script>
+
+<!-- Minimal content so LCP and FCP have something to paint -->
+<h1>Web Vitals Logs Test</h1>
+<img src="logo.png" />
+
+<script>
+  // Flush buffered logs after vitals have had time to fire
+  setTimeout(() => window.dispatchEvent(new Event('pagehide')), 1000);
+</script>
