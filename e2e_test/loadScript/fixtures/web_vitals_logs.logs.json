@@ -12,7 +12,7 @@
           {
             "key": "service.name",
             "value": {
-              "stringValue": "load-sync-test-service-name"
+              "stringValue": "web-vitals-logs-test-service"
             }
           },
           {
@@ -24,13 +24,13 @@
           {
             "key": "application",
             "value": {
-              "stringValue": "load-sync-test-application-name"
+              "stringValue": "web-vitals-logs-test-app"
             }
           },
           {
             "key": "deployment.environment",
             "value": {
-              "stringValue": "staging"
+              "stringValue": "test"
             }
           },
           {
@@ -62,92 +62,29 @@
           },
           "logRecords": [
             {
-              "timeUnixNano": "1790386649064099951",
-              "observedTimeUnixNano": "1790386649064099951",
+              "timeUnixNano": "1790386654037000049",
+              "observedTimeUnixNano": "1790386654037000049",
               "severityNumber": 17,
               "body": {
-                "stringValue": "Cannot load data"
+                "stringValue": "Uncaught error in element //html/body/img"
               },
               "attributes": [
                 {
-                  "key": "api.default.attr",
-                  "value": {
-                    "intValue": 1
-                  }
-                },
-                {
                   "key": "type",
                   "value": {
-                    "stringValue": "customError"
+                    "stringValue": "documentError"
                   }
                 },
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:53069/api/recordError.html"
+                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
                   }
                 },
                 {
-                  "key": "user",
+                  "key": "element.xpath",
                   "value": {
-                    "intValue": 12
-                  }
-                },
-                {
-                  "key": "org",
-                  "value": {
-                    "stringValue": "test"
-                  }
-                },
-                {
-                  "key": "extra",
-                  "value": {
-                    "kvlistValue": {
-                      "values": [
-                        {
-                          "key": "deep",
-                          "value": {
-                            "kvlistValue": {
-                              "values": [
-                                {
-                                  "key": "array",
-                                  "value": {
-                                    "arrayValue": {
-                                      "values": [
-                                        {
-                                          "intValue": 1
-                                        },
-                                        {
-                                          "intValue": 2
-                                        },
-                                        {
-                                          "kvlistValue": {
-                                            "values": [
-                                              {
-                                                "key": "key",
-                                                "value": {
-                                                  "stringValue": "val"
-                                                }
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
-                                },
-                                {
-                                  "key": "bool",
-                                  "value": {
-                                    "boolValue": true
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      ]
-                    }
+                    "stringValue": "//html/body/img"
                   }
                 }
               ],
@@ -162,19 +99,13 @@
           },
           "logRecords": [
             {
-              "timeUnixNano": "1790386649067199951",
-              "observedTimeUnixNano": "1790386649067199951",
+              "timeUnixNano": "1790386654039700049",
+              "observedTimeUnixNano": "1790386654039700049",
               "severityNumber": 17,
               "body": {
                 "stringValue": "webVital: ttfb"
               },
               "attributes": [
-                {
-                  "key": "api.default.attr",
-                  "value": {
-                    "intValue": 1
-                  }
-                },
                 {
                   "key": "type",
                   "value": {
@@ -184,7 +115,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:53069/api/recordError.html"
+                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
                   }
                 },
                 {
@@ -196,7 +127,7 @@
                 {
                   "key": "browser.web_vital.value",
                   "value": {
-                    "doubleValue": 2.2000000029802322
+                    "intValue": 2
                   }
                 },
                 {
@@ -208,13 +139,80 @@
                 {
                   "key": "browser.web_vital.delta",
                   "value": {
-                    "doubleValue": 2.2000000029802322
+                    "intValue": 2
                   }
                 },
                 {
                   "key": "browser.web_vital.id",
                   "value": {
-                    "stringValue": "v6-1790386649063-7792734468030"
+                    "stringValue": "v6-1790386654030-5346800074990"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.navigation_type",
+                  "value": {
+                    "stringValue": "navigate"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-web-vitals-logs",
+            "version": "0.1.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790386654059400049",
+              "observedTimeUnixNano": "1790386654059400049",
+              "severityNumber": 17,
+              "body": {
+                "stringValue": "webVital: fcp"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "webVital"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.name",
+                  "value": {
+                    "stringValue": "fcp"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.value",
+                  "value": {
+                    "doubleValue": 29.099999994039536
+                  }
+                },
+                {
+                  "key": "browser.web_vital.rating",
+                  "value": {
+                    "stringValue": "good"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.delta",
+                  "value": {
+                    "doubleValue": 29.099999994039536
+                  }
+                },
+                {
+                  "key": "browser.web_vital.id",
+                  "value": {
+                    "stringValue": "v6-1790386654030-5804323839651"
                   }
                 },
                 {

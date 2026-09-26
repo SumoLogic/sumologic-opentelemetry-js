@@ -17,6 +17,7 @@ const ANY_STRING_PATHS = new Set([
   'resourceLogs/scopeLogs/logRecords/attributes/root_span.http.url/value/stringValue',
   'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
   'resourceLogs/resource/attributes/user_agent.original/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.id/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -32,6 +33,8 @@ const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/server.port/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.value/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.delta/value/doubleValue',
 ]);
 const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],
