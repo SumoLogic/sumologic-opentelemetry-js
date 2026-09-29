@@ -10,6 +10,7 @@ import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { WebVitalsLogsInstrumentation } from './sumologic-web-vitals-logs-instrumentation';
+import type { WebVitalsConfig } from './sumologic-web-vitals-logs-instrumentation';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
@@ -84,6 +85,7 @@ interface InitializeOptions {
   collectErrors?: boolean;
   userInteractionElementNameLimit?: number;
   getOverriddenServiceName?: (span: Span) => string;
+  webVitalsConfig?: WebVitalsConfig;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -116,6 +118,7 @@ export const initialize = ({
   collectErrors = true,
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   getOverriddenServiceName,
+  webVitalsConfig = {},
 }: InitializeOptions) => {
   if (!useWindow) return;
 
@@ -240,7 +243,11 @@ export const initialize = ({
             enabled: false,
           }),
           new DocumentLoadInstrumentation({ enabled: false }),
-          new WebVitalsLogsInstrumentation(logsExporter, { enabled: false }),
+          new WebVitalsLogsInstrumentation(
+            logsExporter,
+            { enabled: false },
+            webVitalsConfig,
+          ),
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,

@@ -47,6 +47,7 @@ export interface LogRecord {
   };
   attributes?: Record<string, any>;
   scope?: { name: string; version?: string };
+  severityNumber?: SeverityNumber;
 }
 
 export interface CustomError {
@@ -180,7 +181,7 @@ export class SumoLogicLogsExporter {
       hrTime: ht,
       hrTimeObserved: ht,
       resource: this.resource,
-      severityNumber: SeverityNumber.ERROR,
+      severityNumber: log.severityNumber || SeverityNumber.ERROR,
       attributes,
       body: log.message,
       droppedAttributesCount: 0,
