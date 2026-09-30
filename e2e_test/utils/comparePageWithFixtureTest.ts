@@ -57,7 +57,7 @@ export const createComparePageWithFixtureTest = ({
     // 1. Wait for the target to be visible (LCP has had time to settle)
     // 2. Brief pause so web-vitals listeners are attached
     // 3. Hardware mouse click on #inp-target (trusted interaction for INP)
-    // 4. Page's click handler calls flushVitals after 500ms (visibilitychange + pagehide)
+    // 4. Page's click handler calls flushVitals after 1500ms (visibilitychange + pagehide)
     // 5. Wait for #vitals-flushed sentinel (attached, not visible — it's an empty div)
     // 6. Brief pause for the SDK's export XHR to reach the server
     // Legacy pages without #inp-target fall through after the timeout.
