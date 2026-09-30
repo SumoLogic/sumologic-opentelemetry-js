@@ -201,6 +201,11 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
         [WEB_VITAL_ATTR.DELTA]: metric.delta,
         [WEB_VITAL_ATTR.ID]: metric.id,
         [WEB_VITAL_ATTR.NAVIGATION_TYPE]: metric.navigationType,
+        // For soft-nav metrics, navigationURL is the URL of the route being measured —
+        // which may differ from location.href by the time recordLog() is called.
+        ...(metric.navigationURL !== undefined && {
+          'http.url': metric.navigationURL,
+        }),
         ...(target !== undefined && { [WEB_VITAL_ATTR.TARGET]: target }),
       };
 
