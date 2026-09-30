@@ -23,7 +23,12 @@
       inp: {
         reportAllChanges: true,
         durationThreshold: 0,
-        includeRawAttribution: ['inputDelay', 'processingDuration', 'presentationDelay', 'interactionType'],
+        includeRawAttribution: [
+          'inputDelay',
+          'processingDuration',
+          'presentationDelay',
+          'interactionType',
+        ],
       },
       cls: {
         includeRawAttribution: ['largestShiftTarget', 'largestShiftValue'],
@@ -33,13 +38,17 @@
 </script>
 
 <!-- button makes the element explicitly interactive for INP; h1 inside is the LCP candidate -->
-<button id="inp-target" style="padding: 10px; font-size: 16px;">
-  <h1 id="lcp-target" style="margin: 0;">Web Vitals Logs Test</h1>
+<button id="inp-target" style="padding: 10px; font-size: 16px">
+  <h1 id="lcp-target" style="margin: 0">Web Vitals Logs Test</h1>
 </button>
 
 <script>
   function flushVitals() {
-    Object.defineProperty(document, 'visibilityState', { value: 'hidden', writable: true, configurable: true });
+    Object.defineProperty(document, 'visibilityState', {
+      value: 'hidden',
+      writable: true,
+      configurable: true,
+    });
     document.dispatchEvent(new Event('visibilitychange'));
     window.dispatchEvent(new Event('pagehide'));
     var done = document.createElement('div');
@@ -49,10 +58,16 @@
 
   // pointerdown listener is required for PerformanceEventTiming to record a pointerdown entry,
   // which web-vitals needs to attribute the interaction as an INP candidate
-  document.getElementById('inp-target').addEventListener('pointerdown', function () {});
+  document
+    .getElementById('inp-target')
+    .addEventListener('pointerdown', function () {});
 
-  document.getElementById('inp-target').addEventListener('click', function () {
-    // Delay flush until after the idle callback processes the interaction entry
-    setTimeout(flushVitals, 1500);
-  }, { once: true });
+  document.getElementById('inp-target').addEventListener(
+    'click',
+    function () {
+      // Delay flush until after the idle callback processes the interaction entry
+      setTimeout(flushVitals, 1500);
+    },
+    { once: true },
+  );
 </script>
