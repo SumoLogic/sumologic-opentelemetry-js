@@ -84,6 +84,8 @@ export interface WebVitalsConfig {
 export class WebVitalsLogsInstrumentation extends InstrumentationBase {
   private logsExporter: SumoLogicLogsExporter;
   private webVitalsConfig: WebVitalsConfig;
+  private _isEnabled = false;
+  private _listenersRegistered = false;
 
   constructor(
     logsExporter: SumoLogicLogsExporter,
@@ -107,10 +109,16 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
   override enable() {
     if (this.webVitalsConfig.disableLogging) return;
 
+    this._isEnabled = true;
+
+    if (this._listenersRegistered) return;
+    this._listenersRegistered = true;
+
     const report = (
       metric: MetricWithAttribution,
       attributionKeys?: string[],
     ) => {
+      if (!this._isEnabled) return;
       const target = getAttributionTarget(metric);
       const attributes: Record<string, unknown> = {
         [WEB_VITAL_ATTR.NAME]: metric.name.toLowerCase(),
@@ -177,7 +185,8 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
       durationThreshold: ttfb?.durationThreshold,
     });
   }
-  // web-vitals callbacks cannot be unregistered after registration
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  override disable() {}
+  // web-vitals callbacks cannot be unregistered; disable() gates emission instead
+  override disable() {
+    this._isEnabled = false;
+  }
 }

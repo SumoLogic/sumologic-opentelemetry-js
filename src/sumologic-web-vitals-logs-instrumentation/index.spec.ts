@@ -454,4 +454,48 @@ describe('WebVitalsLogsInstrumentation', () => {
     inst.enable();
     expect(() => inst.disable()).not.toThrow();
   });
+
+  describe('disable/enable lifecycle', () => {
+    it('disable() stops recordLog calls', () => {
+      const exporter = makeExporter();
+      const inst = new WebVitalsLogsInstrumentation(
+        exporter,
+        { enabled: false },
+        { disableLogging: false },
+      );
+      inst.enable();
+      inst.disable();
+      vitalsCallbacks['LCP'](makeMetric('LCP'));
+      expect(exporter.recordLog).not.toHaveBeenCalled();
+    });
+
+    it('enable() after disable() resumes recordLog calls', () => {
+      const exporter = makeExporter();
+      const inst = new WebVitalsLogsInstrumentation(
+        exporter,
+        { enabled: false },
+        { disableLogging: false },
+      );
+      inst.enable();
+      inst.disable();
+      inst.enable();
+      vitalsCallbacks['LCP'](makeMetric('LCP'));
+      expect(exporter.recordLog).toHaveBeenCalledTimes(1);
+    });
+
+    it('enable() after disable() does not register duplicate callbacks', () => {
+      const exporter = makeExporter();
+      const inst = new WebVitalsLogsInstrumentation(
+        exporter,
+        { enabled: false },
+        { disableLogging: false },
+      );
+      inst.enable();
+      inst.disable();
+      inst.enable();
+      // If callbacks were duplicated, firing once would call recordLog twice
+      vitalsCallbacks['LCP'](makeMetric('LCP'));
+      expect(exporter.recordLog).toHaveBeenCalledTimes(1);
+    });
+  });
 });
