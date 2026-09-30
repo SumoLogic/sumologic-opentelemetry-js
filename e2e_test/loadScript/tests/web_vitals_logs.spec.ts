@@ -2,6 +2,6 @@ import { createComparePageWithFixtureTest } from '../../utils/comparePageWithFix
 
 createComparePageWithFixtureTest({
   basedir: __dirname,
-  title: 'web vitals are emitted as logs to v1/logs',
+  title: 'web vitals are emitted as logs with webVitalsConfig attribution',
   name: 'web_vitals_logs',
 });

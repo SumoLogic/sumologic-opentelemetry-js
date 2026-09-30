@@ -52,26 +52,31 @@ export interface WebVitalsConfig {
   lcp?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
+    durationThreshold?: number;
     includeRawAttribution?: LCPAttributionKeys[];
   };
   cls?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
+    durationThreshold?: number;
     includeRawAttribution?: CLSAttributionKeys[];
   };
   inp?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
+    durationThreshold?: number;
     includeRawAttribution?: INPAttributionKeys[];
   };
   fcp?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
+    durationThreshold?: number;
     includeRawAttribution?: FCPAttributionKeys[];
   };
   ttfb?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
+    durationThreshold?: number;
     includeRawAttribution?: TTFBAttributionKeys[];
   };
 }
@@ -149,22 +154,27 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
     onLCP((m) => report(m, lcp?.includeRawAttribution), {
       reportAllChanges: lcp?.reportAllChanges,
       reportSoftNavs: lcp?.reportSoftNavs,
+      durationThreshold: lcp?.durationThreshold,
     });
     onCLS((m) => report(m, cls?.includeRawAttribution), {
       reportAllChanges: cls?.reportAllChanges,
       reportSoftNavs: cls?.reportSoftNavs,
+      durationThreshold: cls?.durationThreshold,
     });
     onINP((m) => report(m, inp?.includeRawAttribution), {
       reportAllChanges: inp?.reportAllChanges,
       reportSoftNavs: inp?.reportSoftNavs,
+      durationThreshold: inp?.durationThreshold,
     });
     onFCP((m) => report(m, fcp?.includeRawAttribution), {
       reportAllChanges: fcp?.reportAllChanges,
       reportSoftNavs: fcp?.reportSoftNavs,
+      durationThreshold: fcp?.durationThreshold,
     });
     onTTFB((m) => report(m, ttfb?.includeRawAttribution), {
       reportAllChanges: ttfb?.reportAllChanges,
       reportSoftNavs: ttfb?.reportSoftNavs,
+      durationThreshold: ttfb?.durationThreshold,
     });
   }
   // web-vitals callbacks cannot be unregistered after registration

@@ -370,30 +370,38 @@ describe('WebVitalsLogsInstrumentation', () => {
   });
 
   describe('webVitalsConfig options', () => {
-    it('passes reportAllChanges and reportSoftNavs opts to each vital', () => {
+    it('passes reportAllChanges, reportSoftNavs and durationThreshold opts to each vital', () => {
       const inst = new WebVitalsLogsInstrumentation(
         makeExporter(),
         { enabled: false },
         {
-          lcp: { reportAllChanges: true, reportSoftNavs: true },
+          lcp: {
+            reportAllChanges: true,
+            reportSoftNavs: true,
+            durationThreshold: 100,
+          },
           cls: { reportAllChanges: false, reportSoftNavs: false },
-          inp: { reportAllChanges: true },
+          inp: { reportAllChanges: true, durationThreshold: 0 },
           fcp: { reportSoftNavs: true },
           ttfb: { reportAllChanges: true, reportSoftNavs: false },
         },
       );
       inst.enable();
-      expect(vitalsOpts['LCP']).toEqual({
+      expect(vitalsOpts['LCP']).toMatchObject({
         reportAllChanges: true,
         reportSoftNavs: true,
+        durationThreshold: 100,
       });
-      expect(vitalsOpts['CLS']).toEqual({
+      expect(vitalsOpts['CLS']).toMatchObject({
         reportAllChanges: false,
         reportSoftNavs: false,
       });
-      expect(vitalsOpts['INP']).toMatchObject({ reportAllChanges: true });
+      expect(vitalsOpts['INP']).toMatchObject({
+        reportAllChanges: true,
+        durationThreshold: 0,
+      });
       expect(vitalsOpts['FCP']).toMatchObject({ reportSoftNavs: true });
-      expect(vitalsOpts['TTFB']).toEqual({
+      expect(vitalsOpts['TTFB']).toMatchObject({
         reportAllChanges: true,
         reportSoftNavs: false,
       });

@@ -6,7 +6,7 @@
           {
             "key": "http.user_agent",
             "value": {
-              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/96.0.4641.0 Safari/537.36"
+              "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
             }
           },
           {
@@ -57,51 +57,14 @@
       "scopeLogs": [
         {
           "scope": {
-            "name": "@sumologic/opentelemetry-rum",
-            "version": "4.7.1"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1790386654037000049",
-              "observedTimeUnixNano": "1790386654037000049",
-              "severityNumber": 17,
-              "body": {
-                "stringValue": "Uncaught error in element //html/body/img"
-              },
-              "attributes": [
-                {
-                  "key": "type",
-                  "value": {
-                    "stringValue": "documentError"
-                  }
-                },
-                {
-                  "key": "http.url",
-                  "value": {
-                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
-                  }
-                },
-                {
-                  "key": "element.xpath",
-                  "value": {
-                    "stringValue": "//html/body/img"
-                  }
-                }
-              ],
-              "droppedAttributesCount": 0
-            }
-          ]
-        },
-        {
-          "scope": {
             "name": "@sumologic/opentelemetry-web-vitals-logs",
             "version": "0.1.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1790386654039700049",
-              "observedTimeUnixNano": "1790386654039700049",
-              "severityNumber": 17,
+              "timeUnixNano": "1790743286425100098",
+              "observedTimeUnixNano": "1790743286425100098",
+              "severityNumber": 9,
               "body": {
                 "stringValue": "webVital: ttfb"
               },
@@ -115,7 +78,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
+                    "stringValue": "http://localhost:61147/web_vitals_logs.html"
                   }
                 },
                 {
@@ -127,7 +90,7 @@
                 {
                   "key": "browser.web_vital.value",
                   "value": {
-                    "intValue": 2
+                    "intValue": 7
                   }
                 },
                 {
@@ -139,19 +102,31 @@
                 {
                   "key": "browser.web_vital.delta",
                   "value": {
-                    "intValue": 2
+                    "intValue": 7
                   }
                 },
                 {
                   "key": "browser.web_vital.id",
                   "value": {
-                    "stringValue": "v6-1790386654030-5346800074990"
+                    "stringValue": "v6-1790743286416-2370271870945"
                   }
                 },
                 {
                   "key": "browser.web_vital.navigation_type",
                   "value": {
                     "stringValue": "navigate"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.waitingDuration",
+                  "value": {
+                    "doubleValue": 0.30000001192092896
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.dnsDuration",
+                  "value": {
+                    "doubleValue": 0.30000001192092896
                   }
                 }
               ],
@@ -166,9 +141,9 @@
           },
           "logRecords": [
             {
-              "timeUnixNano": "1790386654059400049",
-              "observedTimeUnixNano": "1790386654059400049",
-              "severityNumber": 17,
+              "timeUnixNano": "1790743286447400098",
+              "observedTimeUnixNano": "1790743286447400098",
+              "severityNumber": 9,
               "body": {
                 "stringValue": "webVital: fcp"
               },
@@ -182,7 +157,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:53131/web_vitals_logs.html"
+                    "stringValue": "http://localhost:61147/web_vitals_logs.html"
                   }
                 },
                 {
@@ -194,7 +169,7 @@
                 {
                   "key": "browser.web_vital.value",
                   "value": {
-                    "doubleValue": 29.099999994039536
+                    "intValue": 52
                   }
                 },
                 {
@@ -206,19 +181,207 @@
                 {
                   "key": "browser.web_vital.delta",
                   "value": {
-                    "doubleValue": 29.099999994039536
+                    "intValue": 52
                   }
                 },
                 {
                   "key": "browser.web_vital.id",
                   "value": {
-                    "stringValue": "v6-1790386654030-5804323839651"
+                    "stringValue": "v6-1790743286416-1402732846530"
                   }
                 },
                 {
                   "key": "browser.web_vital.navigation_type",
                   "value": {
                     "stringValue": "navigate"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.timeToFirstByte",
+                  "value": {
+                    "intValue": 7
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.loadState",
+                  "value": {
+                    "stringValue": "complete"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-web-vitals-logs",
+            "version": "0.1.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790743286963900098",
+              "observedTimeUnixNano": "1790743286963900098",
+              "severityNumber": 9,
+              "body": {
+                "stringValue": "webVital: lcp"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "webVital"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:61147/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.name",
+                  "value": {
+                    "stringValue": "lcp"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.value",
+                  "value": {
+                    "intValue": 52
+                  }
+                },
+                {
+                  "key": "browser.web_vital.rating",
+                  "value": {
+                    "stringValue": "good"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.delta",
+                  "value": {
+                    "intValue": 52
+                  }
+                },
+                {
+                  "key": "browser.web_vital.id",
+                  "value": {
+                    "stringValue": "v6-1790743286416-6603790740232"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.navigation_type",
+                  "value": {
+                    "stringValue": "navigate"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.target",
+                  "value": {
+                    "stringValue": "#lcp-target"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.timeToFirstByte",
+                  "value": {
+                    "intValue": 7
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "@sumologic/opentelemetry-web-vitals-logs",
+            "version": "0.1.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1790743287984700098",
+              "observedTimeUnixNano": "1790743287984700098",
+              "severityNumber": 9,
+              "body": {
+                "stringValue": "webVital: inp"
+              },
+              "attributes": [
+                {
+                  "key": "type",
+                  "value": {
+                    "stringValue": "webVital"
+                  }
+                },
+                {
+                  "key": "http.url",
+                  "value": {
+                    "stringValue": "http://localhost:61147/web_vitals_logs.html"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.name",
+                  "value": {
+                    "stringValue": "inp"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.value",
+                  "value": {
+                    "intValue": 16
+                  }
+                },
+                {
+                  "key": "browser.web_vital.rating",
+                  "value": {
+                    "stringValue": "good"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.delta",
+                  "value": {
+                    "intValue": 16
+                  }
+                },
+                {
+                  "key": "browser.web_vital.id",
+                  "value": {
+                    "stringValue": "v6-1790743286416-6746149216173"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.navigation_type",
+                  "value": {
+                    "stringValue": "navigate"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.target",
+                  "value": {
+                    "stringValue": "#lcp-target"
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.inputDelay",
+                  "value": {
+                    "doubleValue": 0.699999988079071
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.processingDuration",
+                  "value": {
+                    "intValue": 2
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.presentationDelay",
+                  "value": {
+                    "doubleValue": 13.300000011920929
+                  }
+                },
+                {
+                  "key": "browser.web_vital.attribution.interactionType",
+                  "value": {
+                    "stringValue": "pointer"
                   }
                 }
               ],

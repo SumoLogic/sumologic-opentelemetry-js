@@ -48,7 +48,30 @@ export const createComparePageWithFixtureTest = ({
       console.error(message);
     });
 
+    // bringToFront ensures the page is treated as visible by the browser,
+    // which is required for LCP to be reported in headless Chromium.
+    await page.bringToFront();
     await page.goto(`http://localhost:${port}/${name}.html`);
+
+    // If the page has #inp-target, run the full vitals lifecycle:
+    // 1. Wait for the target to be visible (LCP has had time to settle)
+    // 2. Brief pause so web-vitals listeners are attached
+    // 3. Hardware mouse click on #inp-target (trusted interaction for INP)
+    // 4. Page's click handler calls flushVitals after 500ms (visibilitychange + pagehide)
+    // 5. Wait for #vitals-flushed sentinel (attached, not visible — it's an empty div)
+    // 6. Brief pause for the SDK's export XHR to reach the server
+    // Legacy pages without #inp-target fall through after the timeout.
+    const inpTarget = await page.$('#inp-target');
+    if (inpTarget) {
+      await inpTarget.waitForElementState('visible');
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await inpTarget.click();
+      await page.waitForSelector('#vitals-flushed', {
+        state: 'attached',
+        timeout: 10_000,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
 
     let rowTracesFixture: string | undefined;
     let rowLogsFixture: string | undefined;
