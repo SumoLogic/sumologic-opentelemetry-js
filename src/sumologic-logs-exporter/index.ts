@@ -181,7 +181,7 @@ export class SumoLogicLogsExporter {
       hrTime: ht,
       hrTimeObserved: ht,
       resource: this.resource,
-      severityNumber: log.severityNumber || SeverityNumber.ERROR,
+      severityNumber: log.severityNumber ?? SeverityNumber.ERROR,
       attributes,
       body: log.message,
       droppedAttributesCount: 0,
