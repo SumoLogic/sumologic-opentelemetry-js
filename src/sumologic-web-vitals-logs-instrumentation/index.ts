@@ -41,11 +41,83 @@ function getAttributionTarget(
   }
 }
 
-type LCPAttributionKeys = keyof LCPMetricWithAttribution['attribution'];
-type CLSAttributionKeys = keyof CLSMetricWithAttribution['attribution'];
-type INPAttributionKeys = keyof INPMetricWithAttribution['attribution'];
-type FCPAttributionKeys = keyof FCPMetricWithAttribution['attribution'];
-type TTFBAttributionKeys = keyof TTFBMetricWithAttribution['attribution'];
+// Attribution key unions are inlined as string literals rather than derived via
+// `keyof LCPMetricWithAttribution['attribution']` because this package publishes
+// TypeScript declarations (types field in package.json). keyof derivations would
+// reference web-vitals-v6/attribution in the emitted .d.ts, which is a
+// devDependency and not installed in consumers' node_modules — causing TS errors.
+// The _Assert* types below keep these unions in sync with the library at build time.
+type LCPAttributionKeys =
+  | 'target'
+  | 'url'
+  | 'navigationEntry'
+  | 'lcpResourceEntry'
+  | 'lcpEntry'
+  | 'resourceBufferSize'
+  | 'timeToFirstByte'
+  | 'resourceLoadDelay'
+  | 'resourceLoadDuration'
+  | 'elementRenderDelay';
+type CLSAttributionKeys =
+  | 'largestShiftTarget'
+  | 'largestShiftTime'
+  | 'largestShiftValue'
+  | 'largestShiftEntry'
+  | 'largestShiftSource'
+  | 'loadState';
+type INPAttributionKeys =
+  | 'interactionTarget'
+  | 'interactionTime'
+  | 'interactionType'
+  | 'nextPaintTime'
+  | 'processedEventEntries'
+  | 'inputDelay'
+  | 'processingDuration'
+  | 'presentationDelay'
+  | 'loadState'
+  | 'longAnimationFrameEntries'
+  | 'longestScript'
+  | 'totalScriptDuration'
+  | 'totalStyleAndLayoutDuration'
+  | 'totalPaintDuration'
+  | 'totalUnattributedDuration';
+type FCPAttributionKeys =
+  | 'timeToFirstByte'
+  | 'firstByteToFCP'
+  | 'loadState'
+  | 'fcpEntry'
+  | 'navigationEntry';
+type TTFBAttributionKeys =
+  | 'waitingDuration'
+  | 'cacheDuration'
+  | 'dnsDuration'
+  | 'connectionDuration'
+  | 'requestDuration'
+  | 'navigationEntry';
+
+// Compile-time assertions: if web-vitals-v6 adds new attribution keys these will
+// fail at build time, reminding us to update the unions above.
+// Compile-time exhaustiveness check: resolves to `true` if our union covers all
+// library keys; resolves to `never` (causing a type error) if the library adds
+// a new key we haven't added to the union above.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _: [
+  keyof LCPMetricWithAttribution['attribution'] extends LCPAttributionKeys
+    ? true
+    : never,
+  keyof CLSMetricWithAttribution['attribution'] extends CLSAttributionKeys
+    ? true
+    : never,
+  keyof INPMetricWithAttribution['attribution'] extends INPAttributionKeys
+    ? true
+    : never,
+  keyof FCPMetricWithAttribution['attribution'] extends FCPAttributionKeys
+    ? true
+    : never,
+  keyof TTFBMetricWithAttribution['attribution'] extends TTFBAttributionKeys
+    ? true
+    : never,
+] = [true, true, true, true, true];
 
 export interface WebVitalsConfig {
   disableLogging?: boolean;
@@ -164,6 +236,9 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
       reportSoftNavs: lcp?.reportSoftNavs,
       durationThreshold: lcp?.durationThreshold,
     });
+
+    // CLS is only supported in Chromium. See:
+    // https://github.com/GoogleChrome/web-vitals?tab=readme-ov-file#browser-support
     onCLS((m) => report(m, cls?.includeRawAttribution), {
       reportAllChanges: cls?.reportAllChanges,
       reportSoftNavs: cls?.reportSoftNavs,

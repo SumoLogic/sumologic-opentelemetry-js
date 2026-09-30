@@ -220,6 +220,15 @@ export const initialize = ({
       })
     : undefined;
 
+  // Constructed once so repeated registerInstrumentations() calls reuse the same
+  // instance — web-vitals callbacks cannot be unregistered, so a new instance per
+  // call would permanently accumulate old listeners.
+  const webVitalsInstrumentation = new WebVitalsLogsInstrumentation(
+    logsExporter,
+    { enabled: false },
+    webVitalsConfig,
+  );
+
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
@@ -242,11 +251,7 @@ export const initialize = ({
             enabled: false,
           }),
           new DocumentLoadInstrumentation({ enabled: false }),
-          new WebVitalsLogsInstrumentation(
-            logsExporter,
-            { enabled: false },
-            webVitalsConfig,
-          ),
+          webVitalsInstrumentation,
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,

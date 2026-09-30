@@ -62,8 +62,8 @@
           },
           "logRecords": [
             {
-              "timeUnixNano": "1790760864215100098",
-              "observedTimeUnixNano": "1790760864215100098",
+              "timeUnixNano": "1790762498506700049",
+              "observedTimeUnixNano": "1790762498506700049",
               "severityNumber": 17,
               "body": {
                 "stringValue": "Cannot load data"
@@ -84,7 +84,7 @@
                 {
                   "key": "http.url",
                   "value": {
-                    "stringValue": "http://localhost:57517/api/recordError.html"
+                    "stringValue": "http://localhost:65205/api/recordError.html"
                   }
                 },
                 {
@@ -148,79 +148,6 @@
                         }
                       ]
                     }
-                  }
-                }
-              ],
-              "droppedAttributesCount": 0
-            }
-          ]
-        },
-        {
-          "scope": {
-            "name": "@sumologic/opentelemetry-web-vitals-logs",
-            "version": "0.1.0"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1790760864217200098",
-              "observedTimeUnixNano": "1790760864217200098",
-              "severityNumber": 9,
-              "body": {
-                "stringValue": "webVital: ttfb"
-              },
-              "attributes": [
-                {
-                  "key": "api.default.attr",
-                  "value": {
-                    "intValue": 1
-                  }
-                },
-                {
-                  "key": "type",
-                  "value": {
-                    "stringValue": "webVital"
-                  }
-                },
-                {
-                  "key": "http.url",
-                  "value": {
-                    "stringValue": "http://localhost:57517/api/recordError.html"
-                  }
-                },
-                {
-                  "key": "browser.web_vital.name",
-                  "value": {
-                    "stringValue": "ttfb"
-                  }
-                },
-                {
-                  "key": "browser.web_vital.value",
-                  "value": {
-                    "doubleValue": 6.100000023841858
-                  }
-                },
-                {
-                  "key": "browser.web_vital.rating",
-                  "value": {
-                    "stringValue": "good"
-                  }
-                },
-                {
-                  "key": "browser.web_vital.delta",
-                  "value": {
-                    "doubleValue": 6.100000023841858
-                  }
-                },
-                {
-                  "key": "browser.web_vital.id",
-                  "value": {
-                    "stringValue": "v6-1790760864214-5761730352224"
-                  }
-                },
-                {
-                  "key": "browser.web_vital.navigation_type",
-                  "value": {
-                    "stringValue": "navigate"
                   }
                 }
               ],
