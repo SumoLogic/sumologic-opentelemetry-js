@@ -83,8 +83,13 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
   constructor(
     logsExporter: SumoLogicLogsExporter,
     config = {},
-    webVitalsConfig: WebVitalsConfig = {},
+    webVitalsConfig: WebVitalsConfig = { disableLogging: true },
   ) {
+    // Must be constructed with { enabled: false } so super() does not call enable() prematurely.
+    // super() calls enable() when config.enabled is true (the default), which would fire before
+    // this.webVitalsConfig is assigned — causing disableLogging and includeRawAttribution to be ignored.
+    // registerOpenTelemetryInstrumentations() in index.ts calls enable() after construction,
+    // by which point webVitalsConfig is fully assigned.
     super(PACKAGE_NAME, PACKAGE_VERSION, config);
     this.logsExporter = logsExporter;
     this.webVitalsConfig = webVitalsConfig;
