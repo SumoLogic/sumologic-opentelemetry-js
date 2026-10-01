@@ -242,6 +242,7 @@ export const initialize = ({
 
   const registerInstrumentations = () => {
     disableInstrumentations();
+    logsExporter.enable();
     logsInstrumentation?.enable();
     disableOpenTelemetryInstrumentations =
       registerOpenTelemetryInstrumentations({
@@ -279,10 +280,6 @@ export const initialize = ({
           }),
         ],
       });
-    // Enable exporter AFTER web-vitals callbacks are registered so that on
-    // pagehide/visibilitychange the exporter's flush fires after web-vitals
-    // has already called recordLog with final CLS/LCP/INP values.
-    logsExporter.enable();
   };
 
   const tracer = provider.getTracer('@sumologic/opentelemetry-rum');

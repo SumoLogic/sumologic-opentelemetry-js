@@ -13,6 +13,9 @@ import { SeverityNumber } from '@opentelemetry/api-logs';
 
 const PACKAGE_NAME = '@sumologic/opentelemetry-web-vitals-logs';
 const PACKAGE_VERSION = '0.1.0';
+// Shared by reference so all web-vitals log records batch into one scopeLogs
+// entry on export — the serializer groups by instrumentationScope object identity.
+const SCOPE = { name: PACKAGE_NAME, version: PACKAGE_VERSION };
 
 const WEB_VITAL_ATTR = {
   NAME: 'browser.web_vital.name',
@@ -225,7 +228,7 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
         severityNumber: SeverityNumber.INFO,
         type: 'webVital',
         message: `webVital: ${metric.name.toLowerCase()}`,
-        scope: { name: PACKAGE_NAME, version: PACKAGE_VERSION },
+        scope: SCOPE,
 
         // browser.web_vital.* attributes are development-stability per OTel semconv
         // https://opentelemetry.io/docs/specs/semconv/browser/browser-events/#webvital-event
