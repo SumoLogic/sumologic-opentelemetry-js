@@ -16,7 +16,7 @@
 
   setTimeout(() => {
     window.sumoLogicOpenTelemetryRum.recordError('Custom error', { data: 1 });
-  });
+  }, 50);
 
   setTimeout(() => {
     const { tracer, api, recordError } = sumoLogicOpenTelemetryRum;
@@ -34,15 +34,15 @@
         },
       );
     });
-  });
+  }, 100);
 
   setTimeout(() => {
     throw new TypeError('uncaught exception');
-  });
+  }, 150);
 
   setTimeout(async () => {
     throw new TypeError('unhandled rejection');
-  });
+  }, 200);
 </script>
 
 <img src="logo-unknown.png" />

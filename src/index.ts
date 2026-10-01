@@ -9,6 +9,8 @@ import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xm
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { SumoLogicContextManager } from './sumologic-context-manager';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
+import { WebVitalsLogsInstrumentation } from './sumologic-web-vitals-logs-instrumentation';
+import type { WebVitalsConfig } from './sumologic-web-vitals-logs-instrumentation';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { ExportTimestampEnrichmentExporter } from './sumologic-export-timestamp-enrichment-exporter';
@@ -83,6 +85,7 @@ interface InitializeOptions {
   collectErrors?: boolean;
   userInteractionElementNameLimit?: number;
   getOverriddenServiceName?: (span: Span) => string;
+  webVitalsConfig?: WebVitalsConfig;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -115,6 +118,7 @@ export const initialize = ({
   collectErrors = true,
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   getOverriddenServiceName,
+  webVitalsConfig = { disableLogging: true },
 }: InitializeOptions) => {
   if (!useWindow) return;
 
@@ -216,6 +220,15 @@ export const initialize = ({
       })
     : undefined;
 
+  // Constructed once so repeated registerInstrumentations() calls reuse the same
+  // instance — web-vitals callbacks cannot be unregistered, so a new instance per
+  // call would permanently accumulate old listeners.
+  const webVitalsInstrumentation = new WebVitalsLogsInstrumentation(
+    logsExporter,
+    { enabled: false },
+    webVitalsConfig,
+  );
+
   let disableOpenTelemetryInstrumentations: (() => void) | undefined;
 
   const disableInstrumentations = () => {
@@ -239,6 +252,7 @@ export const initialize = ({
             enabled: false,
           }),
           new DocumentLoadInstrumentation({ enabled: false }),
+          webVitalsInstrumentation,
           new UserInteractionInstrumentation({
             enabled: false,
             eventNames: INSTRUMENTED_EVENT_NAMES,

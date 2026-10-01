@@ -33,7 +33,8 @@ export interface LogRecord {
     | 'unhandledRejection'
     | 'consoleError'
     | 'documentError'
-    | 'customError';
+    | 'customError'
+    | 'webVital';
   message: string;
   arguments?: any[];
   element?: {
@@ -45,6 +46,8 @@ export interface LogRecord {
     stack?: string;
   };
   attributes?: Record<string, any>;
+  scope?: { name: string; version?: string };
+  severityNumber?: SeverityNumber;
 }
 
 export interface CustomError {
@@ -178,14 +181,11 @@ export class SumoLogicLogsExporter {
       hrTime: ht,
       hrTimeObserved: ht,
       resource: this.resource,
-      severityNumber: SeverityNumber.ERROR,
+      severityNumber: log.severityNumber ?? SeverityNumber.ERROR,
       attributes,
       body: log.message,
       droppedAttributesCount: 0,
-      instrumentationScope: {
-        name,
-        version,
-      },
+      instrumentationScope: log.scope ?? { name, version },
       spanContext: span
         ? {
             traceId: span.spanContext().traceId,
