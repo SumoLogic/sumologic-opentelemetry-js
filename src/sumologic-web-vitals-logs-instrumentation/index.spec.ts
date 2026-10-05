@@ -66,11 +66,11 @@ describe('WebVitalsLogsInstrumentation', () => {
     expect(exporter.recordLog).not.toHaveBeenCalled();
   });
 
-  it('registers callbacks for all 5 vitals when disableLogging is explicitly false', () => {
+  it('registers callbacks for all 5 vitals when enabled is explicitly true', () => {
     const inst = new WebVitalsLogsInstrumentation(
       makeExporter(),
       { enabled: false },
-      { disableLogging: false },
+      { enabled: true },
     );
     inst.enable();
     expect(Object.keys(vitalsCallbacks).sort()).toEqual([
@@ -91,7 +91,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         const inst = new WebVitalsLogsInstrumentation(
           exporter,
           { enabled: false },
-          { disableLogging: false },
+          { enabled: true },
         );
         inst.enable();
 
@@ -116,7 +116,7 @@ describe('WebVitalsLogsInstrumentation', () => {
       const inst = new WebVitalsLogsInstrumentation(
         exporter,
         { enabled: false },
-        { disableLogging: false },
+        { enabled: true },
       );
       inst.enable();
       return inst;
@@ -182,6 +182,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           lcp: {
             includeRawAttribution: ['timeToFirstByte', 'elementRenderDelay'],
           },
@@ -207,6 +208,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           lcp: { includeRawAttribution: ['lcpEntry'] },
         },
       );
@@ -225,6 +227,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           inp: { includeRawAttribution: ['longAnimationFrameEntries'] },
         },
       );
@@ -246,6 +249,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           inp: { includeRawAttribution: ['longestScript'] },
         },
       );
@@ -264,6 +268,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           cls: {
             includeRawAttribution: [
               'largestShiftTarget',
@@ -299,6 +304,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           ttfb: {
             includeRawAttribution: [
               'waitingDuration',
@@ -339,6 +345,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         exporter,
         { enabled: false },
         {
+          enabled: true,
           fcp: {
             includeRawAttribution: [
               'timeToFirstByte',
@@ -375,6 +382,7 @@ describe('WebVitalsLogsInstrumentation', () => {
         makeExporter(),
         { enabled: false },
         {
+          enabled: true,
           lcp: {
             reportAllChanges: true,
             reportSoftNavs: true,
@@ -407,12 +415,12 @@ describe('WebVitalsLogsInstrumentation', () => {
       });
     });
 
-    it('disableLogging suppresses all recordLog calls', () => {
+    it('enabled: false suppresses all recordLog calls', () => {
       const exporter = makeExporter();
       const inst = new WebVitalsLogsInstrumentation(
         exporter,
         { enabled: false },
-        { disableLogging: true },
+        { enabled: false },
       );
       inst.enable();
       // No callbacks should be registered when logging is disabled
@@ -426,7 +434,7 @@ describe('WebVitalsLogsInstrumentation', () => {
     const inst = new WebVitalsLogsInstrumentation(
       exporter,
       { enabled: false },
-      { disableLogging: false },
+      { enabled: true },
     );
     inst.enable();
     expect(exporter.recordLog).not.toHaveBeenCalled();
@@ -437,7 +445,7 @@ describe('WebVitalsLogsInstrumentation', () => {
     const inst = new WebVitalsLogsInstrumentation(
       exporter,
       { enabled: false },
-      { disableLogging: false },
+      { enabled: true },
     );
     inst.enable();
 
@@ -461,7 +469,7 @@ describe('WebVitalsLogsInstrumentation', () => {
       const inst = new WebVitalsLogsInstrumentation(
         exporter,
         { enabled: false },
-        { disableLogging: false },
+        { enabled: true },
       );
       inst.enable();
       inst.disable();
@@ -474,7 +482,7 @@ describe('WebVitalsLogsInstrumentation', () => {
       const inst = new WebVitalsLogsInstrumentation(
         exporter,
         { enabled: false },
-        { disableLogging: false },
+        { enabled: true },
       );
       inst.enable();
       inst.disable();
@@ -488,7 +496,7 @@ describe('WebVitalsLogsInstrumentation', () => {
       const inst = new WebVitalsLogsInstrumentation(
         exporter,
         { enabled: false },
-        { disableLogging: false },
+        { enabled: true },
       );
       inst.enable();
       inst.disable();

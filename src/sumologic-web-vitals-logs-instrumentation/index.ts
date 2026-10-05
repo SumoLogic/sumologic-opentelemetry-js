@@ -123,7 +123,7 @@ const _: [
 ] = [true, true, true, true, true];
 
 export interface WebVitalsConfig {
-  disableLogging?: boolean;
+  enabled?: boolean;
   lcp?: {
     reportAllChanges?: boolean;
     reportSoftNavs?: boolean;
@@ -165,11 +165,11 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
   constructor(
     logsExporter: SumoLogicLogsExporter,
     config = {},
-    webVitalsConfig: WebVitalsConfig = { disableLogging: true },
+    webVitalsConfig: WebVitalsConfig = { enabled: false },
   ) {
     // Must be constructed with { enabled: false } so super() does not call enable() prematurely.
     // super() calls enable() when config.enabled is true (the default), which would fire before
-    // this.webVitalsConfig is assigned — causing disableLogging and includeRawAttribution to be ignored.
+    // this.webVitalsConfig is assigned — causing enabled and includeRawAttribution to be ignored.
     // registerOpenTelemetryInstrumentations() in index.ts calls enable() after construction,
     // by which point webVitalsConfig is fully assigned.
     super(PACKAGE_NAME, PACKAGE_VERSION, config);
@@ -182,7 +182,7 @@ export class WebVitalsLogsInstrumentation extends InstrumentationBase {
   }
 
   override enable() {
-    if (this.webVitalsConfig.disableLogging) return;
+    if (!this.webVitalsConfig.enabled) return;
 
     this._isEnabled = true;
 

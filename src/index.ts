@@ -118,7 +118,7 @@ export const initialize = ({
   collectErrors = true,
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   getOverriddenServiceName,
-  webVitalsConfig = { disableLogging: true },
+  webVitalsConfig = { enabled: false },
 }: InitializeOptions) => {
   if (!useWindow) return;
 
