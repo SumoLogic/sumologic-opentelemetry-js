@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## 4.8.0-0
+## 4.8.0
 
-- added log-based Web Vitals support via `webVitalsConfig.enabled` (default `false`)
+- added log-based Web Vitals instrumentation, emitting CLS, FCP, INP, LCP, and TTFB as logs with attribution data
+- opt in via `webVitalsConfig.enabled: true` (default `false`); per-vital options (`reportAllChanges`, `reportSoftNavs`, `durationThreshold`, `includeRawAttribution`) configurable under `webVitalsConfig.{lcp,cls,inp,fcp,ttfb}`
 
 ## 4.7.1
 
