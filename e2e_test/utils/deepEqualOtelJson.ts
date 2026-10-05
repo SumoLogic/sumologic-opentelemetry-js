@@ -17,6 +17,10 @@ const ANY_STRING_PATHS = new Set([
   'resourceLogs/scopeLogs/logRecords/attributes/root_span.http.url/value/stringValue',
   'resourceLogs/resource/attributes/http.user_agent/value/stringValue',
   'resourceLogs/resource/attributes/user_agent.original/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.id/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.target/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.largestShiftTarget/value/stringValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.interactionTarget/value/stringValue',
 ]);
 const ANY_NUMBER_KEYS = new Set([
   'timeUnixNano',
@@ -32,6 +36,15 @@ const ANY_NUMBER_PATHS = new Set([
   'resourceSpans/scopeSpans/spans/attributes/http.time_to_xhr_processing_end/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/http.time_in_xhr_calls/value/doubleValue',
   'resourceSpans/scopeSpans/spans/attributes/server.port/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.value/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.delta/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.timeToFirstByte/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.waitingDuration/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.dnsDuration/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.inputDelay/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.processingDuration/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.presentationDelay/value/doubleValue',
+  'resourceLogs/scopeLogs/logRecords/attributes/browser.web_vital.attribution.largestShiftValue/value/doubleValue',
 ]);
 const ARRAYS_TO_SORT = new Map([
   ['events', 'name'],

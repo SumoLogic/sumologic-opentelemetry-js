@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.8.0
+
+- added log-based Web Vitals instrumentation, emitting CLS, FCP, INP, LCP, and TTFB as logs with attribution data
+- opt in via `webVitalsConfig.enabled: true` (default `false`); per-vital options (`reportAllChanges`, `reportSoftNavs`, `durationThreshold`, `includeRawAttribution`) configurable under `webVitalsConfig.{lcp,cls,inp,fcp,ttfb}`
+
 ## 4.7.1
 
 - fixed XHR span name and enrichment for `instrumentation-xml-http-request` spans to match `instrumentation-fetch` behavior
