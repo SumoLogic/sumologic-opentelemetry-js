@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.8.0-0
+
+- added log-based Web Vitals support via `webVitalsConfig.enabled` (default `false`)
+
 ## 4.7.1
 
 - fixed XHR span name and enrichment for `instrumentation-xml-http-request` spans to match `instrumentation-fetch` behavior
