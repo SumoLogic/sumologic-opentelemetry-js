@@ -9,13 +9,13 @@ in the browser.
 - user interactions like click, submit, drop etc.
 - document load with fetched resources
 - History API and hash change support
-- web-vitals
+- web-vitals (opt-in, sent as logs, see [Web Vitals](#web-vitals))
 - session id
 - longtasks with automatic context attaching
 - uncaught exceptions, unhandled rejections, document errors and console errors
 - support for manual instrumentation
 - automatic context carrying through timers, promises, native async-await, events, observers and more
-- 103 KB (31 KB gzipped)
+- 149 KB (45 KB gzipped)
 
 ## Installation
 
@@ -115,25 +115,58 @@ initialize({
 
 Both `script` tag and manual installation can be configured with following parameters:
 
-| Parameter                       | Type                                                                                                                                                                                     | Default     | Description                                                                                                  |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
-| collectionSourceUrl             | `string`                                                                                                                                                                                 | _required_  | Sumo Logic collector source url                                                                              |
-| authorizationToken              | `string`                                                                                                                                                                                 |             | Sumo Logic collector authorization token                                                                     |
-| serviceName                     | `string`                                                                                                                                                                                 | `"unknown"` | Name of your web service                                                                                     |
-| applicationName                 | `string`                                                                                                                                                                                 |             | Name of your application                                                                                     |
-| deploymentEnvironment           | `string`                                                                                                                                                                                 |             | The software deployment (e.g. `staging`, `production`)                                                       |
-| defaultAttributes               | `object`                                                                                                                                                                                 | `{}`        | Attributes added to each span                                                                                |
-| samplingProbability             | `number`                                                                                                                                                                                 | `1`         | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent  |
-| bufferMaxSpans                  | `number`                                                                                                                                                                                 | `2048`      | Maximum number of spans waiting to be send                                                                   |
-| maxExportBatchSize              | `number`                                                                                                                                                                                 | `50`        | Maximum number of spans in one request                                                                       |
-| bufferTimeout                   | `number`                                                                                                                                                                                 | `2000`ms    | Time in milliseconds for spans waiting to be send                                                            |
-| ignoreUrls                      | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`        | List of XHR URLs to ignore (e.g. analytics)                                                                  |
-| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`        | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP header will be injected    |
-| collectSessionId                | `boolean`                                                                                                                                                                                | `true`      | Enables collecting `rum.session_id` attribute                                                                |
-| dropSingleUserInteractionTraces | `boolean`                                                                                                                                                                                | `true`      | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)  |
-| collectErrors                   | `boolean`                                                                                                                                                                                | `true`      | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
-| userInteractionElementNameLimit | `number`                                                                                                                                                                                 | `20`        | Limit for user interaction element name, after which the name will be truncated with `...` suffix.           |
-| getOverriddenServiceName        | <code>(span: [Span](https://github.com/SumoLogic/opentelemetry-js/blob/0bc25fa930d358bda42026bd66bed23b7a4dc9bb/packages/opentelemetry-sdk-trace-base/src/Span.ts#L39)) => string</code> |             | Function used for overridding the service name of a span during its creation.                                |
+| Parameter                       | Type                                                                                                                                                                                     | Default              | Description                                                                                                  |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| collectionSourceUrl             | `string`                                                                                                                                                                                 | _required_           | Sumo Logic collector source url                                                                              |
+| authorizationToken              | `string`                                                                                                                                                                                 |                      | Sumo Logic collector authorization token                                                                     |
+| serviceName                     | `string`                                                                                                                                                                                 | `"unknown"`          | Name of your web service                                                                                     |
+| applicationName                 | `string`                                                                                                                                                                                 |                      | Name of your application                                                                                     |
+| deploymentEnvironment           | `string`                                                                                                                                                                                 |                      | The software deployment (e.g. `staging`, `production`)                                                       |
+| defaultAttributes               | `object`                                                                                                                                                                                 | `{}`                 | Attributes added to each span                                                                                |
+| samplingProbability             | `number`                                                                                                                                                                                 | `1`                  | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent  |
+| bufferMaxSpans                  | `number`                                                                                                                                                                                 | `2048`               | Maximum number of spans waiting to be send                                                                   |
+| maxExportBatchSize              | `number`                                                                                                                                                                                 | `50`                 | Maximum number of spans in one request                                                                       |
+| bufferTimeout                   | `number`                                                                                                                                                                                 | `2000`ms             | Time in milliseconds for spans waiting to be send                                                            |
+| ignoreUrls                      | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of XHR URLs to ignore (e.g. analytics)                                                                  |
+| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP header will be injected    |
+| collectSessionId                | `boolean`                                                                                                                                                                                | `true`               | Enables collecting `rum.session_id` attribute                                                                |
+| dropSingleUserInteractionTraces | `boolean`                                                                                                                                                                                | `true`               | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)  |
+| collectErrors                   | `boolean`                                                                                                                                                                                | `true`               | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
+| userInteractionElementNameLimit | `number`                                                                                                                                                                                 | `20`                 | Limit for user interaction element name, after which the name will be truncated with `...` suffix.           |
+| webVitalsConfig                 | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in collection of Core Web Vitals as logs. See [Web Vitals](#web-vitals)                                  |
+| getOverriddenServiceName        | <code>(span: [Span](https://github.com/SumoLogic/opentelemetry-js/blob/0bc25fa930d358bda42026bd66bed23b7a4dc9bb/packages/opentelemetry-sdk-trace-base/src/Span.ts#L39)) => string</code> |                      | Function used for overridding the service name of a span during its creation.                                |
+
+## Web Vitals
+
+Core Web Vitals (CLS, FCP, INP, LCP, TTFB) can be collected as log records. This is **disabled by default**; enable it
+with `webVitalsConfig.enabled`:
+
+```javascript
+sumoLogicOpenTelemetryRum.initialize({
+  collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
+  serviceName: 'name_of_your_web_service',
+  webVitalsConfig: {
+    enabled: true,
+    lcp: { includeRawAttribution: ['timeToFirstByte'] },
+    inp: { reportAllChanges: true },
+  },
+});
+```
+
+Each record has `type: "webVital"` and `browser.web_vital.*` attributes (`name`, `value`, `rating`, `delta`, `id`,
+`navigation_type`, and `target` for LCP, CLS and INP).
+
+Per-vital options (`lcp`, `cls`, `inp`, `fcp`, `ttfb`):
+
+| Option                  | Description                                                                 |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `reportAllChanges`      | Report every change of the metric, not only the final value                 |
+| `reportSoftNavs`        | Report metrics for soft navigations                                         |
+| `durationThreshold`     | Minimum duration (ms) for an entry to be reported                           |
+| `includeRawAttribution` | Attribution keys to add as `browser.web_vital.attribution.<key>` attributes |
+
+**Note**: web vitals records share the logs pipeline with collected errors, so filter error dashboards and alerts by
+`type`. They ignore `samplingProbability`; expect about 4-5 records per page view.
 
 ## Trace context propagation
 
