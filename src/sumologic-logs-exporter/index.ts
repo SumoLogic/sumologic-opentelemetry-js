@@ -14,6 +14,7 @@ import {
   ROOT_SPAN_HTTP_URL,
   ROOT_SPAN_OPERATION,
 } from '../constants';
+import { sanitizeUrlAttributes } from '../utils';
 import {
   getSpanHttpUrl,
   getTraceHttpActionType,
@@ -25,6 +26,7 @@ interface SumoLogicLogsExporterOptions {
   collectorUrl: string;
   maxQueueSize: number;
   scheduledDelayMillis: number;
+  sanitizeUrl?: (url: string) => string;
 }
 
 export interface LogRecord {
@@ -81,6 +83,7 @@ export class SumoLogicLogsExporter {
   private scheduledDelayMillis: number;
   private logs: ReadableLogRecord[];
   private timer: number | undefined;
+  private sanitizeUrl?: (url: string) => string;
 
   constructor({
     resource,
@@ -88,7 +91,9 @@ export class SumoLogicLogsExporter {
     collectorUrl,
     maxQueueSize,
     scheduledDelayMillis,
+    sanitizeUrl,
   }: SumoLogicLogsExporterOptions) {
+    this.sanitizeUrl = sanitizeUrl;
     this.resource = resource;
     this.defaultAttributes = attributes;
     this.collectorUrl = collectorUrl;
@@ -175,6 +180,8 @@ export class SumoLogicLogsExporter {
         ...log.attributes,
       };
     }
+
+    sanitizeUrlAttributes(attributes, this.sanitizeUrl);
 
     const ht = hrTime();
     this.logs.push({

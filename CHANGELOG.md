@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- added opt-in URL sanitization (`urlSanitizationConfig.enabled: true`) redacting sensitive query params and credentials in trace and log URL attributes; extend/trim the built-in list with `sensitiveParams` / `excludeDefaultParams`, or override with `sanitizeUrl`
+
 ## 4.8.0
 
 - added log-based Web Vitals instrumentation, emitting CLS, FCP, INP, LCP, and TTFB as logs with attribution data
