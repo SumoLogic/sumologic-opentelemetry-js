@@ -134,6 +134,7 @@ Both `script` tag and manual installation can be configured with following param
 | collectErrors                   | `boolean`                                                                                                                                                                                | `true`               | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
 | userInteractionElementNameLimit | `number`                                                                                                                                                                                 | `20`                 | Limit for user interaction element name, after which the name will be truncated with `...` suffix.           |
 | webVitalsConfig                 | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in collection of Core Web Vitals as logs. See [Web Vitals](#web-vitals)                                  |
+| urlSanitizationConfig           | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in redaction of sensitive URL query params in traces and logs. See [URL sanitization](#url-sanitization) |
 | getOverriddenServiceName        | <code>(span: [Span](https://github.com/SumoLogic/opentelemetry-js/blob/0bc25fa930d358bda42026bd66bed23b7a4dc9bb/packages/opentelemetry-sdk-trace-base/src/Span.ts#L39)) => string</code> |                      | Function used for overridding the service name of a span during its creation.                                |
 
 ## Web Vitals
@@ -167,6 +168,29 @@ Per-vital options (`lcp`, `cls`, `inp`, `fcp`, `ttfb`):
 
 **Note**: web vitals records share the logs pipeline with collected errors, so filter error dashboards and alerts by
 `type`. They ignore `samplingProbability`; expect about 4-5 records per page view.
+
+## URL sanitization
+
+Opt-in. When enabled, sensitive query params, query-shaped hash fragments such as `#access_token=...` (route fragments
+like `#/users/1` are left alone) and `user:pass@` credentials are replaced with `REDACTED` in the URL
+attributes of spans and logs (`url.full`, `http.url`, `location.href`, `new.location.href`, `root_span.http.url`).
+
+```javascript
+sumoLogicOpenTelemetryRum.initialize({
+  collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
+  urlSanitizationConfig: {
+    enabled: true,
+    sensitiveParams: ['sid'], // added to the built-in list
+    excludeDefaultParams: ['hash'], // built-in names to leave untouched
+    // sanitizeUrl: (url) => url.split('?')[0], // full override, ignores the lists above
+  },
+});
+```
+
+Built-in list: `password`, `passwd`, `secret`, `api_key`, `apikey`, `auth`, `authorization`, `token`, `access_token`,
+`refresh_token`, `id_token`, `jwt`, `session`, `sessionid`, `key`, `private_key`, `client_secret`, `client_id`, `signature`,
+`hash`, `AWSAccessKeyId`, `sig`, `X-Amz-Signature`, `X-Amz-Credential`, `X-Amz-Security-Token`, `X-Goog-Signature`
+(case-insensitive). URLs inside error messages, stack traces and span names are not sanitized.
 
 ## Trace context propagation
 

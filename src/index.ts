@@ -37,10 +37,12 @@ import {
   UNKNOWN_SERVICE_NAME,
 } from './constants';
 import {
+  createUrlSanitizer,
   getCollectionSourceUrl,
   getUserInteractionSpanName,
   tryNumber,
 } from './utils';
+import type { UrlSanitizationConfig } from './utils';
 import { version } from '../package.json';
 import { getCurrentSessionId } from './sumologic-span-processor/session-id';
 import { Attributes } from '@opentelemetry/api';
@@ -86,6 +88,7 @@ interface InitializeOptions {
   userInteractionElementNameLimit?: number;
   getOverriddenServiceName?: (span: Span) => string;
   webVitalsConfig?: WebVitalsConfig;
+  urlSanitizationConfig?: UrlSanitizationConfig;
 }
 
 const useWindow = typeof window === 'object' && window != null;
@@ -119,6 +122,7 @@ export const initialize = ({
   userInteractionElementNameLimit = DEFAULT_USER_INTERACTION_ELEMENT_NAME_LIMIT,
   getOverriddenServiceName,
   webVitalsConfig = { enabled: false },
+  urlSanitizationConfig = { enabled: false },
 }: InitializeOptions) => {
   if (!useWindow) return;
 
@@ -164,6 +168,8 @@ export const initialize = ({
     runtimeDefaultAttributes[key] = value;
   };
 
+  const sanitizeUrl = createUrlSanitizer(urlSanitizationConfig);
+
   const parsedCollectionSourceUrl = getCollectionSourceUrl(collectionSourceUrl);
 
   const collectorExporter = new OTLPTraceExporter({
@@ -185,6 +191,7 @@ export const initialize = ({
     getOverriddenServiceName,
     defaultServiceName,
     ignoreUrls,
+    sanitizeUrl,
   });
 
   const provider = new WebTracerProvider({
@@ -213,6 +220,7 @@ export const initialize = ({
     collectorUrl: `${parsedCollectionSourceUrl}v1/logs`,
     maxQueueSize: bufferMaxSpans,
     scheduledDelayMillis: bufferTimeout,
+    sanitizeUrl,
   });
   const logsInstrumentation = collectErrors
     ? new SumoLogicLogsInstrumentation({

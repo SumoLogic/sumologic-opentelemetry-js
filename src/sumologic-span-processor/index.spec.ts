@@ -15,6 +15,7 @@ import { SumoLogicSpanProcessor, SumoLogicSpanProcessorConfig } from './index';
 import { resetSessionIdCookie } from './session-id';
 import { resetSavedSpans } from './find-longtask-context';
 import { resetDocumentVisibilityStateChanges } from './document-visibility-state';
+import { createUrlSanitizer } from '../utils';
 import type { InstrumentationScope } from '@opentelemetry/core';
 
 const nativePerformance = performance;
@@ -414,6 +415,44 @@ describe('SumoLogicSpanProcessor', () => {
     spanProcessor.onEnd(span);
     jest.runAllTimers();
     expect(superOnEnd).not.toBeCalled();
+  });
+
+  describe('sanitizeUrl', () => {
+    const run = (config: Partial<SumoLogicSpanProcessorConfig>) => {
+      createSpanProcessor(config);
+      const xhrSpan = createXhrSpan('HTTP GET', span);
+      spanProcessor.onStart(span);
+      span.attributes['location.href'] = 'https://a.com/?token=abc&page=1';
+      spanProcessor.onStart(xhrSpan);
+      xhrSpan.attributes['http.url'] = 'https://api.com/x?access_token=abc';
+      span.end();
+      spanProcessor.onEnd(span);
+      spanProcessor.onEnd(xhrSpan);
+      jest.runAllTimers(); // root span is sent after the trace timeout
+      return { xhrSpan };
+    };
+
+    test('redacts url attributes, including copied root_span.http.url', () => {
+      const { xhrSpan } = run({
+        sanitizeUrl: createUrlSanitizer({ enabled: true }),
+      });
+      expect(span.attributes['location.href']).toBe(
+        'https://a.com/?token=REDACTED&page=1',
+      );
+      expect(xhrSpan.attributes['http.url']).toBe(
+        'https://api.com/x?access_token=REDACTED',
+      );
+      expect(xhrSpan.attributes['root_span.http.url']).toBe(
+        'https://a.com/?token=REDACTED&page=1',
+      );
+    });
+
+    test('leaves urls untouched when no sanitizer is given', () => {
+      const { xhrSpan } = run({});
+      expect(xhrSpan.attributes['http.url']).toBe(
+        'https://api.com/x?access_token=abc',
+      );
+    });
   });
 
   test('enrich non-root xhr span', () => {

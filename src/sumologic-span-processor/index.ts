@@ -13,6 +13,7 @@ import * as findLongTaskContext from './find-longtask-context';
 import * as rootToChildEnrichment from './root-to-child-enrichment';
 import { createTraceProcessor } from './trace-processor';
 import * as sessionId from './session-id';
+import { sanitizeUrlAttributes } from '../utils';
 
 export interface SumoLogicSpanProcessorConfig
   extends BatchSpanProcessorBrowserConfig {
@@ -22,6 +23,7 @@ export interface SumoLogicSpanProcessorConfig
   getOverriddenServiceName?: (span: SdkTraceSpan) => string;
   defaultServiceName: string;
   ignoreUrls?: (string | RegExp)[]; // Allow both strings and RegExp
+  sanitizeUrl?: (url: string) => string;
 }
 
 export class SumoLogicSpanProcessor extends BatchSpanProcessor {
@@ -30,6 +32,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   public getOverriddenServiceName?: (span: SdkTraceSpan) => string;
   public defaultServiceName: string;
+  private sanitizeUrl?: (url: string) => string;
 
   private traceProcessor: ReturnType<typeof createTraceProcessor>;
 
@@ -43,6 +46,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
     this.getOverriddenServiceName = config.getOverriddenServiceName;
     this.defaultServiceName = config.defaultServiceName;
+    this.sanitizeUrl = config.sanitizeUrl;
 
     this.traceProcessor = createTraceProcessor(this);
     if (config.ignoreUrls) {
@@ -106,6 +110,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     findLongTaskContext.onEnd(span, (span2) => {
       rootToChildEnrichment.onEnd(span2);
       this.traceProcessor.onEnd(span2, (span3) => {
+        sanitizeUrlAttributes(span3.attributes, this.sanitizeUrl);
         super.onEnd(span3);
       });
     });
