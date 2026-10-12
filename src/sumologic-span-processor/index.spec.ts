@@ -138,6 +138,32 @@ describe('SumoLogicSpanProcessor', () => {
       superOnEnd;
   };
 
+  describe('allowedUrls', () => {
+    // onStart enriches only spans that are not ignored
+    const isCollected = (url?: string) => {
+      const s = createSpan();
+      if (url) s.setAttribute('url.full', url);
+      spanProcessor.onStart(s);
+      return 'location.href' in s.attributes;
+    };
+
+    test('drops spans with non-allowed URLs, keeps allowed and URL-less spans', () => {
+      createSpanProcessor({
+        allowedUrls: [/^https?:\/\/([^/]+\.)?zuto\.com(:\d+)?(\/|$)/],
+      });
+      expect(isCollected('https://app.zuto.com/x')).toBe(true);
+      expect(isCollected('https://zuto.com/')).toBe(true);
+      expect(isCollected()).toBe(true);
+      expect(isCollected('https://ads.example.com/?r=zuto.com')).toBe(false);
+    });
+
+    test('string entries match as escaped substrings', () => {
+      createSpanProcessor({ allowedUrls: ['zuto.com'] });
+      expect(isCollected('https://zuto.com/')).toBe(true);
+      expect(isCollected('https://zutoXcom/')).toBe(false);
+    });
+  });
+
   test('adds "location.href" attribute', () => {
     spanProcessor.onStart(span);
     expect(span.attributes['location.href']).toBe(

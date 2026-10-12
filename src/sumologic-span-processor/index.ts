@@ -22,7 +22,15 @@ export interface SumoLogicSpanProcessorConfig
   getOverriddenServiceName?: (span: SdkTraceSpan) => string;
   defaultServiceName: string;
   ignoreUrls?: (string | RegExp)[]; // Allow both strings and RegExp
+  allowedUrls?: (string | RegExp)[]; // If non-empty, only matching URLs are collected
 }
+
+const toRegExps = (urls: (string | RegExp)[]): RegExp[] =>
+  urls.map((url) =>
+    typeof url === 'string'
+      ? new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      : url,
+  );
 
 export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   public shouldCollectSessionId: boolean;
@@ -34,6 +42,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
   private traceProcessor: ReturnType<typeof createTraceProcessor>;
 
   private static ignoreUrls: RegExp[] = [];
+  private allowedUrls: RegExp[];
 
   constructor(exporter: SpanExporter, config: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
@@ -45,13 +54,9 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     this.defaultServiceName = config.defaultServiceName;
 
     this.traceProcessor = createTraceProcessor(this);
+    this.allowedUrls = toRegExps(config.allowedUrls ?? []);
     if (config.ignoreUrls) {
-      const normalizedUrls = config.ignoreUrls.map((url) =>
-        typeof url === 'string'
-          ? new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-          : url,
-      );
-      SumoLogicSpanProcessor.ignoreUrls.push(...normalizedUrls);
+      SumoLogicSpanProcessor.ignoreUrls.push(...toRegExps(config.ignoreUrls));
     }
   }
 
@@ -59,6 +64,12 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     const url = (span.attributes['url.full'] ||
       span.attributes['http.url']) as string;
     if (!url) return false;
+    if (
+      this.allowedUrls.length &&
+      !this.allowedUrls.some((pattern) => pattern.test(url))
+    ) {
+      return true;
+    }
     return SumoLogicSpanProcessor.ignoreUrls.some((pattern) =>
       pattern.test(url),
     );
