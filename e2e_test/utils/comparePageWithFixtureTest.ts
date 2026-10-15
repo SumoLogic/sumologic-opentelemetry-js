@@ -10,12 +10,18 @@ interface ComparePageWithFixtureTestOptions {
   basedir: string;
   title: string;
   name: string;
+  // wait for page's async work (e.g. fetch), then trigger 'pagehide' so spans are flushed into the first batch
+  flushOnPagehide?: boolean;
+  // extra checks on the exported traces, the fixture comparison tolerates extra spans and ignores URLs
+  assertTraces?: (traces: any) => void;
 }
 
 export const createComparePageWithFixtureTest = ({
   basedir,
   title,
   name,
+  flushOnPagehide,
+  assertTraces,
 }: ComparePageWithFixtureTestOptions) => {
   let server: Server;
   let port: number;
@@ -73,6 +79,13 @@ export const createComparePageWithFixtureTest = ({
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
+    if (flushOnPagehide) {
+      await page.waitForTimeout(500);
+      await page.evaluate(() => {
+        window.dispatchEvent(new Event('pagehide'));
+      });
+    }
+
     let rowTracesFixture: string | undefined;
     let rowLogsFixture: string | undefined;
 
@@ -106,6 +119,9 @@ export const createComparePageWithFixtureTest = ({
           })
         : undefined,
     ]);
+    if (assertTraces && resultTraces != null) {
+      assertTraces(resultTraces.data);
+    }
     if ('WRITE_FIXTURES' in process.env) {
       if (resultTraces != null) {
         await fs.writeFile(

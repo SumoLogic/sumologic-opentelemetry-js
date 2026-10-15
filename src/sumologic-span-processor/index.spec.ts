@@ -138,6 +138,118 @@ describe('SumoLogicSpanProcessor', () => {
       superOnEnd;
   };
 
+  describe('URL filtering', () => {
+    // runs the full onStart/end/onEnd lifecycle and reports what happened to the span
+    const run = (attrs: Record<string, string> = {}) => {
+      const s = createSpan();
+      Object.entries(attrs).forEach(([k, v]) => s.setAttribute(k, v));
+      spanProcessor.onStart(s);
+      s.end();
+      spanProcessor.onEnd(s);
+      jest.runAllTimers();
+      return {
+        started: 'location.href' in s.attributes,
+        exported: superOnEnd.mock.calls.some(([exported]) => exported === s),
+      };
+    };
+    const collected = { started: true, exported: true };
+    const dropped = { started: false, exported: false };
+
+    describe('allowedUrls', () => {
+      test('drops spans with non-allowed URLs, keeps allowed and URL-less spans', () => {
+        createSpanProcessor({
+          allowedUrls: [/^https?:\/\/([^/]+\.)?acme\.com(:\d+)?(\/|$)/],
+        });
+        expect(run({ 'url.full': 'https://app.acme.com/x' })).toEqual(
+          collected,
+        );
+        expect(run({ 'url.full': 'https://acme.com/' })).toEqual(collected);
+        expect(run()).toEqual(collected);
+        expect(
+          run({ 'url.full': 'https://ads.example.com/?r=acme.com' }),
+        ).toEqual(dropped);
+      });
+
+      test('string entries match as escaped substrings', () => {
+        createSpanProcessor({ allowedUrls: ['acme.com'] });
+        expect(run({ 'url.full': 'https://acme.com/' })).toEqual(collected);
+        expect(run({ 'url.full': 'https://acmeXcom/' })).toEqual(dropped);
+      });
+
+      test('filters on the deprecated http.url attribute too', () => {
+        createSpanProcessor({ allowedUrls: ['acme.com'] });
+        expect(run({ 'http.url': 'https://acme.com/' })).toEqual(collected);
+        expect(run({ 'http.url': 'https://other.com/' })).toEqual(dropped);
+      });
+
+      test('collects everything when empty or not set', () => {
+        createSpanProcessor({ allowedUrls: [] });
+        expect(run({ 'url.full': 'https://other.com/' })).toEqual(collected);
+        createSpanProcessor({});
+        expect(run({ 'url.full': 'https://other.com/' })).toEqual(collected);
+      });
+
+      test('ignoreUrls still applies to allowed URLs', () => {
+        createSpanProcessor({
+          allowedUrls: ['acme.com'],
+          ignoreUrls: ['ignored-by-allowed-urls-test'],
+        });
+        expect(run({ 'url.full': 'https://acme.com/x' })).toEqual(collected);
+        expect(
+          run({ 'url.full': 'https://acme.com/ignored-by-allowed-urls-test' }),
+        ).toEqual(dropped);
+      });
+    });
+
+    describe('shouldCollectUrl', () => {
+      test('false drops the span, other results keep it', () => {
+        createSpanProcessor({
+          shouldCollectUrl: (url) => !url.includes('/ads/'),
+        });
+        expect(run({ 'url.full': 'https://acme.com/ads/1' })).toEqual(dropped);
+        expect(run({ 'url.full': 'https://acme.com/api' })).toEqual(collected);
+
+        createSpanProcessor({
+          shouldCollectUrl: (() => undefined) as unknown as () => boolean,
+        });
+        expect(run({ 'url.full': 'https://acme.com/api' })).toEqual(collected);
+      });
+
+      test('receives the full URL (at span start and end), and is not called for spans without URL', () => {
+        const shouldCollectUrl = jest.fn(() => true);
+        createSpanProcessor({ shouldCollectUrl });
+        run({ 'url.full': 'https://acme.com/api?x=1' });
+        run({ 'http.url': 'https://acme.com/old' });
+        run();
+        expect(shouldCollectUrl.mock.calls).toEqual([
+          ['https://acme.com/api?x=1'],
+          ['https://acme.com/api?x=1'],
+          ['https://acme.com/old'],
+          ['https://acme.com/old'],
+        ]);
+      });
+
+      test('runs together with allowedUrls', () => {
+        createSpanProcessor({
+          allowedUrls: ['acme.com'],
+          shouldCollectUrl: (url) => !url.includes('/ads/'),
+        });
+        expect(run({ 'url.full': 'https://acme.com/ads/1' })).toEqual(dropped);
+        expect(run({ 'url.full': 'https://other.com/api' })).toEqual(dropped);
+        expect(run({ 'url.full': 'https://acme.com/api' })).toEqual(collected);
+      });
+
+      test('keeps the span when the callback throws', () => {
+        createSpanProcessor({
+          shouldCollectUrl: () => {
+            throw new Error('boom');
+          },
+        });
+        expect(run({ 'url.full': 'https://acme.com/api' })).toEqual(collected);
+      });
+    });
+  });
+
   test('adds "location.href" attribute', () => {
     spanProcessor.onStart(span);
     expect(span.attributes['location.href']).toBe(

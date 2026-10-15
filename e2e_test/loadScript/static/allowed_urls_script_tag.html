@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>data-allowed-urls test</title>
+
+<script
+  src="rum.js"
+  type="text/javascript"
+  data-collection-source-url="http://localhost:{{port}}/rum"
+  data-service-name="allowed-urls-script-tag-test-service-name"
+  data-application-name="allowed-urls-script-tag-test-application-name"
+  data-allowed-urls='["^http://localhost:"]'
+></script>
+<script>
+  // 127.0.0.1 plays the "3rd party" host: only localhost is allowed
+  fetch('http://localhost:{{port}}/logo.png');
+  fetch('http://127.0.0.1:{{port}}/logo.png').catch(() => {});
+</script>

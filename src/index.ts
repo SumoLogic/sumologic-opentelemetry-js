@@ -79,6 +79,8 @@ interface InitializeOptions {
   maxExportBatchSize?: number;
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
+  allowedUrls?: (string | RegExp)[];
+  shouldCollectUrl?: (url: string) => boolean;
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
@@ -112,6 +114,8 @@ export const initialize = ({
   maxExportBatchSize = MAX_EXPORT_BATCH_SIZE,
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
+  allowedUrls = [],
+  shouldCollectUrl,
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
   dropSingleUserInteractionTraces,
@@ -185,6 +189,8 @@ export const initialize = ({
     getOverriddenServiceName,
     defaultServiceName,
     ignoreUrls,
+    allowedUrls,
+    shouldCollectUrl,
   });
 
   const provider = new WebTracerProvider({
@@ -352,6 +358,7 @@ if (
     bufferMaxSpans,
     bufferTimeout,
     ignoreUrls,
+    allowedUrls,
     propagateTraceHeaderCorsUrls,
   } = document.currentScript.dataset;
 
@@ -365,6 +372,7 @@ if (
     bufferMaxSpans: tryNumber(bufferMaxSpans),
     bufferTimeout: tryNumber(bufferTimeout),
     ignoreUrls: tryRegExpsList(ignoreUrls),
+    allowedUrls: tryRegExpsList(allowedUrls),
     propagateTraceHeaderCorsUrls: tryRegExpsList(
       propagateTraceHeaderCorsUrls,
     ) || [/.*/],
