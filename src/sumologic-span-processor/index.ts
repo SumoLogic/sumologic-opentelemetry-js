@@ -23,6 +23,7 @@ export interface SumoLogicSpanProcessorConfig
   defaultServiceName: string;
   ignoreUrls?: (string | RegExp)[]; // Allow both strings and RegExp
   allowedUrls?: (string | RegExp)[]; // If non-empty, only matching URLs are collected
+  shouldCollectUrl?: (url: string) => boolean; // Return false to drop the span
 }
 
 const toRegExps = (urls: (string | RegExp)[]): RegExp[] =>
@@ -43,6 +44,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
   private static ignoreUrls: RegExp[] = [];
   private allowedUrls: RegExp[];
+  private shouldCollectUrl?: (url: string) => boolean;
 
   constructor(exporter: SpanExporter, config: SumoLogicSpanProcessorConfig) {
     super(exporter, config);
@@ -55,6 +57,7 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
 
     this.traceProcessor = createTraceProcessor(this);
     this.allowedUrls = toRegExps(config.allowedUrls ?? []);
+    this.shouldCollectUrl = config.shouldCollectUrl;
     if (config.ignoreUrls) {
       SumoLogicSpanProcessor.ignoreUrls.push(...toRegExps(config.ignoreUrls));
     }
@@ -70,9 +73,16 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     ) {
       return true;
     }
-    return SumoLogicSpanProcessor.ignoreUrls.some((pattern) =>
-      pattern.test(url),
-    );
+    if (
+      SumoLogicSpanProcessor.ignoreUrls.some((pattern) => pattern.test(url))
+    ) {
+      return true;
+    }
+    try {
+      return this.shouldCollectUrl?.(url) === false;
+    } catch {
+      return false; // a throwing user callback must not break tracing, collect the span
+    }
   }
 
   onStart(span: SdkTraceSpan, context: Context = ROOT_CONTEXT): void {

@@ -80,6 +80,7 @@ interface InitializeOptions {
   bufferTimeout?: number;
   ignoreUrls?: (string | RegExp)[];
   allowedUrls?: (string | RegExp)[];
+  shouldCollectUrl?: (url: string) => boolean;
   propagateTraceHeaderCorsUrls?: (string | RegExp)[];
   collectSessionId?: boolean;
   dropSingleUserInteractionTraces?: boolean;
@@ -114,6 +115,7 @@ export const initialize = ({
   bufferTimeout = BUFFER_TIMEOUT,
   ignoreUrls = [],
   allowedUrls = [],
+  shouldCollectUrl,
   propagateTraceHeaderCorsUrls = [],
   collectSessionId,
   dropSingleUserInteractionTraces,
@@ -188,6 +190,7 @@ export const initialize = ({
     defaultServiceName,
     ignoreUrls,
     allowedUrls,
+    shouldCollectUrl,
   });
 
   const provider = new WebTracerProvider({

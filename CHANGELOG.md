@@ -3,6 +3,7 @@
 ## Unreleased
 
 - added `allowedUrls` option (`data-allowed-urls` for the script tag): when set, only spans whose URL matches are collected; spans without a URL (e.g. user interactions) are unaffected
+- added `shouldCollectUrl(url)` callback option: return `false` to drop a span; runs after `allowedUrls` and `ignoreUrls`
 
 ## 4.8.0
 
