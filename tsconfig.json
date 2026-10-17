@@ -17,26 +17,16 @@
     "skipLibCheck": true,
     "types": ["jest"],
     "paths": {
-      "@opentelemetry/api": ["./src/opentelemetry-js/api"],
-      "@opentelemetry/semantic-conventions": [
-        "./src/opentelemetry-js/semantic-conventions"
+      "@opentelemetry/instrumentation-user-interaction": [
+        "./src/opentelemetry-js-contrib/packages/instrumentation-user-interaction"
       ],
-      "@opentelemetry/otlp-exporter-base/browser-http": [
-        "./src/opentelemetry-js/experimental/packages/otlp-exporter-base/src/index-browser-http.ts"
+      "@opentelemetry/instrumentation-document-load": [
+        "./src/opentelemetry-js-contrib/packages/instrumentation-document-load"
       ],
-      "@opentelemetry/*": [
-        "./src/opentelemetry-js/packages/*",
-        "./src/opentelemetry-js/packages/opentelemetry-*",
-        "./src/opentelemetry-js/packages/sdk-*",
-        "./src/opentelemetry-js/experimental/packages/*",
-        "./src/opentelemetry-js/experimental/packages/opentelemetry-*",
-        "./src/opentelemetry-js-contrib/packages/*"
+      "@opentelemetry/instrumentation-long-task": [
+        "./src/opentelemetry-js-contrib/packages/instrumentation-long-task"
       ]
     }
   },
-  "exclude": [
-    "./dist",
-    "./src/opentelemetry-js",
-    "./src/opentelemetry-js-contrib"
-  ]
+  "exclude": ["./dist", "./src/opentelemetry-js-contrib"]
 }

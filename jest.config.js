@@ -10,11 +10,7 @@ module.exports = {
     url: 'https://www.unit-test-example.com/',
   },
   testMatch: ['<rootDir>/src/**/*.spec.ts'],
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    'src/opentelemetry-js',
-    'src/opentelemetry-js-contrib',
-  ],
+  testPathIgnorePatterns: ['/node_modules/', 'src/opentelemetry-js-contrib'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),

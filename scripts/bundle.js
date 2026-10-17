@@ -65,14 +65,6 @@ const scanDir = async (inputDir) => {
 };
 
 const main = async () => {
-  await fs.rm('./src/opentelemetry-js/packages/template', {
-    recursive: true,
-    force: true,
-  });
-  await preparePackage('./src/opentelemetry-js/api');
-  await preparePackage('./src/opentelemetry-js/semantic-conventions');
-  await scanDir('./src/opentelemetry-js/packages');
-  await scanDir('./src/opentelemetry-js/experimental/packages');
   await scanDir('./src/opentelemetry-js-contrib/packages');
 };
 
