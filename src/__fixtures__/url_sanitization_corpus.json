@@ -1,0 +1,814 @@
+[
+  {
+    "url": "//host/path?token=1",
+    "sanitized": "//host/path?token=REDACTED"
+  },
+  {
+    "url": "//u:p@host/x",
+    "sanitized": "//REDACTED:REDACTED@host/x"
+  },
+  {
+    "url": "/a.js?token=REDACTED#step2",
+    "sanitized": "/a.js?token=REDACTED#step2"
+  },
+  {
+    "url": "/a.js?token=t#step2",
+    "sanitized": "/a.js?token=REDACTED#step2"
+  },
+  {
+    "url": "/cb#access_token=abc&state=1",
+    "sanitized": "/cb#access_token=REDACTED&state=1"
+  },
+  {
+    "url": "/img.png?sig=1",
+    "sanitized": "/img.png?sig=REDACTED"
+  },
+  {
+    "url": "/img.png?sig=REDACTED",
+    "sanitized": "/img.png?sig=REDACTED"
+  },
+  {
+    "url": "/logo.png?api_key=fetchsecret",
+    "sanitized": "/logo.png?api_key=REDACTED"
+  },
+  {
+    "url": "/logo.png?api_key=fetchsecret&page=2",
+    "sanitized": "/logo.png?api_key=REDACTED&page=2"
+  },
+  {
+    "url": "/logo.png?api_key=fetchsecret&q=a%20b&flag",
+    "sanitized": "/logo.png?api_key=REDACTED&q=a%20b&flag"
+  },
+  {
+    "url": "/logo.png?custom_secret=customfetchsecret&hash=hashkept",
+    "sanitized": "/logo.png?custom_secret=customfetchsecret&hash=REDACTED"
+  },
+  {
+    "url": "/logo.png?nothing=sensitive&q=a%20b&flag",
+    "sanitized": "/logo.png?nothing=sensitive&q=a%20b&flag"
+  },
+  {
+    "url": "/logo.png?q=a%20b&flag&token=encsecret",
+    "sanitized": "/logo.png?q=a%20b&flag&token=REDACTED"
+  },
+  {
+    "url": "/logo.png?TOKEN=casesecret&keep=1",
+    "sanitized": "/logo.png?TOKEN=REDACTED&keep=1"
+  },
+  {
+    "url": "/logo.png?X-Amz-Signature=xhrsecret&planet=3",
+    "sanitized": "/logo.png?X-Amz-Signature=REDACTED&planet=3"
+  },
+  {
+    "url": "/logo.png?X-Goog-Signature=googsecret&sig=sigsecret&id_token=idsecret",
+    "sanitized": "/logo.png?X-Goog-Signature=REDACTED&sig=REDACTED&id_token=REDACTED"
+  },
+  {
+    "url": "/p?token=1",
+    "sanitized": "/p?token=REDACTED"
+  },
+  {
+    "url": "/p?token=REDACTED",
+    "sanitized": "/p?token=REDACTED"
+  },
+  {
+    "url": "/rel?token=abc&a=1",
+    "sanitized": "/rel?token=REDACTED&a=1"
+  },
+  {
+    "url": "/rel?token=REDACTED&a=1",
+    "sanitized": "/rel?token=REDACTED&a=1"
+  },
+  {
+    "url": "/rel/path?x=1",
+    "sanitized": "/rel/path?x=1"
+  },
+  {
+    "url": "blob:https://a.com/1234-5678",
+    "sanitized": "blob:https://a.com/1234-5678"
+  },
+  {
+    "url": "data:text/plain,hello?token=1",
+    "sanitized": "data:text/plain,hello?token=REDACTED"
+  },
+  {
+    "url": "http://localhost:{{port}}/rum",
+    "sanitized": "http://localhost:{{port}}/rum"
+  },
+  {
+    "url": "https://a.com",
+    "sanitized": "https://a.com"
+  },
+  {
+    "url": "https://A.com",
+    "sanitized": "https://A.com"
+  },
+  {
+    "url": "https://A.com:443/x?q=a%20b&flag",
+    "sanitized": "https://A.com:443/x?q=a%20b&flag"
+  },
+  {
+    "url": "https://a.com:443/x?q=a%20b&flag&q=a+b",
+    "sanitized": "https://a.com:443/x?q=a%20b&flag&q=a+b"
+  },
+  {
+    "url": "https://A.com:443/x?token=1&q=a%20b&flag&q=a+b",
+    "sanitized": "https://A.com:443/x?token=REDACTED&q=a%20b&flag&q=a+b"
+  },
+  {
+    "url": "https://A.com:443/x?token=REDACTED&q=a%20b&flag&q=a+b",
+    "sanitized": "https://A.com:443/x?token=REDACTED&q=a%20b&flag&q=a+b"
+  },
+  {
+    "url": "https://a.com?token=1",
+    "sanitized": "https://a.com?token=REDACTED"
+  },
+  {
+    "url": "https://a.com?token=REDACTED",
+    "sanitized": "https://a.com?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/;jsessionid=abc?x=1",
+    "sanitized": "https://a.com/;jsessionid=abc?x=1"
+  },
+  {
+    "url": "https://a.com/?%2574oken=1",
+    "sanitized": "https://a.com/?%2574oken=1"
+  },
+  {
+    "url": "https://a.com/?%74oken=1",
+    "sanitized": "https://a.com/?%74oken=REDACTED"
+  },
+  {
+    "url": "https://a.com/?a[b]=1",
+    "sanitized": "https://a.com/?a[b]=1"
+  },
+  {
+    "url": "https://a.com/?a=1;token=REDACTED&b=2",
+    "sanitized": "https://a.com/?a=1;token=REDACTED&b=2"
+  },
+  {
+    "url": "https://a.com/?a=1;token=x&b=2",
+    "sanitized": "https://a.com/?a=1;token=REDACTED&b=2"
+  },
+  {
+    "url": "https://a.com/?a=1&&token=x",
+    "sanitized": "https://a.com/?a=1&&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?accessToken=a&refreshToken=b&clientSecret=c&privateKey=d&apiToken=e&jsessionid=f",
+    "sanitized": "https://a.com/?accessToken=REDACTED&refreshToken=REDACTED&clientSecret=REDACTED&privateKey=REDACTED&apiToken=e&jsessionid=f"
+  },
+  {
+    "url": "https://a.com/?api_key=1",
+    "sanitized": "https://a.com/?api_key=REDACTED"
+  },
+  {
+    "url": "https://a.com/?api-key=1&access-token=2&X-API-KEY=3&keep-me=4",
+    "sanitized": "https://a.com/?api-key=REDACTED&access-token=REDACTED&X-API-KEY=REDACTED&keep-me=4"
+  },
+  {
+    "url": "https://a.com/?api-key=REDACTED&access-token=REDACTED&X-API-KEY=REDACTED&keep-me=4",
+    "sanitized": "https://a.com/?api-key=REDACTED&access-token=REDACTED&X-API-KEY=REDACTED&keep-me=4"
+  },
+  {
+    "url": "https://a.com/?api%5Fkey=REDACTED&x=1",
+    "sanitized": "https://a.com/?api%5Fkey=REDACTED&x=1"
+  },
+  {
+    "url": "https://a.com/?api%5Fkey=s&x=1",
+    "sanitized": "https://a.com/?api%5Fkey=REDACTED&x=1"
+  },
+  {
+    "url": "https://a.com/?bad=%E0%A4%A&x=1",
+    "sanitized": "https://a.com/?bad=%E0%A4%A&x=1"
+  },
+  {
+    "url": "https://a.com/?check=%E2%9C%93",
+    "sanitized": "https://a.com/?check=%E2%9C%93"
+  },
+  {
+    "url": "https://a.com/?color=%23fff",
+    "sanitized": "https://a.com/?color=%23fff"
+  },
+  {
+    "url": "https://a.com/?csrf_token=1&sessionToken=2&jsessionid=3",
+    "sanitized": "https://a.com/?csrf_token=1&sessionToken=2&jsessionid=3"
+  },
+  {
+    "url": "https://a.com/?e=a@b.com",
+    "sanitized": "https://a.com/?e=a@b.com"
+  },
+  {
+    "url": "https://a.com/?email=a%40b.com&q=what%3F",
+    "sanitized": "https://a.com/?email=a%40b.com&q=what%3F"
+  },
+  {
+    "url": "https://a.com/?my_token=1",
+    "sanitized": "https://a.com/?my_token=1"
+  },
+  {
+    "url": "https://a.com/?myid=1&auth=2&token=3",
+    "sanitized": "https://a.com/?myid=1&auth=REDACTED&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?myid=REDACTED&auth=2&token=REDACTED",
+    "sanitized": "https://a.com/?myid=REDACTED&auth=REDACTED&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?next=//u:p@h/",
+    "sanitized": "https://a.com/?next=REDACTED"
+  },
+  {
+    "url": "https://a.com/?next=https%253A%252F%252Fb.com%252F%253Ftoken%253Dabc",
+    "sanitized": "https://a.com/?next=https%253A%252F%252Fb.com%252F%253Ftoken%253Dabc"
+  },
+  {
+    "url": "https://a.com/?next=https%3A%2F%2Fb.com%2F%3Ftoken%3D1",
+    "sanitized": "https://a.com/?next=REDACTED"
+  },
+  {
+    "url": "https://a.com/?page=1&a=REDACTED",
+    "sanitized": "https://a.com/?page=1&a=REDACTED"
+  },
+  {
+    "url": "https://a.com/?q=a@b.com",
+    "sanitized": "https://a.com/?q=a@b.com"
+  },
+  {
+    "url": "https://a.com/?q=what?",
+    "sanitized": "https://a.com/?q=what?"
+  },
+  {
+    "url": "https://a.com/?q=what?x=1",
+    "sanitized": "https://a.com/?q=what?x=1"
+  },
+  {
+    "url": "https://a.com/?r=/x@y",
+    "sanitized": "https://a.com/?r=/x@y"
+  },
+  {
+    "url": "https://a.com/?r=https%3A%2F%2Fu%3Ap%40b.com%2F",
+    "sanitized": "https://a.com/?r=REDACTED"
+  },
+  {
+    "url": "https://a.com/?r=REDACTED",
+    "sanitized": "https://a.com/?r=REDACTED"
+  },
+  {
+    "url": "https://a.com/?redirect=/home#sec",
+    "sanitized": "https://a.com/?redirect=/home#sec"
+  },
+  {
+    "url": "https://a.com/?reset_token=1&authToken=2&secret_key=3&otp=4&bearer=5",
+    "sanitized": "https://a.com/?reset_token=1&authToken=REDACTED&secret_key=3&otp=4&bearer=5"
+  },
+  {
+    "url": "https://a.com/?sid=1&token=2",
+    "sanitized": "https://a.com/?sid=1&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?sid=1&token=REDACTED",
+    "sanitized": "https://a.com/?sid=1&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?sid=REDACTED&token=REDACTED",
+    "sanitized": "https://a.com/?sid=REDACTED&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?sig=1#/cb?access_token=t",
+    "sanitized": "https://a.com/?sig=REDACTED#/cb?access_token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?sig=REDACTED#/cb?access_token=REDACTED",
+    "sanitized": "https://a.com/?sig=REDACTED#/cb?access_token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?sort_key=1&cache_key=2&pass_word=3",
+    "sanitized": "https://a.com/?sort_key=1&cache_key=2&pass_word=REDACTED"
+  },
+  {
+    "url": "https://a.com/?state=token%3DSECRET%26x%3D1",
+    "sanitized": "https://a.com/?state=token%3DSECRET%26x%3D1"
+  },
+  {
+    "url": "https://a.com/?token",
+    "sanitized": "https://a.com/?token"
+  },
+  {
+    "url": "https://a.com/?token[]=1&token%5B%5D=2",
+    "sanitized": "https://a.com/?token[]=REDACTED&token%5B%5D=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token[]=REDACTED&token%5B%5D=REDACTED",
+    "sanitized": "https://a.com/?token[]=REDACTED&token%5B%5D=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token[0]=1&ids[0]=2&aws-access-key-id=3",
+    "sanitized": "https://a.com/?token[0]=REDACTED&ids[0]=2&aws-access-key-id=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token[0]=REDACTED&ids[0]=2&aws-access-key-id=REDACTED",
+    "sanitized": "https://a.com/?token[0]=REDACTED&ids[0]=2&aws-access-key-id=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token%00=S",
+    "sanitized": "https://a.com/?token%00=S"
+  },
+  {
+    "url": "https://a.com/?TOKEN%20=S",
+    "sanitized": "https://a.com/?TOKEN%20=S"
+  },
+  {
+    "url": "https://a.com/?token=abc",
+    "sanitized": "https://a.com/?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token=abc&page=1",
+    "sanitized": "https://a.com/?token=REDACTED&page=1"
+  },
+  {
+    "url": "https://a.com/?token=REDACTED",
+    "sanitized": "https://a.com/?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/?token=REDACTED&page=1",
+    "sanitized": "https://a.com/?token=REDACTED&page=1"
+  },
+  {
+    "url": "https://a.com/?u=//foo@bar",
+    "sanitized": "https://a.com/?u=REDACTED"
+  },
+  {
+    "url": "https://a.com/?user[password][]=REDACTED&filter[token][eq]=REDACTED&f[name][eq]=x",
+    "sanitized": "https://a.com/?user[password][]=REDACTED&filter[token][eq]=REDACTED&f[name][eq]=x"
+  },
+  {
+    "url": "https://a.com/?user[password][]=S&filter[token][eq]=S&f[name][eq]=x",
+    "sanitized": "https://a.com/?user[password][]=REDACTED&filter[token][eq]=REDACTED&f[name][eq]=x"
+  },
+  {
+    "url": "https://a.com/?user[password]=1&user[name]=bob",
+    "sanitized": "https://a.com/?user[password]=REDACTED&user[name]=bob"
+  },
+  {
+    "url": "https://a.com/?user[password]=REDACTED&user[name]=bob",
+    "sanitized": "https://a.com/?user[password]=REDACTED&user[name]=bob"
+  },
+  {
+    "url": "https://a.com/#!/login?token=REDACTED",
+    "sanitized": "https://a.com/#!/login?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#!/login?token=S",
+    "sanitized": "https://a.com/#!/login?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#!/login?token=x",
+    "sanitized": "https://a.com/#!/login?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#!token=abc",
+    "sanitized": "https://a.com/#!token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#/a?b=1#token=zzz",
+    "sanitized": "https://a.com/#/a?b=1#token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#/a?x=1",
+    "sanitized": "https://a.com/#/a?x=1"
+  },
+  {
+    "url": "https://a.com/#/cb?next=%2Fx%3Fapi_key%3D1",
+    "sanitized": "https://a.com/#/cb?next=REDACTED"
+  },
+  {
+    "url": "https://a.com/#/cb?next=REDACTED",
+    "sanitized": "https://a.com/#/cb?next=REDACTED"
+  },
+  {
+    "url": "https://a.com/#/login?token=abc&next=%2Fhome",
+    "sanitized": "https://a.com/#/login?token=REDACTED&next=%2Fhome"
+  },
+  {
+    "url": "https://a.com/#/login?token=REDACTED&next=%2Fhome",
+    "sanitized": "https://a.com/#/login?token=REDACTED&next=%2Fhome"
+  },
+  {
+    "url": "https://a.com/#/page#token=abc",
+    "sanitized": "https://a.com/#/page#token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#/users/1",
+    "sanitized": "https://a.com/#/users/1"
+  },
+  {
+    "url": "https://a.com/#/users/1?page=2",
+    "sanitized": "https://a.com/#/users/1?page=2"
+  },
+  {
+    "url": "https://a.com/#/x&token=1",
+    "sanitized": "https://a.com/#/x&token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#a/b=1&access_token=REDACTED",
+    "sanitized": "https://a.com/#a/b=1&access_token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#a/b=1&access_token=x",
+    "sanitized": "https://a.com/#a/b=1&access_token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#a=1?token=2",
+    "sanitized": "https://a.com/#a=REDACTED"
+  },
+  {
+    "url": "https://a.com/#a=1#token=S",
+    "sanitized": "https://a.com/#a=1#token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#a=REDACTED",
+    "sanitized": "https://a.com/#a=REDACTED"
+  },
+  {
+    "url": "https://a.com/#access_token=x&state=1",
+    "sanitized": "https://a.com/#access_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/#login?token=abc",
+    "sanitized": "https://a.com/#login?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#reset-password?token=abc",
+    "sanitized": "https://a.com/#reset-password?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/#section-2",
+    "sanitized": "https://a.com/#section-2"
+  },
+  {
+    "url": "https://a.com/#state=/dash?x=1",
+    "sanitized": "https://a.com/#state=/dash?x=1"
+  },
+  {
+    "url": "https://a.com/#step1?token=abc",
+    "sanitized": "https://a.com/#step1?token=REDACTED"
+  },
+  {
+    "url": "https://a.com/a?token=REDACTED#step2",
+    "sanitized": "https://a.com/a?token=REDACTED#step2"
+  },
+  {
+    "url": "https://a.com/a?token=t#step2",
+    "sanitized": "https://a.com/a?token=REDACTED#step2"
+  },
+  {
+    "url": "https://a.com/cb#&id_token=abc&state=1",
+    "sanitized": "https://a.com/cb#&id_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/cb#&id_token=REDACTED&state=1",
+    "sanitized": "https://a.com/cb#&id_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/cb#access_token=abc&state=1",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/cb#access_token=REDACTED&redirect=/foo?bar",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&redirect=/foo?bar"
+  },
+  {
+    "url": "https://a.com/cb#access_token=REDACTED&state=1",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/cb#access_token=S&redirect=/foo?bar",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&redirect=/foo?bar"
+  },
+  {
+    "url": "https://a.com/cb#access_token=SECRET&redirect=/foo?bar",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&redirect=/foo?bar"
+  },
+  {
+    "url": "https://a.com/cb#access_token=x&state=1",
+    "sanitized": "https://a.com/cb#access_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://a.com/cb#id_token=REDACTED&state=/dash?x=1",
+    "sanitized": "https://a.com/cb#id_token=REDACTED&state=/dash?x=1"
+  },
+  {
+    "url": "https://a.com/cb#id_token=S&state=/dash?x=1",
+    "sanitized": "https://a.com/cb#id_token=REDACTED&state=/dash?x=1"
+  },
+  {
+    "url": "https://a.com/img.png?sig=1",
+    "sanitized": "https://a.com/img.png?sig=REDACTED"
+  },
+  {
+    "url": "https://a.com/img.png?sig=REDACTED",
+    "sanitized": "https://a.com/img.png?sig=REDACTED"
+  },
+  {
+    "url": "https://a.com/login?next=/home?tab=1",
+    "sanitized": "https://a.com/login?next=/home?tab=1"
+  },
+  {
+    "url": "https://a.com/login?next=https://b.com/?token=1&x=2",
+    "sanitized": "https://a.com/login?next=REDACTED&x=2"
+  },
+  {
+    "url": "https://a.com/login?next=https%3A%2F%2Fb.com%2F%3Fpage%3D2",
+    "sanitized": "https://a.com/login?next=https%3A%2F%2Fb.com%2F%3Fpage%3D2"
+  },
+  {
+    "url": "https://a.com/login?next=https%3A%2F%2Fb.com%2F%3Ftoken%3D1&x=2",
+    "sanitized": "https://a.com/login?next=REDACTED&x=2"
+  },
+  {
+    "url": "https://a.com/login?next=REDACTED&x=2",
+    "sanitized": "https://a.com/login?next=REDACTED&x=2"
+  },
+  {
+    "url": "https://a.com/ok?x=1",
+    "sanitized": "https://a.com/ok?x=1"
+  },
+  {
+    "url": "https://a.com/p;token=1",
+    "sanitized": "https://a.com/p;token=1"
+  },
+  {
+    "url": "https://a.com/p?id=1?token=abc",
+    "sanitized": "https://a.com/p?id=REDACTED"
+  },
+  {
+    "url": "https://a.com/page?token=2&page=1",
+    "sanitized": "https://a.com/page?token=REDACTED&page=1"
+  },
+  {
+    "url": "https://a.com/page?token=REDACTED&page=1",
+    "sanitized": "https://a.com/page?token=REDACTED&page=1"
+  },
+  {
+    "url": "https://a.com/x?e=a@b.com",
+    "sanitized": "https://a.com/x?e=a@b.com"
+  },
+  {
+    "url": "https://a.com/x?ok=1#a=b",
+    "sanitized": "https://a.com/x?ok=1#a=b"
+  },
+  {
+    "url": "https://a.com/x?token=abc#access_token=t",
+    "sanitized": "https://a.com/x?token=REDACTED#access_token=REDACTED"
+  },
+  {
+    "url": "https://acct.blob.core.windows.net/c/a.js?sv=2024&se=2026&sig=s",
+    "sanitized": "https://acct.blob.core.windows.net/c/a.js?sv=2024&se=2026&sig=REDACTED"
+  },
+  {
+    "url": "https://acct.blob.core.windows.net/c/a.js?sv=2024&sig=REDACTED",
+    "sanitized": "https://acct.blob.core.windows.net/c/a.js?sv=2024&sig=REDACTED"
+  },
+  {
+    "url": "https://acct.blob.core.windows.net/c/a.js?sv=2024&sig=s",
+    "sanitized": "https://acct.blob.core.windows.net/c/a.js?sv=2024&sig=REDACTED"
+  },
+  {
+    "url": "https://api.com/x?access_token=abc",
+    "sanitized": "https://api.com/x?access_token=REDACTED"
+  },
+  {
+    "url": "https://api.com/x?access_token=REDACTED",
+    "sanitized": "https://api.com/x?access_token=REDACTED"
+  },
+  {
+    "url": "https://app.com:8443/x?token=1",
+    "sanitized": "https://app.com:8443/x?token=REDACTED"
+  },
+  {
+    "url": "https://app.com/?=empty&token=1",
+    "sanitized": "https://app.com/?=empty&token=REDACTED"
+  },
+  {
+    "url": "https://app.com/?bad=%E0%A4%A&x=1",
+    "sanitized": "https://app.com/?bad=%E0%A4%A&x=1"
+  },
+  {
+    "url": "https://app.com/?emoji=%F0%9F%98%80",
+    "sanitized": "https://app.com/?emoji=%F0%9F%98%80"
+  },
+  {
+    "url": "https://app.com/?token=1&token=2&TOKEN=3",
+    "sanitized": "https://app.com/?token=REDACTED&token=REDACTED&TOKEN=REDACTED"
+  },
+  {
+    "url": "https://app.com/#!/settings/profile",
+    "sanitized": "https://app.com/#!/settings/profile"
+  },
+  {
+    "url": "https://app.com/#/dashboard?tab=overview&range=7d",
+    "sanitized": "https://app.com/#/dashboard?tab=overview&range=7d"
+  },
+  {
+    "url": "https://app.com/api/users/42?include=profile,settings",
+    "sanitized": "https://app.com/api/users/42?include=profile,settings"
+  },
+  {
+    "url": "https://app.com/callback?code=4/0AX4XfWh&state=xyz",
+    "sanitized": "https://app.com/callback?code=4/0AX4XfWh&state=xyz"
+  },
+  {
+    "url": "https://app.com/page#:~:text=hello%20world",
+    "sanitized": "https://app.com/page#:~:text=hello%20world"
+  },
+  {
+    "url": "https://app.com/products?page=2&sort=price",
+    "sanitized": "https://app.com/products?page=2&sort=price"
+  },
+  {
+    "url": "https://app.com/search?q=hello%20world&lang=en",
+    "sanitized": "https://app.com/search?q=hello%20world&lang=en"
+  },
+  {
+    "url": "https://app.com/search?q=hello+world&lang=en",
+    "sanitized": "https://app.com/search?q=hello+world&lang=en"
+  },
+  {
+    "url": "https://app.example/cb#id_token=abc&state=1",
+    "sanitized": "https://app.example/cb#id_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://app.example/cb#id_token=REDACTED&state=1",
+    "sanitized": "https://app.example/cb#id_token=REDACTED&state=1"
+  },
+  {
+    "url": "https://b.com",
+    "sanitized": "https://b.com"
+  },
+  {
+    "url": "https://b.s3.amazonaws.com/a.js?X-Amz-Credential=c&X-Amz-Security-Token=t&X-Amz-Signature=s",
+    "sanitized": "https://b.s3.amazonaws.com/a.js?X-Amz-Credential=REDACTED&X-Amz-Security-Token=REDACTED&X-Amz-Signature=REDACTED"
+  },
+  {
+    "url": "https://b.s3.amazonaws.com/a.js?X-Amz-Credential=REDACTED&X-Amz-Security-Token=REDACTED&X-Amz-Signature=REDACTED",
+    "sanitized": "https://b.s3.amazonaws.com/a.js?X-Amz-Credential=REDACTED&X-Amz-Security-Token=REDACTED&X-Amz-Signature=REDACTED"
+  },
+  {
+    "url": "https://bucket.s3.amazonaws.com/file.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=c&X-Amz-Date=20260101T000000Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=abc",
+    "sanitized": "https://bucket.s3.amazonaws.com/file.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED&X-Amz-Date=20260101T000000Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED"
+  },
+  {
+    "url": "https://cdn.app.com/main.abc123.js?hash=abc123",
+    "sanitized": "https://cdn.app.com/main.abc123.js?hash=REDACTED"
+  },
+  {
+    "url": "https://cdn.app.com/main.js?v=1.2.3",
+    "sanitized": "https://cdn.app.com/main.js?v=1.2.3"
+  },
+  {
+    "url": "https://collector/v1/logs",
+    "sanitized": "https://collector/v1/logs"
+  },
+  {
+    "url": "https://maps.app.com/?ll=37.7,-122.4&z=12",
+    "sanitized": "https://maps.app.com/?ll=37.7,-122.4&z=12"
+  },
+  {
+    "url": "https://münchen.de/?token=1&a=1",
+    "sanitized": "https://münchen.de/?token=REDACTED&a=1"
+  },
+  {
+    "url": "https://my-api-endpoint",
+    "sanitized": "https://my-api-endpoint"
+  },
+  {
+    "url": "https://my-api-endpoint/",
+    "sanitized": "https://my-api-endpoint/"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/logs",
+    "sanitized": "https://my-api-endpoint/v1/logs"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/logs/",
+    "sanitized": "https://my-api-endpoint/v1/logs/"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/metrics",
+    "sanitized": "https://my-api-endpoint/v1/metrics"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/metrics/",
+    "sanitized": "https://my-api-endpoint/v1/metrics/"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/traces",
+    "sanitized": "https://my-api-endpoint/v1/traces"
+  },
+  {
+    "url": "https://my-api-endpoint/v1/traces/",
+    "sanitized": "https://my-api-endpoint/v1/traces/"
+  },
+  {
+    "url": "https://REDACTED:REDACTED@a.com/",
+    "sanitized": "https://REDACTED:REDACTED@a.com/"
+  },
+  {
+    "url": "https://REDACTED:REDACTED@a.com/x?Token=REDACTED&page=2",
+    "sanitized": "https://REDACTED:REDACTED@a.com/x?Token=REDACTED&page=2"
+  },
+  {
+    "url": "https://REDACTED:REDACTED@host/x?e=a@b.com",
+    "sanitized": "https://REDACTED:REDACTED@host/x?e=a@b.com"
+  },
+  {
+    "url": "https://shop.com/cart?code=SUMMER20&country=US",
+    "sanitized": "https://shop.com/cart?code=SUMMER20&country=US"
+  },
+  {
+    "url": "https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==",
+    "sanitized": "https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC=="
+  },
+  {
+    "url": "https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==/",
+    "sanitized": "https://stag-rum-events.sumologic.net/receiver/v1/rum/aA-bB_cC==/"
+  },
+  {
+    "url": "https://stag-rum-events.sumologic.net/receiver/v1/traces/aA-bB_cC==",
+    "sanitized": "https://stag-rum-events.sumologic.net/receiver/v1/traces/aA-bB_cC=="
+  },
+  {
+    "url": "https://stag-rum-events.sumologic.net/receiver/v1/traces/aA-bB_cC==/",
+    "sanitized": "https://stag-rum-events.sumologic.net/receiver/v1/traces/aA-bB_cC==/"
+  },
+  {
+    "url": "https://storage.googleapis.com/b/a.js?X-Goog-Signature=REDACTED",
+    "sanitized": "https://storage.googleapis.com/b/a.js?X-Goog-Signature=REDACTED"
+  },
+  {
+    "url": "https://storage.googleapis.com/b/a.js?X-Goog-Signature=s",
+    "sanitized": "https://storage.googleapis.com/b/a.js?X-Goog-Signature=REDACTED"
+  },
+  {
+    "url": "https://storage.googleapis.com/b/o.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Signature=xyz",
+    "sanitized": "https://storage.googleapis.com/b/o.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Signature=REDACTED"
+  },
+  {
+    "url": "HTTPS://U:P@A.com/",
+    "sanitized": "HTTPS://REDACTED:REDACTED@A.com/"
+  },
+  {
+    "url": "https://u:p@a.com/x?token=1&q=a%20b#/r?sig=2",
+    "sanitized": "https://REDACTED:REDACTED@a.com/x?token=REDACTED&q=a%20b#/r?sig=REDACTED"
+  },
+  {
+    "url": "https://u:p@a.com/x?Token=abc&page=2",
+    "sanitized": "https://REDACTED:REDACTED@a.com/x?Token=REDACTED&page=2"
+  },
+  {
+    "url": "https://u:p@ss@host/x",
+    "sanitized": "https://REDACTED:REDACTED@host/x"
+  },
+  {
+    "url": "https://u:p@ss@host/x?e=a@b.com",
+    "sanitized": "https://REDACTED:REDACTED@host/x?e=a@b.com"
+  },
+  {
+    "url": "https://u@a.com/",
+    "sanitized": "https://REDACTED:REDACTED@a.com/"
+  },
+  {
+    "url": "https://www.unit-test-example.com/",
+    "sanitized": "https://www.unit-test-example.com/"
+  },
+  {
+    "url": "https://www.unit-test-example.com/signup",
+    "sanitized": "https://www.unit-test-example.com/signup"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s",
+    "sanitized": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s"
+  },
+  {
+    "url": "https://x.com/a?AWSAccessKeyId=AK&Signature=s&Expires=1",
+    "sanitized": "https://x.com/a?AWSAccessKeyId=REDACTED&Signature=REDACTED&Expires=1"
+  },
+  {
+    "url": "https://x.com/a?AWSAccessKeyId=REDACTED&Signature=REDACTED&Expires=1",
+    "sanitized": "https://x.com/a?AWSAccessKeyId=REDACTED&Signature=REDACTED&Expires=1"
+  },
+  {
+    "url": "https://xn--n3h.com/?token=1",
+    "sanitized": "https://xn--n3h.com/?token=REDACTED"
+  },
+  {
+    "url": "img.png?token=1",
+    "sanitized": "img.png?token=REDACTED"
+  },
+  {
+    "url": "mailto:a@b.com?subject=hi",
+    "sanitized": "mailto:a@b.com?subject=hi"
+  }
+]

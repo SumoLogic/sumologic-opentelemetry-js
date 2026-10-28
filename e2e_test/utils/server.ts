@@ -33,6 +33,11 @@ export const startServer = ({ basedir }: StartServerConfig) => {
     res.sendFile(path.join(basedir, '../static/logo.png'));
   });
 
+  // a real (non-empty) image, so it can be the page's largest contentful paint
+  app.get('/lcp-image.png', (req, res) => {
+    res.sendFile(path.join(basedir, '../static/lcp-image.png'));
+  });
+
   app.get('/logo-delay.png', (req, res) => {
     setTimeout(() => {
       res.sendFile(path.join(basedir, '../static/logo.png'));
@@ -53,7 +58,7 @@ export const startServer = ({ basedir }: StartServerConfig) => {
 
   app.use(async (req, res, next) => {
     try {
-      const requestPath = path.join(basedir, '../static', req.url);
+      const requestPath = path.join(basedir, '../static', req.path);
       const stat = await fs.stat(requestPath);
       const filePath = stat.isDirectory()
         ? path.join(requestPath, 'index.html')
