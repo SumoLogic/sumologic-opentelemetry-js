@@ -28,9 +28,19 @@
     '/logo.png?TOKEN=casesecret&keep=1', // case-insensitive match
     '/logo.png?X-Goog-Signature=googsecret&sig=sigsecret&id_token=idsecret', // signed-URL / OIDC params
     '/logo.png?custom_secret=customfetchsecret&hash=hashkept', // custom + excluded built-in
+    '/logo.png?q=a%20b&flag&token=encsecret', // untouched params keep their exact encoding
+    '/logo.png?nothing=sensitive&q=a%20b&flag', // url without secrets is byte-identical
   ];
 
   function flush() {
+    // hash-router (Angular/Vue hash mode) query, recorded as a second log once all spans have started
+    history.replaceState(
+      null,
+      '',
+      '?page=1#/login?token=routesecret&next=%2Fhome',
+    );
+    window.sumoLogicOpenTelemetryRum.recordError('Route error');
+
     // traces and logs are sent on hidden/pagehide
     Object.defineProperty(document, 'visibilityState', {
       value: 'hidden',

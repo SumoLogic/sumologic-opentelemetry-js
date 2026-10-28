@@ -78,6 +78,8 @@ test.describe('url sanitization', () => {
       'idsecret',
       'customfetchsecret',
       'xhrsecret',
+      'encsecret',
+      'routesecret',
     ]) {
       expect(all).not.toContain(secret);
     }
@@ -101,6 +103,13 @@ test.describe('url sanitization', () => {
     expect(traces).toContain('id_token=REDACTED');
     expect(traces).toContain('X-Amz-Signature=REDACTED');
     expect(traces).toContain('planet=3');
+
+    // only redacted values change; other params keep exact encoding, no `flag=` / `+` rewrite
+    expect(traces).toContain('/logo.png?q=a%20b&flag&token=REDACTED');
+    expect(traces).toContain('/logo.png?nothing=sensitive&q=a%20b&flag"');
+
+    // hash-router query is redacted, the route itself is kept
+    expect(logsJson).toContain('#/login?token=REDACTED&next=%2Fhome');
 
     // excludeDefaultParams: built-in `hash` is opted out, so it stays readable
     expect(logsJson).toContain('hash=keepme');

@@ -40,6 +40,22 @@ describe('SumoLogicLogsExporter url sanitization', () => {
     expect(body).not.toContain('token=abc');
   });
 
+  test('still records the log when a custom sanitizer throws', () => {
+    expect(() =>
+      record(
+        createUrlSanitizer({
+          enabled: true,
+          sanitizeUrl: () => {
+            throw new Error('boom');
+          },
+        }),
+      ),
+    ).not.toThrow();
+    const body = sentBody();
+    expect(body).toContain('boom'); // the log message itself
+    expect(body).not.toContain('token=abc');
+  });
+
   test('leaves http.url untouched without a sanitizer', () => {
     record();
     expect(sentBody()).toContain('token=abc');

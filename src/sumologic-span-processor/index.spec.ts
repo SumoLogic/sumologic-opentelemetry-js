@@ -447,11 +447,74 @@ describe('SumoLogicSpanProcessor', () => {
       );
     });
 
-    test('leaves urls untouched when no sanitizer is given', () => {
+    test('still exports spans when a custom sanitizer throws', () => {
+      const { xhrSpan } = run({
+        sanitizeUrl: createUrlSanitizer({
+          enabled: true,
+          sanitizeUrl: () => {
+            throw new Error('boom');
+          },
+        }),
+      });
+      expect(superOnEnd).toHaveBeenCalledWith(span);
+      expect(superOnEnd).toHaveBeenCalledWith(xhrSpan);
+      expect(xhrSpan.attributes['http.url']).toBe('REDACTED');
+    });
+
+    test('redacts root_span.http.url of a child that ends before its root', () => {
+      createSpanProcessor({
+        sanitizeUrl: createUrlSanitizer({ enabled: true }),
+      });
+      const xhrSpan = createXhrSpan('HTTP GET', span);
+      spanProcessor.onStart(span);
+      span.attributes['location.href'] = 'https://a.com/?token=abc';
+      spanProcessor.onStart(xhrSpan);
+      xhrSpan.end();
+      spanProcessor.onEnd(xhrSpan);
+      span.end();
+      spanProcessor.onEnd(span); // re-enriches the already-queued child
+      jest.runAllTimers();
+      expect(xhrSpan.attributes['root_span.http.url']).toBe(
+        'https://a.com/?token=REDACTED',
+      );
+      expect(span.attributes['location.href']).toBe(
+        'https://a.com/?token=REDACTED',
+      );
+    });
+
+    test('leaves every attribute untouched when no sanitizer is given', () => {
       const { xhrSpan } = run({});
       expect(xhrSpan.attributes['http.url']).toBe(
         'https://api.com/x?access_token=abc',
       );
+      expect(xhrSpan.attributes['root_span.http.url']).toBe(
+        'https://a.com/?token=abc&page=1',
+      );
+      expect(span.attributes['location.href']).toBe(
+        'https://a.com/?token=abc&page=1',
+      );
+    });
+
+    test('feature off exports the same attributes as no config at all', () => {
+      const snapshot = (config: Partial<SumoLogicSpanProcessorConfig>) => {
+        const { xhrSpan } = run(config);
+        // timing attributes differ between runs because the fake clock keeps moving
+        const withoutTimings = (attributes: Record<string, unknown>) =>
+          Object.fromEntries(
+            Object.entries(attributes).filter(
+              ([key]) => !key.startsWith('http.time_'),
+            ),
+          );
+        return {
+          root: withoutTimings(span.attributes),
+          child: withoutTimings(xhrSpan.attributes),
+        };
+      };
+      const withoutConfig = snapshot({});
+      const off = snapshot({
+        sanitizeUrl: createUrlSanitizer({ enabled: false }),
+      });
+      expect(off).toEqual(withoutConfig);
     });
   });
 

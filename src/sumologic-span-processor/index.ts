@@ -108,8 +108,17 @@ export class SumoLogicSpanProcessor extends BatchSpanProcessor {
     // we use callbacks instead of Promises, because even immediately resolved Promise won't be executed synchronously
     // which will break when spans are ended before closing a page
     findLongTaskContext.onEnd(span, (span2) => {
+      // URL sanitization (opt-in) runs at two points; both are no-ops when it's off.
+      // 1. Here, as soon as the span ends. This must happen before rootToChildEnrichment:
+      //    when a root span ends, rootToChildEnrichment copies the root's url into its
+      //    child spans, including children that ended earlier and are already waiting
+      //    in the export queue. Redacting the root first means they get a clean copy.
+      sanitizeUrlAttributes(span2.attributes, this.sanitizeUrl);
       rootToChildEnrichment.onEnd(span2);
       this.traceProcessor.onEnd(span2, (span3) => {
+        // 2. Right before the span is handed to the exporter (for a root span this can be
+        //    up to 30s after it ended). A child's `root_span.http.url` may have been copied
+        //    from a root that was still running and not yet redacted, so check again.
         sanitizeUrlAttributes(span3.attributes, this.sanitizeUrl);
         super.onEnd(span3);
       });

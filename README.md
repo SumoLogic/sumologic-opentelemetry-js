@@ -115,27 +115,27 @@ initialize({
 
 Both `script` tag and manual installation can be configured with following parameters:
 
-| Parameter                       | Type                                                                                                                                                                                     | Default              | Description                                                                                                  |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
-| collectionSourceUrl             | `string`                                                                                                                                                                                 | _required_           | Sumo Logic collector source url                                                                              |
-| authorizationToken              | `string`                                                                                                                                                                                 |                      | Sumo Logic collector authorization token                                                                     |
-| serviceName                     | `string`                                                                                                                                                                                 | `"unknown"`          | Name of your web service                                                                                     |
-| applicationName                 | `string`                                                                                                                                                                                 |                      | Name of your application                                                                                     |
-| deploymentEnvironment           | `string`                                                                                                                                                                                 |                      | The software deployment (e.g. `staging`, `production`)                                                       |
-| defaultAttributes               | `object`                                                                                                                                                                                 | `{}`                 | Attributes added to each span                                                                                |
-| samplingProbability             | `number`                                                                                                                                                                                 | `1`                  | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent  |
-| bufferMaxSpans                  | `number`                                                                                                                                                                                 | `2048`               | Maximum number of spans waiting to be send                                                                   |
-| maxExportBatchSize              | `number`                                                                                                                                                                                 | `50`                 | Maximum number of spans in one request                                                                       |
-| bufferTimeout                   | `number`                                                                                                                                                                                 | `2000`ms             | Time in milliseconds for spans waiting to be send                                                            |
-| ignoreUrls                      | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of XHR URLs to ignore (e.g. analytics)                                                                  |
-| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP header will be injected    |
-| collectSessionId                | `boolean`                                                                                                                                                                                | `true`               | Enables collecting `rum.session_id` attribute                                                                |
-| dropSingleUserInteractionTraces | `boolean`                                                                                                                                                                                | `true`               | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)  |
-| collectErrors                   | `boolean`                                                                                                                                                                                | `true`               | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors |
-| userInteractionElementNameLimit | `number`                                                                                                                                                                                 | `20`                 | Limit for user interaction element name, after which the name will be truncated with `...` suffix.           |
-| webVitalsConfig                 | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in collection of Core Web Vitals as logs. See [Web Vitals](#web-vitals)                                  |
-| urlSanitizationConfig           | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in redaction of sensitive URL query params in traces and logs. See [URL sanitization](#url-sanitization) |
-| getOverriddenServiceName        | <code>(span: [Span](https://github.com/SumoLogic/opentelemetry-js/blob/0bc25fa930d358bda42026bd66bed23b7a4dc9bb/packages/opentelemetry-sdk-trace-base/src/Span.ts#L39)) => string</code> |                      | Function used for overridding the service name of a span during its creation.                                |
+| Parameter                       | Type                                                                                                                                                                                     | Default              | Description                                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| collectionSourceUrl             | `string`                                                                                                                                                                                 | _required_           | Sumo Logic collector source url                                                                                            |
+| authorizationToken              | `string`                                                                                                                                                                                 |                      | Sumo Logic collector authorization token                                                                                   |
+| serviceName                     | `string`                                                                                                                                                                                 | `"unknown"`          | Name of your web service                                                                                                   |
+| applicationName                 | `string`                                                                                                                                                                                 |                      | Name of your application                                                                                                   |
+| deploymentEnvironment           | `string`                                                                                                                                                                                 |                      | The software deployment (e.g. `staging`, `production`)                                                                     |
+| defaultAttributes               | `object`                                                                                                                                                                                 | `{}`                 | Attributes added to each span                                                                                              |
+| samplingProbability             | `number`                                                                                                                                                                                 | `1`                  | `1` means all traces are sent, `0` - no traces are send, `0.5` - there is 50% change for a trace to be sent                |
+| bufferMaxSpans                  | `number`                                                                                                                                                                                 | `2048`               | Maximum number of spans waiting to be send                                                                                 |
+| maxExportBatchSize              | `number`                                                                                                                                                                                 | `50`                 | Maximum number of spans in one request                                                                                     |
+| bufferTimeout                   | `number`                                                                                                                                                                                 | `2000`ms             | Time in milliseconds for spans waiting to be send                                                                          |
+| ignoreUrls                      | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of XHR URLs to ignore (e.g. analytics)                                                                                |
+| propagateTraceHeaderCorsUrls    | `(string\|RegExp)[]`                                                                                                                                                                     | `[]`                 | List of URLs where [W3C Trace Context](https://www.w3.org/TR/trace-context/) HTTP header will be injected                  |
+| collectSessionId                | `boolean`                                                                                                                                                                                | `true`               | Enables collecting `rum.session_id` attribute                                                                              |
+| dropSingleUserInteractionTraces | `boolean`                                                                                                                                                                                | `true`               | Automatically drops traces with only one span coming from the user-interaction instrumentation (click etc.)                |
+| collectErrors                   | `boolean`                                                                                                                                                                                | `true`               | Automatically collect and send uncaught exceptions, unhandled rejections, document errors and console errors               |
+| userInteractionElementNameLimit | `number`                                                                                                                                                                                 | `20`                 | Limit for user interaction element name, after which the name will be truncated with `...` suffix.                         |
+| webVitalsConfig                 | `object`                                                                                                                                                                                 | `{ enabled: false }` | Opt-in collection of Core Web Vitals as logs. See [Web Vitals](#web-vitals)                                                |
+| urlSanitizationConfig           | `object`                                                                                                                                                                                 | `{ enabled: false }` | Replaces secrets in exported URLs (tokens, API keys, passwords) with `REDACTED`. See [URL sanitization](#url-sanitization) |
+| getOverriddenServiceName        | <code>(span: [Span](https://github.com/SumoLogic/opentelemetry-js/blob/0bc25fa930d358bda42026bd66bed23b7a4dc9bb/packages/opentelemetry-sdk-trace-base/src/Span.ts#L39)) => string</code> |                      | Function used for overridding the service name of a span during its creation.                                              |
 
 ## Web Vitals
 
@@ -171,26 +171,130 @@ Per-vital options (`lcp`, `cls`, `inp`, `fcp`, `ttfb`):
 
 ## URL sanitization
 
-Opt-in. When enabled, sensitive query params, query-shaped hash fragments such as `#access_token=...` (route fragments
-like `#/users/1` are left alone) and `user:pass@` credentials are replaced with `REDACTED` in the URL
-attributes of spans and logs (`url.full`, `http.url`, `location.href`, `new.location.href`, `root_span.http.url`).
+URLs often carry secrets: password-reset tokens, API keys, signed download links, OAuth tokens after a login redirect.
+By default the SDK exports URLs exactly as the browser sees them. Turn on URL sanitization to replace those secret
+values with `REDACTED` before anything leaves the browser.
+
+This is **disabled by default**. Turning it on changes nothing except URLs that contain secrets.
 
 ```javascript
 sumoLogicOpenTelemetryRum.initialize({
   collectionSourceUrl: 'sumo_logic_traces_collector_source_url',
-  urlSanitizationConfig: {
-    enabled: true,
-    sensitiveParams: ['sid'], // added to the built-in list
-    excludeDefaultParams: ['hash'], // built-in names to leave untouched
-    // sanitizeUrl: (url) => url.split('?')[0], // full override, ignores the lists above
-  },
+  urlSanitizationConfig: { enabled: true },
 });
 ```
 
-Built-in list: `password`, `passwd`, `secret`, `api_key`, `apikey`, `auth`, `authorization`, `token`, `access_token`,
-`refresh_token`, `id_token`, `jwt`, `session`, `sessionid`, `key`, `private_key`, `client_secret`, `client_id`, `signature`,
-`hash`, `AWSAccessKeyId`, `sig`, `X-Amz-Signature`, `X-Amz-Credential`, `X-Amz-Security-Token`, `X-Goog-Signature`
-(case-insensitive). URLs inside error messages, stack traces and span names are not sanitized.
+### What it looks like
+
+| Captured URL                                     | Exported URL                                        |
+| ------------------------------------------------ | --------------------------------------------------- |
+| `https://app.com/reset?token=abc123&lang=en`     | `https://app.com/reset?token=REDACTED&lang=en`      |
+| `https://app.com/callback#access_token=xyz`      | `https://app.com/callback#access_token=REDACTED`    |
+| `https://app.com/#/login?token=abc` (hash route) | `https://app.com/#/login?token=REDACTED`            |
+| `https://app.com/?accessToken=xyz&page=1`        | `https://app.com/?accessToken=REDACTED&page=1`      |
+| `https://user:pass@api.com/data`                 | `https://REDACTED:REDACTED@api.com/data`            |
+| `https://app.com/products?page=2&sort=price`     | `https://app.com/products?page=2&sort=price` (same) |
+
+What gets replaced: the values of params on the list below, `user:pass@` logins, and param values that are themselves
+URLs containing a secret (see below). Everything else in the URL (path, other params, encoding) is exported exactly as
+captured, and a URL with none of these is not touched at all.
+
+### Which params are treated as secret
+
+These param names are redacted by default:
+
+`password`, `passwd`, `pwd`, `secret`, `api_key`, `apikey`, `x_api_key`, `auth`, `authorization`, `auth_token`, `token`,
+`access_token`, `refresh_token`, `id_token`, `jwt`, `session`, `sessionid`, `session_id`, `key`, `private_key`,
+`client_secret`, `client_id`, `signature`, `sig`, `hash`, `AWSAccessKeyId`, `aws_access_key_id`, `X-Amz-Signature`,
+`X-Amz-Credential`, `X-Amz-Security-Token`, `X-Goog-Signature`
+
+The list is broad on purpose, so some names that are often harmless are included, such as `hash` (cache-busting),
+`key`, `session` and `client_id`. If your app uses one of these for non-secret data you want to see, keep it readable
+with `excludeDefaultParams`.
+
+How names are matched:
+
+- Upper/lower case doesn't matter: `TOKEN` and `Token` match `token`.
+- `-` and `_` are ignored, so camelCase works too: `accessToken`, `access-token` and `access_token` all match
+  `access_token`.
+- Array-style names match if any part matches: `token[0]` matches `token`, `user[password]` matches `password`,
+  `filter[token][eq]` matches `token`.
+- The whole name must match: `my_token` does **not** match `token`. Add it with `sensitiveParams` if you need it.
+
+If a param's value is itself a URL that contains a secret, the whole value is redacted:
+`?next=https://b.com/?token=abc` becomes `?next=REDACTED`. URLs nested more than 3 levels deep inside each other are
+always redacted whole, so a crafted URL can't slow the page down. Because of this rule, a harmless value that looks like
+a URL with a login part (`?q=//foo@bar`) may also be redacted.
+
+### Options
+
+| Option                 | Type                      | Description                                                                                                                                     |
+| ---------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`              | `boolean`                 | Turns URL sanitization on. Default `false`                                                                                                      |
+| `sensitiveParams`      | `string[]`                | Extra param names to redact, on top of the default list                                                                                         |
+| `excludeDefaultParams` | `string[]`                | Names from the default list that you do **not** want redacted                                                                                   |
+| `sanitizeUrl`          | `(url: string) => string` | Your own function to clean URLs. Replaces the default rules completely. Must return a string and give the same result when run twice; see below |
+
+Example: also redact `sid` (your app's session param), but keep `hash` readable because your app uses it for something
+harmless:
+
+```javascript
+urlSanitizationConfig: {
+  enabled: true,
+  sensitiveParams: ['sid'],
+  excludeDefaultParams: ['hash'],
+},
+```
+
+If your app logs in with OAuth (Google, Okta, etc.), consider adding `code` to `sensitiveParams`. It's left out of the
+default list because many apps use `code` for harmless things like promo or country codes.
+
+### Writing your own `sanitizeUrl`
+
+Use this when the default rules don't fit, for example to drop the query string entirely:
+
+```javascript
+urlSanitizationConfig: {
+  enabled: true,
+  sanitizeUrl: (url) => url.split('?')[0], // https://app.com/page?a=1 -> https://app.com/page
+},
+```
+
+When `sanitizeUrl` is set, `sensitiveParams` and `excludeDefaultParams` are ignored: your function decides everything.
+
+Two rules for your function:
+
+1. **It must return a string.** If it throws an error or returns something that isn't a string (`undefined`, `null`, a
+   number), the SDK doesn't know whether the URL is safe, so it plays it safe. That URL is exported as the plain text
+   `REDACTED`, and the rest of the span or log is sent as normal. A bug in your function never stops data from being
+   sent and never lets the original URL through.
+
+   ```javascript
+   sanitizeUrl: (url) => new URL(url).origin, // throws on a relative URL like "/api/data"
+   // captured:  http.url = "/api/data?token=abc"
+   // exported:  http.url = "REDACTED"   (the span itself is still exported)
+   ```
+
+2. **Running it twice must give the same result as running it once.** The SDK may clean the same URL more than once,
+   so `sanitizeUrl(sanitizeUrl(url))` must equal `sanitizeUrl(url)`. `url.split('?')[0]` is fine. Something like
+   `(url) => url + '#clean'` is not, because it would add `#clean` again on every run.
+
+### Where it applies
+
+URLs are cleaned in these span and log attributes: `url.full`, `http.url`, `location.href`, `new.location.href`,
+`root_span.http.url`, `url.query`, `http.target`, and the Web Vitals attribution `url` (the image that was the
+largest paint, logged when you add `url` to `lcp.includeRawAttribution`).
+
+**Not cleaned** (a secret here will still be exported):
+
+- Span names, including route-change spans named like `Navigation: /reset?token=abc`.
+- Error messages, stack traces and console log arguments that happen to contain a URL.
+- Secrets in the URL path, such as `/reset/abc123`. Only params, fragments and `user:pass@` are cleaned.
+- Raw Web Vitals entry objects (`navigationEntry`, `lcpResourceEntry`, `lcpEntry` and other `*Entry` keys). These are
+  only logged if you add them to `includeRawAttribution`, and the URLs inside them are exported as is. Don't add them
+  if your URLs can contain secrets.
+
+URL sanitization can only be set up through `initialize()`. It is not available with the script-tag `data-*` setup.
 
 ## Trace context propagation
 

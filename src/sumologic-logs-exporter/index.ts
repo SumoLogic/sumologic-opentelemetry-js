@@ -181,6 +181,8 @@ export class SumoLogicLogsExporter {
       };
     }
 
+    // after all attributes are merged, so urls from log.attributes (errors, web vitals) are covered too;
+    // no-op when URL sanitization is off
     sanitizeUrlAttributes(attributes, this.sanitizeUrl);
 
     const ht = hrTime();
